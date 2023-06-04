@@ -8,7 +8,7 @@ const TOKEN_NAME = process.env.REACT_APP_TOKEN_NAME;
 class ApiUtils {
   constructor(message = false, request = true, appendAuth = true, response = true) {
     this.axios = axios.create({
-      baseURL: process.env.REACT_APP_API_PATH,
+      baseURL: 'http://localhost:5005/api',
     });
 
     if (request) {
@@ -17,7 +17,7 @@ class ApiUtils {
           const myConfig = { ...config };
           if (appendAuth) {
             const { auth } = store.getState();
-            if (auth.isAuthenticated) myConfig.headers.Authorization = `Bearer ${auth.token}`;
+            if (auth.isAuthenticated) myConfig.headers.authorization = auth.token;
           }
           return myConfig;
         },
@@ -44,7 +44,7 @@ class ApiUtils {
               message: 'Error',
               description: error.response.data.message,
             });
-            localStorage.removeItem(TOKEN_NAME);
+            localStorage.removeItem('token');
             if (auth.token) {
               store.dispatch(logout());
               setTimeout(() => window.location.assign('/login'), 1000);
@@ -60,6 +60,39 @@ class ApiUtils {
       );
     }
   }
+
+  login = data =>
+    this.axios({
+      method: 'POST',
+      url: '/users/login',
+      data,
+    });
+
+  register = data =>
+    this.axios({
+      method: 'POST',
+      url: '/users/register',
+      data,
+    });
+
+  loadUser = headers =>
+    this.axios({
+      method: 'GET',
+      url: '/users/me',
+      headers,
+    });
+
+  getAllUsers = () =>
+    this.axios({
+      method: 'GET',
+      url: '/users',
+    });
+
+  getAllChats = () =>
+    this.axios({
+      method: 'GET',
+      url: '/chats/getAllChats',
+    });
 }
 
 export default ApiUtils;

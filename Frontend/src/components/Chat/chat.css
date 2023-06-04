@@ -1,0 +1,19 @@
+.textRight {
+    justify-content: end !important;
+}
+
+.chat-input {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    background-color: #f0f2f5;
+    display: flex;
+}
+
+.srv-validation-message {
+    color: red;
+    position: absolute;
+    top: 50px;
+}

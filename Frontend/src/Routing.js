@@ -1,20 +1,35 @@
 import React, { Suspense, lazy } from 'react';
 import { Route, Navigate, Routes } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { Layout } from 'antd';
 
-const Dummy = lazy(() => import('./components/Dummy/dummy'));
+const Chat = lazy(() => import('./components/Chat/chat'));
+const Sidebar = lazy(() => import('./shared/sidebar'));
+const Login = lazy(() => import('./components/Login/login'));
+const Register = lazy(() => import('./components/Register/register'));
 
 const Routing = () => {
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
   const PublicRoutes = [
     {
       export: true,
-      path: '/',
-      component: <Dummy />,
+      path: '/login',
+      component: <Login />,
+    },
+    {
+      export: true,
+      path: '/register',
+      component: <Register />,
     },
   ].filter(cur => cur);
 
-  const PrivateRoutes = [].filter(cur => cur);
+  const PrivateRoutes = [
+    {
+      export: true,
+      path: '/chats',
+      component: <Chat />,
+    },
+  ].filter(cur => cur);
 
   const PrivateRoute = ({ children }) => {
     return isAuthenticated ? (
@@ -32,7 +47,7 @@ const Routing = () => {
     return isAuthenticated ? (
       <Navigate
         to={{
-          pathname: '/dashboard',
+          pathname: '/chats',
         }}
       />
     ) : (
@@ -42,24 +57,31 @@ const Routing = () => {
 
   return (
     <Suspense className="loader">
-      <Routes>
-        {PublicRoutes.map(route => (
-          <Route
-            exact={route.exact}
-            key={route.path}
-            path={route.path}
-            element={<PublicRoute> {route.component} </PublicRoute>}
-          />
-        ))}
-        {PrivateRoutes.map(route => (
-          <Route
-            exact={route.exact}
-            key={route.path}
-            path={route.path}
-            element={<PrivateRoute> {route.component} </PrivateRoute>}
-          />
-        ))}
-      </Routes>
+      <Layout
+        style={{
+          minHeight: '100vh',
+        }}
+      >
+        {isAuthenticated && <Sidebar />}
+        <Routes>
+          {PublicRoutes.map(route => (
+            <Route
+              exact={route.exact}
+              key={route.path}
+              path={route.path}
+              element={<PublicRoute> {route.component}</PublicRoute>}
+            />
+          ))}
+          {PrivateRoutes.map(route => (
+            <Route
+              exact={route.exact}
+              key={route.path}
+              path={route.path}
+              element={<PrivateRoute> {route.component} </PrivateRoute>}
+            />
+          ))}
+        </Routes>
+      </Layout>
     </Suspense>
   );
 };
