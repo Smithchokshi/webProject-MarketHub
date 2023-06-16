@@ -93,6 +93,20 @@ class ApiUtils {
       method: 'GET',
       url: '/chats/getAllChats',
     });
+
+  getAllMessages = data =>
+    this.axios({
+      method: 'POST',
+      url: '/message/getMessages',
+      data,
+    });
+
+  sendMessage = data =>
+    this.axios({
+      method: 'POST',
+      url: '/message/sendMessage',
+      data,
+    });
 }
 
 export default ApiUtils;

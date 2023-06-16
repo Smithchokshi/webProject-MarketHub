@@ -25,6 +25,7 @@ export const register = data => async dispatch => {
   try {
     const res = await api(true).register(data);
     dispatch({ type: 'EXISTING_USER', payload: res.data.userData });
+    await loadUser();
     localStorage.setItem('token', res.data.userData.token);
     return true;
   } catch (e) {
@@ -37,6 +38,7 @@ export const login = data => async dispatch => {
     const res = await api(true).login(data);
     dispatch({ type: 'EXISTING_USER', payload: res.data.userData });
     localStorage.setItem('token', res.data.userData.token);
+
     return true;
   } catch (err) {
     dispatch({ type: 'AUTH_FAILED' });

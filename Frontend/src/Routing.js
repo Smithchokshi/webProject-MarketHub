@@ -26,6 +26,11 @@ const Routing = () => {
   const PrivateRoutes = [
     {
       export: true,
+      path: '/',
+      component: <Chat />,
+    },
+    {
+      export: true,
       path: '/chats',
       component: <Chat />,
     },

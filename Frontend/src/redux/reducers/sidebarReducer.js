@@ -1,6 +1,8 @@
 const initialState = {
   isCollapsed: false,
-  activatedSidebarKey: '1',
+  activatedSidebarKey: '',
+  sidebarData: [],
+  onlineUsers: [],
 };
 
 const SidebarReducer = (state = initialState, action) => {
@@ -16,6 +18,16 @@ const SidebarReducer = (state = initialState, action) => {
       return {
         ...state,
         activatedSidebarKey: payload,
+      };
+    case 'STORE_DATA':
+      return {
+        ...state,
+        sidebarData: payload,
+      };
+    case 'STORE_ONLINE_USERS':
+      return {
+        ...state,
+        onlineUsers: payload,
       };
     default:
       return state;

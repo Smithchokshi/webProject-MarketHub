@@ -1,31 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Avatar, Badge, Space } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { handleSidebarChange } from '../redux/actions/sidebarAction';
-import APIUtils from '../helpers/APIUtils';
-
-const api = msg => new APIUtils(msg);
+import { handleSidebarChange, handleSidebarData } from '../redux/actions/sidebarAction';
+import './sidebar.css';
 
 const { Sider } = Layout;
+const { Item } = Menu;
 
 const Sidebar = () => {
   const dispatch = useDispatch();
-  const [sidebar, setSidebar] = useState([]);
+  const { isCollapsed, activatedSidebarKey, sidebarData, onlineUsers } = useSelector(
+    state => state.sidebar
+  );
 
   const getAllUsers = async () => {
     try {
-      const res = await api(false).getAllChats();
-      const tempData = [];
-      res.data.allChats.map((e, index) => {
-        tempData.push({
-          key: index + 1,
-          icon: <UserOutlined />,
-          label: e.userDetails.name,
-          id: e.userDetails._id,
+      await dispatch(handleSidebarData(true, []));
+    } catch (e) {}
+  };
+
+  const storeOnlineUsers = async () => {
+    try {
+      if (onlineUsers.length > 0) {
+        const updatedSidebarData = sidebarData.map(item1 => {
+          const matchingItems = onlineUsers.find(item2 => item2.userId === item1.id);
+
+          if (matchingItems) {
+            return {
+              ...item1,
+              active: true,
+            };
+          }
+
+          return item1;
         });
-      });
-      setSidebar(tempData);
+
+        await dispatch(handleSidebarData(false, updatedSidebarData));
+      }
     } catch (e) {
       console.log(e);
     }
@@ -33,11 +45,15 @@ const Sidebar = () => {
 
   useEffect(() => {
     (async () => {
+      await storeOnlineUsers();
+    })();
+  }, [onlineUsers]);
+
+  useEffect(() => {
+    (async () => {
       await getAllUsers();
     })();
   }, []);
-
-  const { isCollapsed, activatedSidebarKey } = useSelector(state => state.sidebar);
 
   return (
     <Sider trigger={null} collapsible collapsed={isCollapsed}>
@@ -45,10 +61,19 @@ const Sidebar = () => {
       <Menu
         theme="dark"
         mode="inline"
-        defaultSelectedKeys={[activatedSidebarKey]}
+        selectedKeys={[activatedSidebarKey]}
         onClick={e => dispatch(handleSidebarChange(e.key))}
-        items={sidebar}
-      />
+      >
+        {sidebarData.length > 0 &&
+          sidebarData.map(e => (
+            <Item key={e.key}>
+              <span className="menu-item-text">
+                {e.label}
+                {e.active && <Badge status="success" />}
+              </span>
+            </Item>
+          ))}
+      </Menu>
     </Sider>
   );
 };

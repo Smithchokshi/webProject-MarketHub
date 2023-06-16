@@ -1,4 +1,5 @@
 const chatModel = require('../Models/chatModel');
+const { ObjectId } = require('mongodb');
 
 const createChat = async (req, res) => {
   try {
@@ -38,6 +39,7 @@ const createChat = async (req, res) => {
 const getUserChats = async (req, res) => {
   try {
     const userId = res.locals.user._id.toString();
+    const userObjectId = new ObjectId(userId);
 
     const allChats = await chatModel.aggregate([
       // Stage 1: Match the chats based on a condition (if needed)
@@ -77,8 +79,24 @@ const getUserChats = async (req, res) => {
       {
         $project: {
           _id: 0,
-          userDetails: { $arrayElemAt: ['$userDetails', 1] },
+          chatId: '$_id',
+          userDetails: {
+            $filter: {
+              input: '$userDetails',
+              as: 'user',
+              cond: { $ne: ['$$user._id', userObjectId] },
+            },
+          },
           members: '$members',
+        },
+      },
+      // Stage 7: Remove the password and token fields
+      {
+        $project: {
+          userDetails: {
+            password: 0,
+            token: 0,
+          },
         },
       },
     ]);
@@ -89,6 +107,7 @@ const getUserChats = async (req, res) => {
       message: 'Success',
     });
   } catch (e) {
+    console.log(e);
     res.status(500).json({
       message: e,
     });
