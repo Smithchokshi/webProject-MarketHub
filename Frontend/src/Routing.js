@@ -9,6 +9,7 @@ const Sidebar = lazy(() => import('./shared/sidebar'));
 const Login = lazy(() => import('./components/Login/login'));
 const Register = lazy(() => import('./components/Register/register'));
 const Product = lazy(() => import('./components/Product/product'));
+const ContactUs = lazy(() => import('./components/ContactUs/contactUs'));
 
 const { Content } = Layout;
 
@@ -25,6 +26,11 @@ const Routing = () => {
       path: '/register',
       component: <Register />,
     },
+    // {
+    //   export: true,
+    //   path: '/contact-us',
+    //   component: <ContactUs />,
+    // },
   ].filter(cur => cur);
 
   const PrivateRoutes = [
@@ -37,6 +43,11 @@ const Routing = () => {
       export: true,
       path: '/products',
       component: <Product />,
+    },
+    {
+      export: true,
+      path: '/contact-us',
+      component: <ContactUs />,
     },
     {
       export: true,
