@@ -1,0 +1,33 @@
+.dummy-container {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .dummy-card {
+    width: 100%;
+  }
+  
+  @media (max-width: 767px) {
+    .dummy-card {
+      width: 100%;
+    }
+  }
+  
+  @media (min-width: 768px) and (max-width: 991px) {
+    .dummy-card {
+      width: 50%;
+    }
+  }
+  
+  @media (min-width: 992px) and (max-width: 1199px) {
+    .dummy-card {
+      width: 33.33%;
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    .dummy-card {
+      width: 25%;
+    }
+  }
+  
