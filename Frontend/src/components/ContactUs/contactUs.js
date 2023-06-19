@@ -1,34 +1,36 @@
-import { Input, Button, Row, Col, Form } from "antd";
+import { Input, Button, Row, Col, Form } from 'antd';
 import Img2 from '../../assets/contact.png';
-import "./contactUs.css";
+import './contactUs.css';
 
 const { TextArea } = Input;
 
 const Contact = () => {
   return (
     <div className="bg-dark">
+      <div className="contact-us">
+        <h4 className="h4">Contact Us</h4>
+      </div>
       <Row justify="center" align="middle" className="contact-container">
         <Col xs={24} sm={12} md={12} lg={12} xl={12} xxl={12}>
           <div className="image-container">
             <img className="c-image" src={Img2} alt="" />
-          </div> 
+          </div>
         </Col>
         <Col xs={24} sm={12} md={12} lg={12} xl={12} xxl={12} className="form-details">
-          <div className="contact-us">
-            <h4 className="h4">Contact Us</h4>
-          </div>
           <Form
             labelCol={{
-              span: 4,
+              xs: { span: 24 },
+              sm: { span: 8 },
             }}
             wrapperCol={{
-              span: 14,
+              xs: { span: 24 },
+              sm: { span: 16 },
             }}
             layout="vertical"
             initialValues={{
               disabled: false,
             }}
-            onFinish={(values) => {
+            onFinish={values => {
               console.log(values);
             }}
             className="form-container"
@@ -55,6 +57,6 @@ const Contact = () => {
       </Row>
     </div>
   );
-}
+};
 
 export default Contact;

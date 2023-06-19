@@ -26,11 +26,6 @@ const Routing = () => {
       path: '/register',
       component: <Register />,
     },
-    // {
-    //   export: true,
-    //   path: '/contact-us',
-    //   component: <ContactUs />,
-    // },
   ].filter(cur => cur);
 
   const PrivateRoutes = [
@@ -43,11 +38,6 @@ const Routing = () => {
       export: true,
       path: '/products',
       component: <Product />,
-    },
-    {
-      export: true,
-      path: '/contact-us',
-      component: <ContactUs />,
     },
     {
       export: true,
@@ -88,6 +78,12 @@ const Routing = () => {
           <GlobalHeader />
           <Content style={{ padding: '24px', overflow: 'auto' }}>
             <Routes>
+              <Route
+                exact={true}
+                key={'/contact-us'}
+                path={'/contact-us'}
+                element={<ContactUs />}
+              />
               {PublicRoutes.map(route => (
                 <Route
                   exact={route.exact}
