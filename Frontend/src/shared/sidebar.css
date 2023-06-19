@@ -15,3 +15,8 @@
     width: 16px !important; /* Increase or decrease the value as needed */
     height: 16px !important; /* Increase or decrease the value as needed */
 }
+
+.menu-item-text {
+    font-weight: bold;
+    font-size: 16px;
+}

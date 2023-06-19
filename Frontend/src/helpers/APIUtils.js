@@ -107,6 +107,12 @@ class ApiUtils {
       url: '/message/sendMessage',
       data,
     });
+
+  getALlProducts = () =>
+    this.axios({
+      method: 'POST',
+      url: '/product/',
+    });
 }
 
 export default ApiUtils;
