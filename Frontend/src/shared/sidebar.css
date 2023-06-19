@@ -1,0 +1,22 @@
+.menu-item-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    background-color: green;
+    border-radius: 50%;
+    margin-left: 8px;
+}
+
+.ant-badge.ant-badge-status .ant-badge-status-dot {
+    width: 16px !important; /* Increase or decrease the value as needed */
+    height: 16px !important; /* Increase or decrease the value as needed */
+}
+
+.menu-item-text {
+    font-weight: bold;
+    font-size: 16px;
+}
