@@ -25,8 +25,9 @@ export const register = data => async dispatch => {
   try {
     const res = await api(true).register(data);
     dispatch({ type: 'EXISTING_USER', payload: res.data.userData });
-    await loadUser();
     localStorage.setItem('token', res.data.userData.token);
+    await loadUser();
+
     return true;
   } catch (e) {
     return false;
@@ -49,6 +50,7 @@ export const login = data => async dispatch => {
 export const logout = () => async dispatch => {
   try {
     dispatch({ type: 'AUTH_FAILED' });
+    localStorage.removeItem('token');
     return true;
   } catch (err) {
     return false;

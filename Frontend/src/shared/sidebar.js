@@ -64,6 +64,9 @@ const Sidebar = () => {
         selectedKeys={[activatedSidebarKey]}
         onClick={e => dispatch(handleSidebarChange(e.key))}
       >
+        <Item key="marketplace">
+          <span className="menu-item-text">Marketplace</span>
+        </Item>
         {sidebarData.length > 0 &&
           sidebarData.map(e => (
             <Item key={e.key}>

@@ -7,6 +7,7 @@ const authMiddleware = require('./Middleware/authMiddleware');
 const userRoute = require('./Routes/userRoute');
 const chatRoute = require('./Routes/chatRoute');
 const messageRoute = require('./Routes/messageRoute');
+const productRoute = require('./Routes/productRoute');
 
 const app = express();
 const server = http.createServer(app);
@@ -23,6 +24,7 @@ app.use(cors());
 app.use('/api/users', userRoute);
 app.use('/api/chats', authMiddleware, chatRoute);
 app.use('/api/message', authMiddleware, messageRoute);
+app.use('/api/product', authMiddleware, productRoute);
 app.get('/', (req, res) => {
   res.send('working');
 });

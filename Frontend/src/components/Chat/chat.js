@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Layout, Button, theme, List, Input } from 'antd';
 import { io } from 'socket.io-client';
 import { useSelector, useDispatch } from 'react-redux';
-import GlobalHeader from '../../shared/header';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
 import APIUtils from '../../helpers/APIUtils';
 import './chat.css';
@@ -124,7 +123,6 @@ const Chat = () => {
 
   return (
     <Layout>
-      <GlobalHeader />
       <Content style={{ padding: '24px' }}>
         <div
           className="chat-container"

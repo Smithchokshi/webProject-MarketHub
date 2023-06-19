@@ -33,7 +33,7 @@ const Login = () => {
   const handleSubmit = async () => {
     if (validator.allValid()) {
       await dispatch(login(fields));
-      navigate('/chats');
+      navigate('/');
     } else {
       validator.getErrorMessages();
       setValidator(true);

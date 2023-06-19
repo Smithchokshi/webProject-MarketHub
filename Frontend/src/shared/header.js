@@ -23,21 +23,48 @@ const GlobalHeader = () => {
   };
 
   return (
-    <Header style={{ padding: 0, background: colorBgContainer }}>
+    <Header
+      style={{
+        padding: 0,
+        background: colorBgContainer,
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Button
+          type="text"
+          icon={isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          onClick={() => dispatch(handleCollapse())}
+          style={{
+            fontSize: '16px',
+            width: 64,
+            height: 64,
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        />
+        <div style={{ marginLeft: '20px', display: 'flex', alignItems: 'center' }}>
+          <span style={{ marginRight: '20px' }}>Contact Us</span>
+          <span>FAQ</span>
+        </div>
+      </div>
       <Button
-        type="text"
-        icon={isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        onClick={() => dispatch(handleCollapse())}
+        type="primary"
+        onClick={handleLogout}
         style={{
-          fontSize: '16px',
-          width: 64,
-          height: 64,
+          height: '32px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginRight: '10px',
         }}
       >
-        {' '}
-        Chat History
+        Logout
       </Button>
-      <Button onClick={handleLogout}>Logout</Button>
     </Header>
   );
 };
