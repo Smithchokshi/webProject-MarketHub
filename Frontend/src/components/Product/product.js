@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { LikeOutlined, ShareAltOutlined, CommentOutlined } from '@ant-design/icons';
-import { Avatar, Card, Row, Col, Rate, Layout } from 'antd';
+import { Avatar, Card, Row, Col, Rate } from 'antd';
 import APIUtils from '../../helpers/APIUtils';
 import './product.css';
 
 const { Meta } = Card;
 const api = msg => new APIUtils(msg);
-
-const { Content } = Layout;
 
 const Product = () => {
   const [cardData, setCardData] = useState([]);
