@@ -20,17 +20,17 @@ const Routing = () => {
   const PublicRoutes = [
     {
       export: true,
+      path: '/',
+      component: <Login />,
+    },
+    {
+      export: true,
       path: '/login',
       component: <Login />,
     },
   ].filter(cur => cur);
 
   const PrivateRoutes = [
-    {
-      export: true,
-      path: '/',
-      component: <Product />,
-    },
     {
       export: true,
       path: '/products',
@@ -48,7 +48,7 @@ const Routing = () => {
   };
 
   const PublicRoute = ({ children }) => {
-    return isAuthenticated ? navigate('/', { replace: true }) : children;
+    return isAuthenticated ? navigate('/products', { replace: true }) : children;
   };
 
   return (

@@ -94,7 +94,15 @@ const Sidebar = () => {
           sidebarData.map(e => (
             <Item key={e.key} onClick={() => changeSidebar(e)} className="menu-item-wrapper">
               {isCollapsed ? (
-                <Tooltip placement="right" title={e.label}>
+                <Tooltip
+                  placement="right"
+                  title={
+                    <span className="menu-item-text">
+                      {e.label}
+                      {e.active && <Badge status="success" />}
+                    </span>
+                  }
+                >
                   <span className="menu-item-text">
                     <UserOutlined />
                   </span>

@@ -36,7 +36,7 @@ const Login = () => {
     if (validator.allValid()) {
       await dispatch(login(fields));
       setLoading(false);
-      navigate('/');
+      navigate('/products');
     } else {
       setLoading(false);
       validator.getErrorMessages();
