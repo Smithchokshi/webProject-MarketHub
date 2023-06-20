@@ -1,8 +1,9 @@
 import React, { Suspense, lazy } from 'react';
-import { Route, Navigate, Routes } from 'react-router-dom';
+import { Route, useNavigate, Routes } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Layout } from 'antd';
 import GlobalHeader from './shared/header';
+import Loader from './shared/loader';
 
 const Chat = lazy(() => import('./components/Chat/chat'));
 const Sidebar = lazy(() => import('./shared/sidebar'));
@@ -16,6 +17,7 @@ const { Content } = Layout;
 
 const Routing = () => {
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+  const navigate = useNavigate();
   const PublicRoutes = [
     {
       export: true,
@@ -48,15 +50,15 @@ const Routing = () => {
   ].filter(cur => cur);
 
   const PrivateRoute = ({ children }) => {
-    return isAuthenticated ? children : <Navigate to="/login" replace={true} />;
+    return isAuthenticated ? children : navigate('/login', { replace: true });
   };
 
   const PublicRoute = ({ children }) => {
-    return isAuthenticated ? <Navigate to="/" replace={true} /> : children;
+    return isAuthenticated ? navigate('/', { replace: true }) : children;
   };
 
   return (
-    <Suspense className="loader">
+    <Suspense className="loader" fallback={<Loader />}>
       <Layout style={{ minHeight: '100vh', display: 'flex' }}>
         {isAuthenticated && <Sidebar style={{ backgroundColor: '#f0f0f0' }} />}
         <Layout style={{ flex: 1, overflow: 'hidden' }}>
@@ -69,12 +71,7 @@ const Routing = () => {
                 path={'/contact-us'}
                 element={<ContactUs />}
               />
-              <Route
-                exact={true}
-                key={'/faq'}
-                path={'/faq'}
-                element={<Faq />}
-              />
+              <Route exact={true} key={'/faq'} path={'/faq'} element={<Faq />} />
               {PublicRoutes.map(route => (
                 <Route
                   exact={route.exact}

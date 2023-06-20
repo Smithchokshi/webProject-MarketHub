@@ -1,81 +1,60 @@
-#components-collapse-demo-collapsible .ant-space {
-    width: 100%;
-  }
+.faq-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
 
-  .faq-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
+.h1 {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
 
+.c-image {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  margin-bottom: 16px;
+}
+
+.custom-panel {
+  margin-bottom: 16px;
+}
+
+.custom-panel .ant-collapse-content {
+  background-color: #f5f5f5 !important;
+  border: 1px solid #ccc !important;
+  border-top: none !important;
+  border-radius: 0 0 4px 4px !important;
+}
+
+.custom-panel .ant-collapse-content > .ant-collapse-content-box {
+  background-color: #fff !important;
+  padding: 16px !important;
+}
+
+.custom-panel .ant-collapse-header {
+  background-color: #91d5ff !important;
+  border: 1px solid #ccc !important;
+}
+
+
+.custom-panel .ant-collapse-content {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+}
+
+
+.p {
+  margin-top: 16px;
+}
+
+@media (max-width: 767px) {
   .h1 {
     font-size: 20px;
   }
-
-  .p {
-    font-size: 20px;
-  }
-/* Add custom styles for the Collapse component */
-.ant-collapse {
-    background-color: transparent; /* Remove the default gray background */
-  }
-  
-  /* Add custom styles for the Collapse.Panel component */
-  .ant-collapse .ant-collapse-item {
-    background-color: transparent; /* Remove the default gray background */
-  }
-  
-  /* Add custom styles for the Collapse.Panel header */
-  .ant-collapse .ant-collapse-header {
-    background-color: #e6f7ff; /* Set a background color for the panel header */
-    border-color: #91d5ff; /* Set a border color for the panel header */
-    color: #1890ff; /* Set a text color for the panel header */
-  }
-  
-  /* Add custom styles for the Collapse.Panel content */
-  .ant-collapse .ant-collapse-content {
-    border-color: #91d5ff; /* Set a border color for the panel content */
-  }
-
-  /* Equivalent CSS styles for customPanelStyle object */
-.custom-panel {
-    background-color: #f7f7f7;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 12px;
-  }
-
-  /* Equivalent CSS styles */
-.custom-panel {
-    background-color: #f7f7f7;
-    border: 2px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 12px;
-  }
-  
-  .custom-panel .ant-collapse-header {
-    font-weight: bold; /* Make the label text bold */
-    font-size: 16px;
-  }
-  
-  .custom-panel p {
-    font-size: 16px; /* Increase the text size of <p> tag */
-  }
-  
-  @media screen and (max-width: 767px) {
-    .form-container {
-      max-width: 100%;
-    }
-    .contact-container {
-      flex-direction: column;
-      margin-bottom: 20px; /* Add margin-bottom for spacing between sections */
-    }
-    .image-container {
-      margin-right: 0; /* Remove margin-right on smaller screens */
-      margin-bottom: 20px; /* Add margin-bottom for spacing between sections */
-    }
-  }
-  
-  
-  
+}
