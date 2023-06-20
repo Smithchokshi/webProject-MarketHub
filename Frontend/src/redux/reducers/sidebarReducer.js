@@ -1,6 +1,6 @@
 const initialState = {
   isCollapsed: false,
-  activatedSidebarKey: '',
+  activatedSidebarKey: { key: 'marketplace' },
   sidebarData: [],
   onlineUsers: [],
 };

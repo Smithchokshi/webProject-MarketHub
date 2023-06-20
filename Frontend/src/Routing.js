@@ -47,27 +47,11 @@ const Routing = () => {
   ].filter(cur => cur);
 
   const PrivateRoute = ({ children }) => {
-    return isAuthenticated ? (
-      children
-    ) : (
-      <Navigate
-        to={{
-          pathname: '/login',
-        }}
-      />
-    );
+    return isAuthenticated ? children : <Navigate to="/login" replace={true} />;
   };
 
   const PublicRoute = ({ children }) => {
-    return isAuthenticated ? (
-      <Navigate
-        to={{
-          pathname: '/',
-        }}
-      />
-    ) : (
-      children
-    );
+    return isAuthenticated ? <Navigate to="/" replace={true} /> : children;
   };
 
   return (
