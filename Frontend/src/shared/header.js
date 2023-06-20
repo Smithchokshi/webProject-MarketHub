@@ -57,7 +57,7 @@ const GlobalHeader = () => {
               >
                 Contact Us
               </span>
-              <span>FAQ</span>
+                <span style={{ marginRight: '20px' }} role='presentation' onClick={() => navigate('/faq')}>FAQ</span>
             </>
           ) : (
             <span>{activatedSidebarKey.label}</span>
