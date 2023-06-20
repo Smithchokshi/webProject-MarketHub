@@ -76,7 +76,9 @@ const Login = () => {
                 onChange={e => handleChange(e, 'email')}
                 autoComplete="new-password"
               />
-              {validator.message('Email', fields.email, 'required|email')}
+              <div className={validator.errorMessages.email ? 'error-message' : ''}>
+                {validator.message('Email', fields.email, 'required|email')}
+              </div>
             </Form.Item>
 
             <Form.Item label="Password" name="password">
@@ -86,7 +88,9 @@ const Login = () => {
                 onChange={e => handleChange(e, 'password')}
                 autoComplete="new-password"
               />
-              {validator.message('Password', fields.password, 'required')}
+              <div className={validator.errorMessages.password ? 'error-message' : ''}>
+                {validator.message('Password', fields.password, 'required')}
+              </div>
             </Form.Item>
 
             <Form.Item

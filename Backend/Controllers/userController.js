@@ -80,7 +80,7 @@ const loginUser = async (req, res) => {
     user = await userModel.findOneAndUpdate({ _id: user._id }, { token: token }, { new: true });
 
     res.status(200).json({
-      message: 'Registered successfully',
+      message: 'Login successfully',
       userData: {
         _id: user._id,
         token,
