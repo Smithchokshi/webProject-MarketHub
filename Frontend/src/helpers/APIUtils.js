@@ -8,7 +8,7 @@ const TOKEN_NAME = process.env.REACT_APP_TOKEN_NAME;
 class ApiUtils {
   constructor(message = false, request = true, appendAuth = true, response = true) {
     this.axios = axios.create({
-      baseURL: 'https://markethub-a2gl.onrender.com:5005/api',
+      baseURL: 'https://markethub-a2gl.onrender.com/api',
     });
 
     if (request) {
