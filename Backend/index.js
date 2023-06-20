@@ -26,7 +26,7 @@ app.use('/api/users', userRoute);
 app.use('/api/chats', authMiddleware, chatRoute);
 app.use('/api/message', authMiddleware, messageRoute);
 app.use('/api/product', authMiddleware, productRoute);
-app.use('api/contact-us', contactusRoute);
+app.use('/api/contact-us', contactusRoute);
 app.get('/', (req, res) => {
   res.send('working');
 });

@@ -3,6 +3,6 @@ const { SetContactDetails } = require('../Controllers/contactUsController');
 
 const router = express.Router();
 
-router.post('/contact-us', SetContactDetails);
+router.post('/', SetContactDetails);
 
 module.exports = router;
