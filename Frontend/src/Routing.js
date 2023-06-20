@@ -8,7 +8,6 @@ import Loader from './shared/loader';
 const Chat = lazy(() => import('./components/Chat/chat'));
 const Sidebar = lazy(() => import('./shared/sidebar'));
 const Login = lazy(() => import('./components/Login/login'));
-const Register = lazy(() => import('./components/Register/register'));
 const Product = lazy(() => import('./components/Product/product'));
 const ContactUs = lazy(() => import('./components/ContactUs/contactUs'));
 const Faq = lazy(() => import('./components/FAQ/FAQ'));
@@ -23,11 +22,6 @@ const Routing = () => {
       export: true,
       path: '/login',
       component: <Login />,
-    },
-    {
-      export: true,
-      path: '/register',
-      component: <Register />,
     },
   ].filter(cur => cur);
 

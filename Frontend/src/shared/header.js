@@ -12,6 +12,7 @@ const GlobalHeader = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isCollapsed, activatedSidebarKey } = useSelector(state => state.sidebar);
+  const { isAuthenticated } = useSelector(state => state.auth);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -34,19 +35,21 @@ const GlobalHeader = () => {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Button
-          type="text"
-          icon={isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-          onClick={() => dispatch(handleCollapse())}
-          style={{
-            fontSize: '16px',
-            width: 64,
-            height: 64,
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        />
+        {isAuthenticated && (
+          <Button
+            type="text"
+            icon={isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => dispatch(handleCollapse())}
+            style={{
+              fontSize: '16px',
+              width: 64,
+              height: 64,
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          />
+        )}
         <div style={{ marginLeft: '20px', display: 'flex', alignItems: 'center' }}>
           {activatedSidebarKey.key === 'marketplace' ? (
             <>
@@ -70,19 +73,35 @@ const GlobalHeader = () => {
           )}
         </div>
       </div>
-      <Button
-        type="primary"
-        onClick={handleLogout}
-        style={{
-          height: '32px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginRight: '10px',
-        }}
-      >
-        Logout
-      </Button>
+      {isAuthenticated ? (
+        <Button
+          type="primary"
+          onClick={handleLogout}
+          style={{
+            height: '32px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginRight: '10px',
+          }}
+        >
+          Logout
+        </Button>
+      ) : (
+        <Button
+          type="primary"
+          onClick={() => navigate('/login')}
+          style={{
+            height: '32px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginRight: '10px',
+          }}
+        >
+          Login
+        </Button>
+      )}
     </Header>
   );
 };

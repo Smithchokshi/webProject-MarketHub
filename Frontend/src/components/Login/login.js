@@ -96,7 +96,6 @@ const Login = () => {
               </Button>
             </Form.Item>
           </Form>
-          <p onClick={() => navigate('/register')}>Sign Up</p>
         </div>
       </Content>
     </Layout>
