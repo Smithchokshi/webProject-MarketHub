@@ -16,6 +16,7 @@ const Login = () => {
     token: { colorBgContainer },
   } = theme.useToken();
 
+  const [loading, setLoading] = useState(false);
   const [fields, setFields] = useState({
     email: null,
     password: null,
@@ -31,10 +32,13 @@ const Login = () => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     if (validator.allValid()) {
       await dispatch(login(fields));
+      setLoading(false);
       navigate('/');
     } else {
+      setLoading(false);
       validator.getErrorMessages();
       setValidator(true);
     }
@@ -91,8 +95,8 @@ const Login = () => {
                 span: 16,
               }}
             >
-              <Button type="primary" htmlType="submit" onClick={handleSubmit}>
-                Submit
+              <Button type="primary" htmlType="submit" onClick={handleSubmit} loading={loading}>
+                Log in
               </Button>
             </Form.Item>
           </Form>
