@@ -30,14 +30,14 @@ const Chat = () => {
   const handleSubmit = async () => {
     if (validator.allValid()) {
       const data = {
-        chatId: activatedSidebarKey,
+        chatId: activatedSidebarKey.key,
         senderId: user,
         content: message,
       };
 
       if (socket === null) return;
 
-      const [recipient] = sidebarData.filter(cur => cur.key === activatedSidebarKey);
+      const [recipient] = sidebarData.filter(cur => cur.key === activatedSidebarKey.key);
       socket.emit('sendMessage', { content: message, recipient });
       setListener(!listenNewMessage);
       setMessage('');
@@ -53,7 +53,7 @@ const Chat = () => {
   const getMessages = async () => {
     try {
       const data = {
-        chatId: activatedSidebarKey,
+        chatId: activatedSidebarKey.key,
       };
 
       const res = await api().getAllMessages(data);
@@ -97,7 +97,7 @@ const Chat = () => {
     if (socket === null) return;
 
     const handleMessageReceived = res => {
-      if (activatedSidebarKey !== res.recipient.key) return;
+      if (activatedSidebarKey.key !== res.recipient.key) return;
 
       setAllMessages(prev => [...prev, res]);
     };
@@ -107,13 +107,13 @@ const Chat = () => {
     return () => {
       socket.off('getMessage', handleMessageReceived);
     };
-  }, [socket, activatedSidebarKey, listenNewMessage]);
+  }, [socket, activatedSidebarKey.key, listenNewMessage]);
 
   useEffect(() => {
     (async () => {
       await getMessages();
     })();
-  }, [user, activatedSidebarKey]);
+  }, [user, activatedSidebarKey.key]);
 
   useEffect(() => {
     // Scroll to the bottom of the messages container

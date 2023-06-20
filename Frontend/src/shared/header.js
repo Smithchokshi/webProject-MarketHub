@@ -11,7 +11,7 @@ const { Header } = Layout;
 const GlobalHeader = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isCollapsed } = useSelector(state => state.sidebar);
+  const { isCollapsed, activatedSidebarKey } = useSelector(state => state.sidebar);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -48,8 +48,20 @@ const GlobalHeader = () => {
           }}
         />
         <div style={{ marginLeft: '20px', display: 'flex', alignItems: 'center' }}>
-          <span style={{ marginRight: '20px' }} role='presentation' onClick={() => navigate('/contact-us')}>Contact Us</span>
-          <span style={{ marginRight: '20px' }} role='presentation' onClick={() => navigate('/faq')}>FAQ</span>
+          {activatedSidebarKey.key === 'marketplace' ? (
+            <>
+              <span
+                style={{ marginRight: '20px' }}
+                role="presentation"
+                onClick={() => navigate('/contact-us')}
+              >
+                Contact Us
+              </span>
+                <span style={{ marginRight: '20px' }} role='presentation' onClick={() => navigate('/faq')}>FAQ</span>
+            </>
+          ) : (
+            <span>{activatedSidebarKey.label}</span>
+          )}
         </div>
       </div>
       <Button

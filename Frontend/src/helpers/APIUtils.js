@@ -88,6 +88,13 @@ class ApiUtils {
       url: '/users',
     });
 
+  createChat = data =>
+    this.axios({
+      method: 'POST',
+      url: '/chats/',
+      data,
+    });
+
   getAllChats = () =>
     this.axios({
       method: 'GET',

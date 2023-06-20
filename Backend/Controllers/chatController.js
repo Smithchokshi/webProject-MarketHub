@@ -1,14 +1,23 @@
 const chatModel = require('../Models/chatModel');
+const productModel = require('../Models/productModel');
 const { ObjectId } = require('mongodb');
 
 const createChat = async (req, res) => {
   try {
     const firstId = res.locals.user._id.toString();
-    const { secondId } = req.body;
+    const { secondId, productId } = req.body;
+
+    const objectProductId = new ObjectId(productId);
+
+    const productDetails = await productModel.findById(objectProductId);
+
+    console.log(productDetails);
 
     const chat = await chatModel.findOne({
-      members: { $all: [firstId, secondId] },
+      productId,
     });
+
+    console.log('chat', chat);
 
     if (chat)
       return res.status(200).json({
@@ -19,9 +28,21 @@ const createChat = async (req, res) => {
 
     const newChat = new chatModel({
       members: [firstId, secondId],
+      productName: productDetails.productName,
+      productId: productId,
     });
 
     const response = await newChat.save();
+
+    await productModel.updateOne(
+      { _id: productId },
+      {
+        $set: {
+          isChatCreated: true,
+          chatId: response._id.toString(),
+        },
+      }
+    );
 
     res.status(200).json({
       status: 200,
@@ -73,6 +94,8 @@ const getUserChats = async (req, res) => {
           _id: '$_id',
           members: { $push: '$members' },
           userDetails: { $push: { $arrayElemAt: ['$userDetails', 0] } },
+          productId: { $first: '$productId' },
+          productName: { $first: '$productName' },
         },
       },
       // Stage 6: Project only the details of the second user
@@ -80,6 +103,8 @@ const getUserChats = async (req, res) => {
         $project: {
           _id: 0,
           chatId: '$_id',
+          productId: 1,
+          productName: 1,
           userDetails: {
             $filter: {
               input: '$userDetails',

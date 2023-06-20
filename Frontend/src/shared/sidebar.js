@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { UserOutlined } from '@ant-design/icons';
-import { Layout, Menu, Avatar, Badge, Space } from 'antd';
+import { Layout, Menu, Avatar, Badge, Space, Divider } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { handleSidebarChange, handleSidebarData } from '../redux/actions/sidebarAction';
 import './sidebar.css';
 
@@ -10,6 +10,7 @@ const { Item } = Menu;
 
 const Sidebar = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { isCollapsed, activatedSidebarKey, sidebarData, onlineUsers } = useSelector(
     state => state.sidebar
   );
@@ -43,6 +44,16 @@ const Sidebar = () => {
     }
   };
 
+  const changeSidebar = async e => {
+    try {
+      await dispatch(handleSidebarChange(e));
+      if (e.key === 'marketplace') navigate('/');
+      else navigate('/chats');
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
     (async () => {
       await storeOnlineUsers();
@@ -58,18 +69,18 @@ const Sidebar = () => {
   return (
     <Sider trigger={null} collapsible collapsed={isCollapsed}>
       <div className="demo-logo-vertical" />
-      <Menu
-        theme="dark"
-        mode="inline"
-        selectedKeys={[activatedSidebarKey]}
-        onClick={e => dispatch(handleSidebarChange(e.key))}
-      >
-        <Item key="marketplace">
+      <Menu theme="dark" mode="inline" selectedKeys={[activatedSidebarKey.key]}>
+        <Item
+          key="marketplace"
+          onClick={e => changeSidebar(e)}
+          className="menu-item-wrapper markethub-item"
+        >
           <span className="menu-item-text">MarketHub</span>
         </Item>
+        <Divider className="sidebar-divider" />
         {sidebarData.length > 0 &&
           sidebarData.map(e => (
-            <Item key={e.key}>
+            <Item key={e.key} onClick={() => changeSidebar(e)} className="menu-item-wrapper">
               <span className="menu-item-text">
                 {e.label}
                 {e.active && <Badge status="success" />}

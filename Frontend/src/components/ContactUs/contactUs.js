@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Input, Button, Row, Col, Form } from 'antd';
 import { useState } from 'react';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
@@ -10,19 +10,28 @@ import './contactUs.css';
 const { TextArea } = Input;
 const api = msg => new APIUtils(msg);
 
+const initialState = {
+  fname: '',
+  lname: '',
+  email: '',
+  textArea: '',
+};
+
 const Contact = () => {
   const dispatch = useDispatch();
-  const [fields, setFields] = useState({
-    fname: '',
-    lname: '',
-    email: '',
-    textArea: '',
-  });
+  const [fields, setFields] = useState(initialState);
+
+  const resetForm = () => {
+    setFields(initialState);
+    setValidator(false);
+  };
 
   const setData = async () => {
     try {
-      console.log("In setData: " + fields)
+      console.log('In setData: ' + fields);
       await api(true).setContactUs(fields);
+
+      resetForm();
     } catch (e) {
       console.log(e);
     }
@@ -37,9 +46,9 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = async (fields) => {
+  const handleSubmit = async fields => {
     if (validator.allValid()) {
-      console.log("In handleSubmit: " + fields)
+      console.log('In handleSubmit: ' + fields);
       await setData(fields);
     } else {
       validator.getErrorMessages();
@@ -72,10 +81,10 @@ const Contact = () => {
             initialValues={{
               disabled: false,
             }}
-            onFinish={handleSubmit}
+            // onFinish={handleSubmit}
             className="form-container"
           >
-            <Form.Item className='form-item' label="First Name" name="fname" required>
+            <Form.Item className="form-item" label="First Name" required>
               <Input
                 type="text"
                 placeholder="First Name"
@@ -84,9 +93,9 @@ const Contact = () => {
                 autoComplete="new-password"
                 className="input-border"
               />
-              {validator.message('First Name', fields.fname, 'required|LName')}
+              {validator.message('First Name', fields.fname, 'required')}
             </Form.Item>
-            <Form.Item className='form-item' label="Last Name" name="lname" required>
+            <Form.Item className="form-item" label="Last Name" required>
               <Input
                 type="text"
                 placeholder="Last Name"
@@ -95,9 +104,9 @@ const Contact = () => {
                 autoComplete="new-password"
                 className="input-border"
               />
-              {validator.message('Last Name', fields.fname, 'required|LName')}
+              {validator.message('Last Name', fields.fname, 'required')}
             </Form.Item>
-            <Form.Item className='form-item' label="Email" name="email" required>
+            <Form.Item className="form-item" label="Email" required>
               <Input
                 type="text"
                 placeholder="Email"
@@ -108,7 +117,7 @@ const Contact = () => {
               />
               {validator.message('Email', fields.email, 'required|email')}
             </Form.Item>
-            <Form.Item className='form-item' label="Contact Reason" name="textArea" required>
+            <Form.Item className="form-item" label="Contact Reason" required>
               <TextArea
                 rows={4}
                 placeholder="Contact Reason"
@@ -116,10 +125,10 @@ const Contact = () => {
                 onChange={e => handleChange(e, 'textArea')}
                 className="textarea-border"
               />
-              {validator.message('Contact Reason', fields.textArea, 'required|textArea')}
+              {validator.message('Contact Reason', fields.textArea, 'required')}
             </Form.Item>
             <Form.Item>
-              <Button className="button" type="primary" htmlType="submit">
+              <Button className="button" type="primary" htmlType="submit" onClick={handleSubmit}>
                 <b>Submit</b>
               </Button>
             </Form.Item>
