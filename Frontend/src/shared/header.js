@@ -51,13 +51,19 @@ const GlobalHeader = () => {
           {activatedSidebarKey.key === 'marketplace' ? (
             <>
               <span
-                style={{ marginRight: '20px' }}
+                style={{ marginRight: '20px', cursor: 'pointer' }}
                 role="presentation"
                 onClick={() => navigate('/contact-us')}
               >
                 Contact Us
               </span>
-                <span style={{ marginRight: '20px' }} role='presentation' onClick={() => navigate('/faq')}>FAQ</span>
+              <span
+                style={{ marginRight: '20px', cursor: 'pointer' }}
+                role="presentation"
+                onClick={() => navigate('/faq')}
+              >
+                FAQ
+              </span>
             </>
           ) : (
             <span>{activatedSidebarKey.label}</span>
