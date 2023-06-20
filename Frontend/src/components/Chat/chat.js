@@ -69,7 +69,7 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    const newSocket = io('http://localhost:5005');
+    const newSocket = io('https://main--super-mousse-9067aa.netlify.app:5005');
     setSocket(newSocket);
 
     return () => {
