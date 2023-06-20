@@ -1,5 +1,4 @@
 import ApiUtils from '../../helpers/APIUtils';
-import { UserOutlined } from '@ant-design/icons';
 
 const api = msg => new ApiUtils(msg);
 
@@ -29,12 +28,11 @@ export const handleSidebarData = (callAPI, data) => async dispatch => {
       res.data.allChats.map((e, index) => {
         tempData.push({
           key: e.chatId,
-          label: e.userDetails[0].name,
+          label: `${e.userDetails[0].name} - ${e.productName}`,
           id: e.userDetails[0]._id,
           active: false,
         });
       });
-      await dispatch({ type: 'CHANGE_SIDEBAR', payload: tempData[0].key });
     }
     await dispatch({ type: 'STORE_DATA', payload: tempData });
 

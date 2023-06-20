@@ -1,6 +1,15 @@
-.menu-item-wrapper {
-    display: flex;
-    align-items: center;
+.menu-item-wrapper.markethub-item {
+    font-weight: bold;
+}
+
+.menu-item-text {
+    font-size: 16px;
+}
+
+.sidebar-divider {
+    margin: 12px 0;
+    height: 1px;
+    background-color: #e8e8e8;
 }
 
 .status-indicator {
@@ -12,11 +21,6 @@
 }
 
 .ant-badge.ant-badge-status .ant-badge-status-dot {
-    width: 16px !important; /* Increase or decrease the value as needed */
-    height: 16px !important; /* Increase or decrease the value as needed */
-}
-
-.menu-item-text {
-    font-weight: bold;
-    font-size: 16px;
+    width: 16px !important;
+    height: 16px !important;
 }
