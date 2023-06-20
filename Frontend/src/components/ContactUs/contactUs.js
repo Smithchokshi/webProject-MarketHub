@@ -1,10 +1,52 @@
+import React from 'react';
 import { Input, Button, Row, Col, Form } from 'antd';
+import { useState } from 'react';
+import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
 import Img2 from '../../assets/contact.png';
+import { useDispatch } from 'react-redux';
+import APIUtils from '../../helpers/APIUtils';
 import './contactUs.css';
 
 const { TextArea } = Input;
+const api = msg => new APIUtils(msg);
 
 const Contact = () => {
+  const dispatch = useDispatch();
+  const [fields, setFields] = useState({
+    fname: '',
+    lname: '',
+    email: '',
+    textArea: '',
+  });
+
+  const setData = async () => {
+    try {
+      console.log("In setData: " + fields)
+      await api(true).setContactUs(fields);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const [validator, setValidator] = useSimpleReactValidator();
+
+  const handleChange = (e, field) => {
+    setFields(prev => ({
+      ...prev,
+      [field]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async (fields) => {
+    if (validator.allValid()) {
+      console.log("In handleSubmit: " + fields)
+      await setData(fields);
+    } else {
+      validator.getErrorMessages();
+      setValidator(true);
+    }
+  };
+
   return (
     <div className="bg-dark">
       <div className="contact-us">
@@ -30,26 +72,55 @@ const Contact = () => {
             initialValues={{
               disabled: false,
             }}
-            onFinish={values => {
-              console.log(values);
-            }}
+            onFinish={handleSubmit}
             className="form-container"
           >
-            <Form.Item label="First Name" name="fname">
-              <Input />
+            <Form.Item className='form-item' label="First Name" name="fname" required>
+              <Input
+                type="text"
+                placeholder="First Name"
+                value={fields.fname}
+                onChange={e => handleChange(e, 'fname')}
+                autoComplete="new-password"
+                className="input-border"
+              />
+              {validator.message('First Name', fields.fname, 'required|LName')}
             </Form.Item>
-            <Form.Item label="Last Name" name="lname">
-              <Input />
+            <Form.Item className='form-item' label="Last Name" name="lname" required>
+              <Input
+                type="text"
+                placeholder="Last Name"
+                value={fields.lname}
+                onChange={e => handleChange(e, 'lname')}
+                autoComplete="new-password"
+                className="input-border"
+              />
+              {validator.message('Last Name', fields.fname, 'required|LName')}
             </Form.Item>
-            <Form.Item label="Email" name="email">
-              <Input />
+            <Form.Item className='form-item' label="Email" name="email" required>
+              <Input
+                type="text"
+                placeholder="Email"
+                value={fields.email}
+                onChange={e => handleChange(e, 'email')}
+                autoComplete="new-password"
+                className="input-border"
+              />
+              {validator.message('Email', fields.email, 'required|email')}
             </Form.Item>
-            <Form.Item label="TextArea" name="textArea">
-              <TextArea rows={4} />
+            <Form.Item className='form-item' label="Contact Reason" name="textArea" required>
+              <TextArea
+                rows={4}
+                placeholder="Contact Reason"
+                value={fields.textArea}
+                onChange={e => handleChange(e, 'textArea')}
+                className="textarea-border"
+              />
+              {validator.message('Contact Reason', fields.textArea, 'required|textArea')}
             </Form.Item>
             <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Submit
+              <Button className="button" type="primary" htmlType="submit">
+                <b>Submit</b>
               </Button>
             </Form.Item>
           </Form>

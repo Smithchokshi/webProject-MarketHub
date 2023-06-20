@@ -10,6 +10,7 @@ const Login = lazy(() => import('./components/Login/login'));
 const Register = lazy(() => import('./components/Register/register'));
 const Product = lazy(() => import('./components/Product/product'));
 const ContactUs = lazy(() => import('./components/ContactUs/contactUs'));
+const Faq = lazy(() => import('./components/FAQ/FAQ'));
 
 const { Content } = Layout;
 
@@ -83,6 +84,12 @@ const Routing = () => {
                 key={'/contact-us'}
                 path={'/contact-us'}
                 element={<ContactUs />}
+              />
+              <Route
+                exact={true}
+                key={'/faq'}
+                path={'/faq'}
+                element={<Faq />}
               />
               {PublicRoutes.map(route => (
                 <Route

@@ -49,7 +49,7 @@ const GlobalHeader = () => {
         />
         <div style={{ marginLeft: '20px', display: 'flex', alignItems: 'center' }}>
           <span style={{ marginRight: '20px' }} role='presentation' onClick={() => navigate('/contact-us')}>Contact Us</span>
-          <span>FAQ</span>
+          <span style={{ marginRight: '20px' }} role='presentation' onClick={() => navigate('/faq')}>FAQ</span>
         </div>
       </div>
       <Button

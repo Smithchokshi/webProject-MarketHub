@@ -113,6 +113,13 @@ class ApiUtils {
       method: 'POST',
       url: '/product/',
     });
+
+  setContactUs = data =>
+    this.axios({
+      method: 'POST',
+      url: '/contact-us',
+      data,
+    });
 }
 
 export default ApiUtils;
