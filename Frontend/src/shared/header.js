@@ -19,7 +19,7 @@ const GlobalHeader = () => {
 
   const handleLogout = async () => {
     const data = {
-      activatedSidebarKey: 'marketplace',
+      key: 'marketplace',
     };
     await dispatch(logout());
     await dispatch(handleSidebarChange(data));
