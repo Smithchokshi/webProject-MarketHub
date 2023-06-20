@@ -3,7 +3,7 @@ import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { Layout, Button, theme } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { handleCollapse } from '../redux/actions/sidebarAction';
+import { handleCollapse, handleSidebarChange } from '../redux/actions/sidebarAction';
 import { logout } from '../redux/actions/authActions';
 
 const { Header } = Layout;
@@ -18,7 +18,11 @@ const GlobalHeader = () => {
   } = theme.useToken();
 
   const handleLogout = async () => {
+    const data = {
+      activatedSidebarKey: 'marketplace',
+    };
     await dispatch(logout());
+    await dispatch(handleSidebarChange(data));
     localStorage.removeItem('token');
     navigate('/login');
   };
