@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, Menu, Avatar, Badge, Space, Divider } from 'antd';
+import { Layout, Menu, Avatar, Badge, Space, Divider, Tooltip } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { handleSidebarChange, handleSidebarData } from '../redux/actions/sidebarAction';
+import LOGO from '../assets/light-logo.svg';
 import './sidebar.css';
+import { UserOutlined } from '@ant-design/icons';
 
 const { Sider } = Layout;
 const { Item } = Menu;
@@ -75,16 +77,34 @@ const Sidebar = () => {
           onClick={e => changeSidebar(e)}
           className="menu-item-wrapper markethub-item"
         >
-          <span className="menu-item-text">MarketHub</span>
+          {isCollapsed ? (
+            <span className="menu-item-text">
+              <img src={LOGO} alt="Logo" className="logo-image" />
+            </span>
+          ) : (
+            <div className="menu-item-text">
+              <img src={LOGO} alt="Logo" className="logo-image" />
+              MarketHub
+            </div>
+          )}
         </Item>
+
         <Divider className="sidebar-divider" />
         {sidebarData.length > 0 &&
           sidebarData.map(e => (
             <Item key={e.key} onClick={() => changeSidebar(e)} className="menu-item-wrapper">
-              <span className="menu-item-text">
-                {e.label}
-                {e.active && <Badge status="success" />}
-              </span>
+              {isCollapsed ? (
+                <Tooltip placement="right" title={e.label}>
+                  <span className="menu-item-text">
+                    <UserOutlined />
+                  </span>
+                </Tooltip>
+              ) : (
+                <span className="menu-item-text">
+                  {e.label}
+                  {e.active && <Badge status="success" />}
+                </span>
+              )}
             </Item>
           ))}
       </Menu>

@@ -69,7 +69,7 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    const newSocket = io('https://markethub-a2gl.onrender.com');
+    const newSocket = io(process.env.REACT_APP_API_URL);
     setSocket(newSocket);
 
     return () => {

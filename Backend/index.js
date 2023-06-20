@@ -13,7 +13,7 @@ const contactusRoute = require('./Routes/contactUsRoute');
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server, {
-  cors: 'https://main--charming-alpaca-c6a290.netlify.app',
+  cors: process.env.FRONTEND_URL,
 });
 require('dotenv').config();
 
