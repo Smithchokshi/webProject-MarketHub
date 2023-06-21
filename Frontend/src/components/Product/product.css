@@ -36,7 +36,7 @@
 }
 
 .card-description {
-    max-height: 100px; /* Adjust the value as needed */
+    max-height: 100px;
     overflow: auto;
 }
 
