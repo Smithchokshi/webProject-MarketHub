@@ -8,7 +8,6 @@ import Loader from './shared/loader';
 const Chat = lazy(() => import('./components/Chat/chat'));
 const Sidebar = lazy(() => import('./shared/sidebar'));
 const Login = lazy(() => import('./components/Login/login'));
-const Register = lazy(() => import('./components/Register/register'));
 const Product = lazy(() => import('./components/Product/product'));
 const ContactUs = lazy(() => import('./components/ContactUs/contactUs'));
 const Faq = lazy(() => import('./components/FAQ/FAQ'));
@@ -21,22 +20,17 @@ const Routing = () => {
   const PublicRoutes = [
     {
       export: true,
-      path: '/login',
+      path: '/',
       component: <Login />,
     },
     {
       export: true,
-      path: '/register',
-      component: <Register />,
+      path: '/login',
+      component: <Login />,
     },
   ].filter(cur => cur);
 
   const PrivateRoutes = [
-    {
-      export: true,
-      path: '/',
-      component: <Product />,
-    },
     {
       export: true,
       path: '/products',
@@ -54,7 +48,7 @@ const Routing = () => {
   };
 
   const PublicRoute = ({ children }) => {
-    return isAuthenticated ? navigate('/', { replace: true }) : children;
+    return isAuthenticated ? navigate('/products', { replace: true }) : children;
   };
 
   return (

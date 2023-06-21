@@ -8,8 +8,20 @@ h1 {
     margin-bottom: 20px;
 }
 
+.error-message {
+    color: red;
+    margin-top: 5px;
+}
 
+.success-message {
+    color: green;
+    margin-top: 5px;
+}
 
+.ant-form-item-explain {
+    margin-top: 5px;
+}
 
-
-
+.srv-validation-message {
+    color: red;
+}

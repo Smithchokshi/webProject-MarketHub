@@ -13,7 +13,7 @@ const contactusRoute = require('./Routes/contactUsRoute');
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server, {
-  cors: 'http://localhost:3000',
+  cors: process.env.FRONTEND_URL,
 });
 require('dotenv').config();
 

@@ -69,7 +69,7 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    const newSocket = io('http://localhost:5005');
+    const newSocket = io(process.env.REACT_APP_API_URL);
     setSocket(newSocket);
 
     return () => {
