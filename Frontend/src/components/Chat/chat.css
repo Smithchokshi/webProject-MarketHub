@@ -3,17 +3,9 @@
 }
 
 .chat-input {
-<<<<<<< HEAD
-    position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    padding: 20px;
-=======
-    bottom: 0;
-    left: 0;
-    width: 100%;
->>>>>>> development
     background-color: #f0f2f5;
     display: flex;
 }
@@ -22,8 +14,6 @@
     color: red;
     position: absolute;
     top: 50px;
-<<<<<<< HEAD
-=======
 }
 
 .chat-container {
@@ -38,5 +28,4 @@
 
 .chat-container::-webkit-scrollbar {
     display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
->>>>>>> development
 }

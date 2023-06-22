@@ -43,8 +43,6 @@
     transform: rotate(360deg);
   }
 }
-<<<<<<< HEAD
-=======
 
 @media screen and (max-width: 600px) {
   Header {
@@ -129,4 +127,3 @@
     justify-content: flex-end;
   }
 }
->>>>>>> development

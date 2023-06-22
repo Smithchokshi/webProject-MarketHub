@@ -1,43 +1,3 @@
-<<<<<<< HEAD
-import React, { useState } from 'react';
-import { Layout, Button, theme, List, Input } from 'antd';
-import GlobalHeader from '../../shared/header';
-import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
-import './chat.css';
-
-const { Content } = Layout;
-
-const demoMessages = [
-  {
-    content: 'Hello',
-    type: 'send',
-  },
-  {
-    content: 'How are you?',
-    type: 'send',
-  },
-  {
-    content: 'Hey, I am good Thank you',
-    type: 'received',
-  },
-  {
-    content: 'What about you?',
-    type: 'received',
-  },
-  {
-    content: `How's your study going?`,
-    type: 'received',
-  },
-  {
-    content: `It's going good`,
-    type: 'send',
-  },
-  {
-    content: 'Nice',
-    type: 'received',
-  },
-];
-=======
 import React, { useState, useEffect, useRef } from 'react';
 import { Layout, Button, theme, List, Input } from 'antd';
 import { io } from 'socket.io-client';
@@ -50,23 +10,12 @@ import { handleOnlineUser } from '../../redux/actions/sidebarAction';
 const { Content } = Layout;
 
 const api = msg => new APIUtils(msg);
->>>>>>> development
 
 const Chat = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
 
-<<<<<<< HEAD
-  const [validator, setValidator] = useSimpleReactValidator();
-  const [message, setMessage] = useState(null);
-  const [allMessages, setAllMessages] = useState(demoMessages);
-
-  const handleSubmit = () => {
-    if (validator.allValid()) {
-      setAllMessages([...allMessages, { content: message, type: 'send' }]);
-      setMessage('');
-=======
   const dispatch = useDispatch();
   const messagesContainerRef = useRef(null);
   const { activatedSidebarKey, sidebarData } = useSelector(state => state.sidebar);
@@ -95,33 +44,12 @@ const Chat = () => {
 
       await api().sendMessage(data);
       await getMessages();
->>>>>>> development
     } else {
       validator.getErrorMessages();
       setValidator(true);
     }
   };
 
-<<<<<<< HEAD
-  return (
-    <Layout>
-      <GlobalHeader />
-      <Content
-        style={{
-          margin: '24px 16px',
-          padding: 24,
-          minHeight: 280,
-          background: colorBgContainer,
-          position: 'relative',
-          paddingBottom: '80px',
-        }}
-      >
-        <div style={{ marginBottom: '60px' }}>
-          <List
-            dataSource={allMessages}
-            renderItem={item => (
-              <List.Item className={item.type === 'send' ? 'textRight' : ''}>
-=======
   const getMessages = async () => {
     try {
       const data = {
@@ -207,7 +135,6 @@ const Chat = () => {
             dataSource={allMessages}
             renderItem={item => (
               <List.Item className={item.senderId === user ? 'textRight' : ''}>
->>>>>>> development
                 {item.content}
               </List.Item>
             )}

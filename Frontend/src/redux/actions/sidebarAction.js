@@ -1,10 +1,7 @@
-<<<<<<< HEAD
-=======
 import ApiUtils from '../../helpers/APIUtils';
 
 const api = msg => new ApiUtils(msg);
 
->>>>>>> development
 export const handleCollapse = () => async dispatch => {
   try {
     dispatch({ type: 'COLLAPSE' });
@@ -21,8 +18,6 @@ export const handleSidebarChange = key => async dispatch => {
     return false;
   }
 };
-<<<<<<< HEAD
-=======
 
 export const handleSidebarData = (callAPI, data) => async dispatch => {
   try {
@@ -55,4 +50,3 @@ export const handleOnlineUser = data => async dispatch => {
     return false;
   }
 };
->>>>>>> development

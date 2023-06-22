@@ -1,48 +1,22 @@
 import React from 'react';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { Layout, Button, theme } from 'antd';
-<<<<<<< HEAD
-import { useSelector, useDispatch } from 'react-redux';
-import { handleCollapse } from '../redux/actions/sidebarAction';
-=======
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { handleCollapse, handleSidebarChange } from '../redux/actions/sidebarAction';
 import { logout } from '../redux/actions/authActions';
->>>>>>> development
 
 const { Header } = Layout;
 
 const GlobalHeader = () => {
   const dispatch = useDispatch();
-<<<<<<< HEAD
-  const { isCollapsed } = useSelector(state => state.sidebar);
-=======
   const navigate = useNavigate();
   const { isCollapsed, activatedSidebarKey } = useSelector(state => state.sidebar);
   const { isAuthenticated } = useSelector(state => state.auth);
->>>>>>> development
   const {
     token: { colorBgContainer },
   } = theme.useToken();
 
-<<<<<<< HEAD
-  return (
-    <Header style={{ padding: 0, background: colorBgContainer }}>
-      <Button
-        type="text"
-        icon={isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        onClick={() => dispatch(handleCollapse())}
-        style={{
-          fontSize: '16px',
-          width: 64,
-          height: 64,
-        }}
-      >
-        {' '}
-        Chat History
-      </Button>
-=======
   const handleLogout = async () => {
     const data = {
       key: 'marketplace',
@@ -132,7 +106,6 @@ const GlobalHeader = () => {
           Login
         </Button>
       )}
->>>>>>> development
     </Header>
   );
 };

@@ -8,11 +8,7 @@ const TOKEN_NAME = process.env.REACT_APP_TOKEN_NAME;
 class ApiUtils {
   constructor(message = false, request = true, appendAuth = true, response = true) {
     this.axios = axios.create({
-<<<<<<< HEAD
-      baseURL: 'http://localhost:5005/api',
-=======
       baseURL: `${process.env.REACT_APP_API_URL}/api`,
->>>>>>> development
     });
 
     if (request) {
@@ -92,8 +88,6 @@ class ApiUtils {
       url: '/users',
     });
 
-<<<<<<< HEAD
-=======
   createChat = data =>
     this.axios({
       method: 'POST',
@@ -101,14 +95,11 @@ class ApiUtils {
       data,
     });
 
->>>>>>> development
   getAllChats = () =>
     this.axios({
       method: 'GET',
       url: '/chats/getAllChats',
     });
-<<<<<<< HEAD
-=======
 
   getAllMessages = data =>
     this.axios({
@@ -143,7 +134,6 @@ class ApiUtils {
       url: '/contact-us',
       data,
     });
->>>>>>> development
 }
 
 export default ApiUtils;

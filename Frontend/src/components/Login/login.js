@@ -16,10 +16,7 @@ const Login = () => {
     token: { colorBgContainer },
   } = theme.useToken();
 
-<<<<<<< HEAD
-=======
   const [loading, setLoading] = useState(false);
->>>>>>> development
   const [fields, setFields] = useState({
     email: null,
     password: null,
@@ -35,15 +32,6 @@ const Login = () => {
   };
 
   const handleSubmit = async () => {
-<<<<<<< HEAD
-    // if (validator.allValid()) {
-    //   await dispatch(login(fields));
-    //   navigate('/chats');
-    // } else {
-    //   validator.getErrorMessages();
-    //   setValidator(true);
-    // }
-=======
     setLoading(true);
     if (validator.allValid()) {
       await dispatch(login(fields));
@@ -54,7 +42,6 @@ const Login = () => {
       validator.getErrorMessages();
       setValidator(true);
     }
->>>>>>> development
   };
 
   return (
@@ -89,13 +76,9 @@ const Login = () => {
                 onChange={e => handleChange(e, 'email')}
                 autoComplete="new-password"
               />
-<<<<<<< HEAD
-              {validator.message('Email', fields.email, 'required|email')}
-=======
               <div className={validator.errorMessages.email ? 'error-message' : ''}>
                 {validator.message('Email', fields.email, 'required|email')}
               </div>
->>>>>>> development
             </Form.Item>
 
             <Form.Item label="Password" name="password">
@@ -105,13 +88,9 @@ const Login = () => {
                 onChange={e => handleChange(e, 'password')}
                 autoComplete="new-password"
               />
-<<<<<<< HEAD
-              {validator.message('Password', fields.password, 'required')}
-=======
               <div className={validator.errorMessages.password ? 'error-message' : ''}>
                 {validator.message('Password', fields.password, 'required')}
               </div>
->>>>>>> development
             </Form.Item>
 
             <Form.Item
@@ -120,20 +99,11 @@ const Login = () => {
                 span: 16,
               }}
             >
-<<<<<<< HEAD
-              <Button type="primary" htmlType="submit" onClick={handleSubmit}>
-                Submit
-              </Button>
-            </Form.Item>
-          </Form>
-          <p onClick={() => navigate('/register')}>Sign Up</p>
-=======
               <Button type="primary" htmlType="submit" onClick={handleSubmit} loading={loading}>
                 Log in
               </Button>
             </Form.Item>
           </Form>
->>>>>>> development
         </div>
       </Content>
     </Layout>
