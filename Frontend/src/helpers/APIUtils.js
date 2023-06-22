@@ -121,6 +121,13 @@ class ApiUtils {
       url: '/product/',
     });
 
+  setLike = data =>
+    this.axios({
+      method: 'POST',
+      url: '/likes/like',
+      data
+    });
+
   setContactUs = data =>
     this.axios({
       method: 'POST',
