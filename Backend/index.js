@@ -9,6 +9,7 @@ const chatRoute = require('./Routes/chatRoute');
 const messageRoute = require('./Routes/messageRoute');
 const productRoute = require('./Routes/productRoute');
 const contactusRoute = require('./Routes/contactUsRoute');
+const likesRoute = require('./Routes/likesRoute');
 
 const app = express();
 const server = http.createServer(app);
@@ -21,11 +22,11 @@ dbConnection();
 
 app.use(express.json());
 app.use(cors());
-
 app.use('/api/users', userRoute);
 app.use('/api/chats', authMiddleware, chatRoute);
 app.use('/api/message', authMiddleware, messageRoute);
 app.use('/api/product', authMiddleware, productRoute);
+app.use('/api/likes', authMiddleware, likesRoute);
 app.use('/api/contact-us', contactusRoute);
 app.get('/', (req, res) => {
   res.send('working');

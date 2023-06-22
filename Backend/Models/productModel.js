@@ -9,6 +9,8 @@ const productSchema = new mongoose.Schema(
         isChatCreated: Boolean,
         chatId: String,
         image: String,
+        isLikedTotal: Number,
+        isLiked: { type: Boolean, default: false },
     },
     {
         timestamps: true,
