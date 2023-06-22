@@ -1,6 +1,12 @@
 const initialState = {
   isCollapsed: false,
+<<<<<<< HEAD
   activatedSidebarKey: '1',
+=======
+  activatedSidebarKey: { key: 'marketplace' },
+  sidebarData: [],
+  onlineUsers: [],
+>>>>>>> development
 };
 
 const SidebarReducer = (state = initialState, action) => {
@@ -17,6 +23,19 @@ const SidebarReducer = (state = initialState, action) => {
         ...state,
         activatedSidebarKey: payload,
       };
+<<<<<<< HEAD
+=======
+    case 'STORE_DATA':
+      return {
+        ...state,
+        sidebarData: payload,
+      };
+    case 'STORE_ONLINE_USERS':
+      return {
+        ...state,
+        onlineUsers: payload,
+      };
+>>>>>>> development
     default:
       return state;
   }

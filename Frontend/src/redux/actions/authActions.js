@@ -26,6 +26,11 @@ export const register = data => async dispatch => {
     const res = await api(true).register(data);
     dispatch({ type: 'EXISTING_USER', payload: res.data.userData });
     localStorage.setItem('token', res.data.userData.token);
+<<<<<<< HEAD
+=======
+    await loadUser();
+
+>>>>>>> development
     return true;
   } catch (e) {
     return false;
@@ -37,6 +42,10 @@ export const login = data => async dispatch => {
     const res = await api(true).login(data);
     dispatch({ type: 'EXISTING_USER', payload: res.data.userData });
     localStorage.setItem('token', res.data.userData.token);
+<<<<<<< HEAD
+=======
+
+>>>>>>> development
     return true;
   } catch (err) {
     dispatch({ type: 'AUTH_FAILED' });
@@ -47,6 +56,10 @@ export const login = data => async dispatch => {
 export const logout = () => async dispatch => {
   try {
     dispatch({ type: 'AUTH_FAILED' });
+<<<<<<< HEAD
+=======
+    localStorage.removeItem('token');
+>>>>>>> development
     return true;
   } catch (err) {
     return false;
