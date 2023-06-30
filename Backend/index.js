@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const http = require('http');
 const socketIO = require('socket.io');
+const bodyParser = require('body-parser');
 const { dbConnection } = require('./config/config');
 const authMiddleware = require('./Middleware/authMiddleware');
 const userRoute = require('./Routes/userRoute');
@@ -12,14 +13,16 @@ const contactusRoute = require('./Routes/contactUsRoute');
 
 const app = express();
 const server = http.createServer(app);
+require('dotenv').config();
 const io = socketIO(server, {
   cors: process.env.FRONTEND_URL,
 });
-require('dotenv').config();
 
 dbConnection();
 
-app.use(express.json());
+// app.use(express.json());
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cors());
 
 app.use('/api/users', userRoute);

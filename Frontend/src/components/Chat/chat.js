@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Layout, Button, theme, List, Input } from 'antd';
+import { PaperClipOutlined } from '@ant-design/icons';
 import { io } from 'socket.io-client';
 import { useSelector, useDispatch } from 'react-redux';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
 import APIUtils from '../../helpers/APIUtils';
 import './chat.css';
 import { handleOnlineUser } from '../../redux/actions/sidebarAction';
+import UploadModal from './uploadModal';
+import ImageModal from './imageModal';
 
 const { Content } = Layout;
 
@@ -26,27 +29,85 @@ const Chat = () => {
   const [allMessages, setAllMessages] = useState([]);
   const [socket, setSocket] = useState(null);
   const [listenNewMessage, setListener] = useState(false);
+  const [isModal, setIsModal] = useState(false);
+  const [isImage, setIsImage] = useState(false);
+  const [fileList, setFileList] = useState([]);
+  const [imageUrls, setImageUrls] = useState([]);
+  const [isPreview, setIsPreview] = useState(false);
+  const [previewedImage, setPreviewedImage] = useState('');
+
+  const handleModal = bool => {
+    setIsModal(bool);
+  };
+
+  const handlePreview = bool => {
+    setIsPreview(bool);
+  };
+
+  const handleFileData = fileData => {
+    setFileList(fileData);
+  };
+
+  const handleIsImage = bool => {
+    setIsImage(bool);
+  };
+
+  const handleImageUrls = (imageData, isReset) => {
+    if (!isReset) setImageUrls(prevUrls => [...prevUrls, imageData]);
+    else setImageUrls(imageData);
+  };
 
   const handleSubmit = async () => {
-    if (validator.allValid()) {
-      const data = {
-        chatId: activatedSidebarKey.key,
-        senderId: user,
-        content: message,
-      };
+    try {
+      if (fileList.length > 0) {
+        await Promise.all(
+          fileList.map(async (e, index) => {
+            const data = {
+              chatId: activatedSidebarKey.key,
+              senderId: user,
+              content: imageUrls[index],
+              mimeType: e.type,
+              fileName: e.name,
+              isImage: isImage,
+            };
 
-      if (socket === null) return;
+            if (socket === null) return;
 
-      const [recipient] = sidebarData.filter(cur => cur.key === activatedSidebarKey.key);
-      socket.emit('sendMessage', { content: message, recipient });
-      setListener(!listenNewMessage);
-      setMessage('');
+            const [recipient] = sidebarData.filter(cur => cur.key === activatedSidebarKey.key);
+            socket.emit('sendMessage', { content: data, recipient });
+            setListener(!listenNewMessage);
+            setMessage('');
 
-      await api().sendMessage(data);
-      await getMessages();
-    } else {
-      validator.getErrorMessages();
-      setValidator(true);
+            await api().sendMessage(data);
+          })
+        );
+        handleFileData([]);
+        handleIsImage(false);
+        handleImageUrls([], true);
+        await getMessages();
+      } else if (validator.allValid()) {
+        const data = {
+          chatId: activatedSidebarKey.key,
+          senderId: user,
+          content: message,
+          isImage: isImage,
+        };
+
+        if (socket === null) return;
+
+        const [recipient] = sidebarData.filter(cur => cur.key === activatedSidebarKey.key);
+        socket.emit('sendMessage', { content: data, recipient });
+        setListener(!listenNewMessage);
+        setMessage('');
+
+        await api().sendMessage(data);
+        await getMessages();
+      } else {
+        validator.getErrorMessages();
+        setValidator(true);
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -99,7 +160,8 @@ const Chat = () => {
     const handleMessageReceived = res => {
       if (activatedSidebarKey.key !== res.recipient.key) return;
 
-      setAllMessages(prev => [...prev, res]);
+      console.log(res);
+      setAllMessages(prev => [...prev, res.content]);
     };
 
     socket.on('getMessage', handleMessageReceived);
@@ -135,7 +197,19 @@ const Chat = () => {
             dataSource={allMessages}
             renderItem={item => (
               <List.Item className={item.senderId === user ? 'textRight' : ''}>
-                {item.content}
+                {item.isImage ? (
+                  <img
+                    src={item.content}
+                    alt="Image"
+                    role="presentation"
+                    onClick={() => {
+                      setPreviewedImage(item.content);
+                      handlePreview(true);
+                    }}
+                  />
+                ) : (
+                  <>{item.content}</>
+                )}
               </List.Item>
             )}
           />
@@ -149,11 +223,33 @@ const Chat = () => {
             style={{ marginRight: '10px' }}
           />
           {validator.message('message', message, 'required')}
+          <PaperClipOutlined className="attach-icon" onClick={() => handleModal(true)} />
           <Button type="primary" onClick={handleSubmit}>
             Send
           </Button>
         </div>
       </Content>
+
+      {isModal && (
+        <UploadModal
+          handleModal={handleModal}
+          isModal={isModal}
+          handleFileData={handleFileData}
+          handleIsImage={handleIsImage}
+          fileList={fileList}
+          imageUrls={imageUrls}
+          handleImageUrls={handleImageUrls}
+          handleSubmit={handleSubmit}
+        />
+      )}
+
+      {isPreview && (
+        <ImageModal
+          isPreview={isPreview}
+          handlePreview={handlePreview}
+          previewedImage={previewedImage}
+        />
+      )}
     </Layout>
   );
 };
