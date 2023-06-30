@@ -1,5 +1,5 @@
 .textRight {
-    justify-content: end !important;
+    justify-content: flex-end !important;
 }
 
 .chat-input {
@@ -27,5 +27,30 @@
 }
 
 .chat-container::-webkit-scrollbar {
-    display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+    display: none;
+}
+
+.chat-input .attach-icon {
+    margin-right: 10px;
+    font-size: 18px;
+    color: gray;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.chat-container img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 4px;
+    object-fit: cover;
+    display: block;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .chat-container img {
+        max-height: 150px;
+    }
 }

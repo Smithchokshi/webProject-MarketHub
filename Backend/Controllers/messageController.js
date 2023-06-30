@@ -2,12 +2,13 @@ const messageModel = require('../Models/messageModel');
 
 const createMessage = async (req, res) => {
   try {
-    const { chatId, senderId, content } = req.body;
+    const { chatId, senderId, content, isImage } = req.body;
 
     const message = new messageModel({
       chatId,
       senderId,
       content,
+      isImage,
     });
 
     const response = await message.save();
