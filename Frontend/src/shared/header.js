@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { Layout, Button, theme } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -11,8 +11,9 @@ const { Header } = Layout;
 const GlobalHeader = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isCollapsed, activatedSidebarKey } = useSelector(state => state.sidebar);
+  const { isCollapsed, activatedSidebarKey, sidebarData } = useSelector(state => state.sidebar);
   const { isAuthenticated } = useSelector(state => state.auth);
+  const [label, setLabel] = useState(null);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -26,6 +27,23 @@ const GlobalHeader = () => {
     localStorage.removeItem('token');
     navigate('/login');
   };
+
+  const storeLabel = async () => {
+    const [filterData] = sidebarData.filter(cur => cur.key === activatedSidebarKey?.key);
+    const tempData = {
+      key: activatedSidebarKey?.key,
+      label: filterData?.label,
+    };
+    await dispatch(handleSidebarChange(tempData));
+    setLabel(filterData?.label);
+  };
+
+  useEffect(() => {
+    (async () => {
+      if (!activatedSidebarKey?.label) await storeLabel();
+      else setLabel(activatedSidebarKey?.label);
+    })();
+  }, [activatedSidebarKey?.key, sidebarData]);
 
   return (
     <Header
@@ -73,7 +91,7 @@ const GlobalHeader = () => {
               </span>
             </>
           ) : (
-            <span>{activatedSidebarKey.label}</span>
+            <span>{label}</span>
           )}
         </div>
       </div>

@@ -127,6 +127,13 @@ class ApiUtils {
       url: '/contact-us',
       data,
     });
+
+  paymentCheckout = data =>
+    this.axios({
+      method: 'POST',
+      url: '/stripe/create-checkout-session',
+      data,
+    });
 }
 
 export default ApiUtils;

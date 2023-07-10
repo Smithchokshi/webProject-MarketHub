@@ -1,6 +1,11 @@
 const initialState = {
   isCollapsed: false,
-  activatedSidebarKey: { key: 'marketplace' },
+  activatedSidebarKey: {
+    key:
+      window.location.pathname.split('/chats/').length > 1
+        ? window.location.pathname.split('/chats/')[1]
+        : 'marketplace',
+  },
   sidebarData: [],
   onlineUsers: [],
 };

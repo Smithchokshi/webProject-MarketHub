@@ -2,6 +2,15 @@
     justify-content: flex-end !important;
 }
 
+.paymentText {
+    justify-content: center !important;
+    padding: 0 !important;
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+    font-weight: bold !important;
+    color: limegreen !important;
+}
+
 .chat-input {
     bottom: 0;
     left: 0;

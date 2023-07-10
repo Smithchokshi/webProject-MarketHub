@@ -50,7 +50,7 @@ const Sidebar = () => {
     try {
       await dispatch(handleSidebarChange(e));
       if (e.key === 'marketplace') navigate('/');
-      else navigate('/chats');
+      else navigate(`/chats/${e.key}`);
     } catch (e) {
       console.log(e);
     }

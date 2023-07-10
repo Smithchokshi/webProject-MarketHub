@@ -38,7 +38,7 @@ const Routing = () => {
     },
     {
       export: true,
-      path: '/chats',
+      path: '/chats/:id',
       component: <Chat />,
     },
   ].filter(cur => cur);

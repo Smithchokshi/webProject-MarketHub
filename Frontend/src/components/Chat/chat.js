@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Layout, Button, theme, List, Input } from 'antd';
-import { PaperClipOutlined } from '@ant-design/icons';
+import { Layout, Button, theme, List, Input, Tooltip } from 'antd';
+import { DollarOutlined, PaperClipOutlined } from '@ant-design/icons';
 import { io } from 'socket.io-client';
 import { useSelector, useDispatch } from 'react-redux';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
@@ -9,6 +9,7 @@ import './chat.css';
 import { handleOnlineUser } from '../../redux/actions/sidebarAction';
 import UploadModal from './uploadModal';
 import ImageModal from './imageModal';
+import Payment from '../../shared/payment';
 
 const { Content } = Layout;
 
@@ -60,6 +61,7 @@ const Chat = () => {
   const handleSubmit = async () => {
     try {
       if (fileList.length > 0) {
+        const [recipient] = sidebarData.filter(cur => cur.key === activatedSidebarKey.key);
         await Promise.all(
           fileList.map(async (e, index) => {
             const data = {
@@ -69,12 +71,13 @@ const Chat = () => {
               mimeType: e.type,
               fileName: e.name,
               isImage: isImage,
+              isPayment: false,
+              recipientId: recipient?.id,
             };
 
             if (socket === null) return;
 
-            const [recipient] = sidebarData.filter(cur => cur.key === activatedSidebarKey.key);
-            socket.emit('sendMessage', { content: data, recipient });
+            socket.emit('sendMessage', { content: data });
             setListener(!listenNewMessage);
             setMessage('');
 
@@ -86,17 +89,19 @@ const Chat = () => {
         handleImageUrls([], true);
         await getMessages();
       } else if (validator.allValid()) {
+        const [recipient] = sidebarData.filter(cur => cur.key === activatedSidebarKey.key);
         const data = {
           chatId: activatedSidebarKey.key,
           senderId: user,
           content: message,
           isImage: isImage,
+          isPayment: false,
+          recipientId: recipient?.id,
         };
 
         if (socket === null) return;
 
-        const [recipient] = sidebarData.filter(cur => cur.key === activatedSidebarKey.key);
-        socket.emit('sendMessage', { content: data, recipient });
+        socket.emit('sendMessage', { content: data });
         setListener(!listenNewMessage);
         setMessage('');
 
@@ -129,6 +134,13 @@ const Chat = () => {
     await dispatch(handleOnlineUser(onlineUsers));
   };
 
+  const handleCheckout = async () => {
+    try {
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
     const newSocket = io(process.env.REACT_APP_API_URL);
     setSocket(newSocket);
@@ -146,6 +158,9 @@ const Chat = () => {
       socket.on('getOnlineUsers', res => {
         updateOnlineStatus(res);
       });
+      socket.on('paymentSuccessful', res => {
+        socket.emit('paymentSuccessful', res);
+      });
 
       return () => {
         socket.off('getOnlineUsers');
@@ -158,9 +173,7 @@ const Chat = () => {
     if (socket === null) return;
 
     const handleMessageReceived = res => {
-      if (activatedSidebarKey.key !== res.recipient.key) return;
-
-      console.log(res);
+      if (activatedSidebarKey.key !== res.content.chatId) return;
       setAllMessages(prev => [...prev, res.content]);
     };
 
@@ -196,7 +209,11 @@ const Chat = () => {
           <List
             dataSource={allMessages}
             renderItem={item => (
-              <List.Item className={item.senderId === user ? 'textRight' : ''}>
+              <List.Item
+                className={
+                  item.isPayment ? 'paymentText' : item.senderId === user ? 'textRight' : ''
+                }
+              >
                 {item.isImage ? (
                   <img
                     src={item.content}
@@ -223,7 +240,10 @@ const Chat = () => {
             style={{ marginRight: '10px' }}
           />
           {validator.message('message', message, 'required')}
-          <PaperClipOutlined className="attach-icon" onClick={() => handleModal(true)} />
+          <Tooltip placement="top" title={<span>send image</span>}>
+            <PaperClipOutlined className="attach-icon" onClick={() => handleModal(true)} />
+          </Tooltip>
+          <Payment />
           <Button type="primary" onClick={handleSubmit}>
             Send
           </Button>
