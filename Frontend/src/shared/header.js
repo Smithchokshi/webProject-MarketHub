@@ -8,10 +8,11 @@ import { logout } from '../redux/actions/authActions';
 
 const { Header } = Layout;
 
-const GlobalHeader = () => {
+const GlobalHeader = ({ title }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isCollapsed, activatedSidebarKey, sidebarData } = useSelector(state => state.sidebar);
+  const { selectedChat, chatList } = useSelector(state => state.chat);
   const { isAuthenticated } = useSelector(state => state.auth);
   const [label, setLabel] = useState(null);
   const {
@@ -29,6 +30,7 @@ const GlobalHeader = () => {
   };
 
   const storeLabel = async () => {
+    console.log(activatedSidebarKey.key.split('/').length);
     const [filterData] = sidebarData.filter(cur => cur.key === activatedSidebarKey?.key);
     const tempData = {
       key: activatedSidebarKey?.key,
@@ -43,7 +45,11 @@ const GlobalHeader = () => {
       if (!activatedSidebarKey?.label) await storeLabel();
       else setLabel(activatedSidebarKey?.label);
     })();
-  }, [activatedSidebarKey?.key, sidebarData]);
+  }, [activatedSidebarKey?.key]);
+
+  useEffect(() => {
+    setLabel(`${activatedSidebarKey?.label} / ${selectedChat?.label}`);
+  }, [selectedChat?.key]);
 
   return (
     <Header
@@ -73,7 +79,7 @@ const GlobalHeader = () => {
           />
         )}
         <div style={{ marginLeft: '20px', display: 'flex', alignItems: 'center' }}>
-          {activatedSidebarKey.key === 'marketplace' ? (
+          {title === 'Products' ? (
             <>
               <span
                 style={{ marginRight: '20px', cursor: 'pointer' }}
@@ -91,7 +97,7 @@ const GlobalHeader = () => {
               </span>
             </>
           ) : (
-            <span>{label}</span>
+            <span>{title}</span>
           )}
         </div>
       </div>

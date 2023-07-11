@@ -1,15 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Layout, Button, theme, List, Input, Tooltip } from 'antd';
-import { DollarOutlined, PaperClipOutlined } from '@ant-design/icons';
+import { PaperClipOutlined } from '@ant-design/icons';
 import { io } from 'socket.io-client';
 import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
 import APIUtils from '../../helpers/APIUtils';
 import './chat.css';
-import { handleOnlineUser } from '../../redux/actions/sidebarAction';
+import {
+  handleChatChange,
+  handleChatList,
+  handleOnlineUser,
+} from '../../redux/actions/chatActions';
 import UploadModal from './uploadModal';
 import ImageModal from './imageModal';
 import Payment from '../../shared/payment';
+import GlobalHeader from '../../shared/header';
 
 const { Content } = Layout;
 
@@ -21,8 +27,9 @@ const Chat = () => {
   } = theme.useToken();
 
   const dispatch = useDispatch();
+  const location = useLocation();
   const messagesContainerRef = useRef(null);
-  const { activatedSidebarKey, sidebarData } = useSelector(state => state.sidebar);
+  const { selectedChat, chatList } = useSelector(state => state.chat);
   const { user } = useSelector(state => state.auth);
 
   const [validator, setValidator] = useSimpleReactValidator();
@@ -61,11 +68,11 @@ const Chat = () => {
   const handleSubmit = async () => {
     try {
       if (fileList.length > 0) {
-        const [recipient] = sidebarData.filter(cur => cur.key === activatedSidebarKey.key);
+        const [recipient] = chatList.filter(cur => cur.key === selectedChat.key);
         await Promise.all(
           fileList.map(async (e, index) => {
             const data = {
-              chatId: activatedSidebarKey.key,
+              chatId: selectedChat.key,
               senderId: user,
               content: imageUrls[index],
               mimeType: e.type,
@@ -89,9 +96,9 @@ const Chat = () => {
         handleImageUrls([], true);
         await getMessages();
       } else if (validator.allValid()) {
-        const [recipient] = sidebarData.filter(cur => cur.key === activatedSidebarKey.key);
+        const [recipient] = chatList.filter(cur => cur.key === selectedChat.key);
         const data = {
-          chatId: activatedSidebarKey.key,
+          chatId: selectedChat.key,
           senderId: user,
           content: message,
           isImage: isImage,
@@ -118,8 +125,13 @@ const Chat = () => {
 
   const getMessages = async () => {
     try {
+      let tempKey;
+      if (!selectedChat?.key) {
+        tempKey = chatList.find(cur => cur.key === location.pathname.split('/chats/')[1]);
+        await dispatch(handleChatChange(tempKey));
+      }
       const data = {
-        chatId: activatedSidebarKey.key,
+        chatId: selectedChat?.key ? selectedChat.key : tempKey.key,
       };
 
       const res = await api().getAllMessages(data);
@@ -132,13 +144,6 @@ const Chat = () => {
 
   const updateOnlineStatus = async onlineUsers => {
     await dispatch(handleOnlineUser(onlineUsers));
-  };
-
-  const handleCheckout = async () => {
-    try {
-    } catch (e) {
-      console.log(e);
-    }
   };
 
   useEffect(() => {
@@ -173,7 +178,7 @@ const Chat = () => {
     if (socket === null) return;
 
     const handleMessageReceived = res => {
-      if (activatedSidebarKey.key !== res.content.chatId) return;
+      if (selectedChat.key !== res.content.chatId) return;
       setAllMessages(prev => [...prev, res.content]);
     };
 
@@ -182,13 +187,13 @@ const Chat = () => {
     return () => {
       socket.off('getMessage', handleMessageReceived);
     };
-  }, [socket, activatedSidebarKey.key, listenNewMessage]);
+  }, [socket, selectedChat.key, listenNewMessage]);
 
   useEffect(() => {
     (async () => {
       await getMessages();
     })();
-  }, [user, activatedSidebarKey.key]);
+  }, [user, selectedChat.key]);
 
   useEffect(() => {
     // Scroll to the bottom of the messages container
@@ -197,8 +202,9 @@ const Chat = () => {
   }, [allMessages]);
 
   return (
-    <Layout>
-      <Content style={{ padding: '24px' }}>
+    <Layout style={{ flex: 1, overflow: 'hidden' }}>
+      <GlobalHeader title={`Chat / ${selectedChat?.label}`} />
+      <Content style={{ padding: '24px', overflow: 'auto' }}>
         <div
           className="chat-container"
           style={{

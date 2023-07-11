@@ -1,13 +1,18 @@
+import { WechatOutlined } from '@ant-design/icons';
+
 const initialState = {
   isCollapsed: false,
   activatedSidebarKey: {
-    key:
-      window.location.pathname.split('/chats/').length > 1
-        ? window.location.pathname.split('/chats/')[1]
-        : 'marketplace',
+    key: window.location.pathname,
   },
-  sidebarData: [],
-  onlineUsers: [],
+  sidebarData: [
+    {
+      key: '/chats',
+      label: 'Chats',
+      icon: <WechatOutlined />,
+      url: '/chats',
+    },
+  ],
 };
 
 const SidebarReducer = (state = initialState, action) => {
@@ -23,16 +28,6 @@ const SidebarReducer = (state = initialState, action) => {
       return {
         ...state,
         activatedSidebarKey: payload,
-      };
-    case 'STORE_DATA':
-      return {
-        ...state,
-        sidebarData: payload,
-      };
-    case 'STORE_ONLINE_USERS':
-      return {
-        ...state,
-        onlineUsers: payload,
       };
     default:
       return state;

@@ -4,11 +4,13 @@ import { BrowserRouter } from 'react-router-dom';
 import Routing from './Routing';
 import store from './redux/store';
 import { loadUser } from './redux/actions/authActions';
+import { handleChatList } from './redux/actions/chatActions';
 
 const App = () => {
   useEffect(() => {
     (async () => {
       await store.dispatch(loadUser());
+      await store.dispatch(handleChatList(true, []));
     })();
   }, []);
 
