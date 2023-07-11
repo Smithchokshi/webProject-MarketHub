@@ -1,14 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Layout, Button, theme, List, Input } from 'antd';
+import { Layout, Button, theme, List, Input, Tooltip } from 'antd';
 import { PaperClipOutlined } from '@ant-design/icons';
 import { io } from 'socket.io-client';
 import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
 import APIUtils from '../../helpers/APIUtils';
 import './chat.css';
-import { handleOnlineUser } from '../../redux/actions/sidebarAction';
+import {
+  handleChatChange,
+  handleChatList,
+  handleOnlineUser,
+} from '../../redux/actions/chatActions';
 import UploadModal from './uploadModal';
 import ImageModal from './imageModal';
+import Payment from '../../shared/payment';
+import GlobalHeader from '../../shared/header';
 
 const { Content } = Layout;
 
@@ -20,8 +27,9 @@ const Chat = () => {
   } = theme.useToken();
 
   const dispatch = useDispatch();
+  const location = useLocation();
   const messagesContainerRef = useRef(null);
-  const { activatedSidebarKey, sidebarData } = useSelector(state => state.sidebar);
+  const { selectedChat, chatList } = useSelector(state => state.chat);
   const { user } = useSelector(state => state.auth);
 
   const [validator, setValidator] = useSimpleReactValidator();
@@ -60,21 +68,23 @@ const Chat = () => {
   const handleSubmit = async () => {
     try {
       if (fileList.length > 0) {
+        const [recipient] = chatList.filter(cur => cur.key === selectedChat.key);
         await Promise.all(
           fileList.map(async (e, index) => {
             const data = {
-              chatId: activatedSidebarKey.key,
+              chatId: selectedChat.key,
               senderId: user,
               content: imageUrls[index],
               mimeType: e.type,
               fileName: e.name,
               isImage: isImage,
+              isPayment: false,
+              recipientId: recipient?.id,
             };
 
             if (socket === null) return;
 
-            const [recipient] = sidebarData.filter(cur => cur.key === activatedSidebarKey.key);
-            socket.emit('sendMessage', { content: data, recipient });
+            socket.emit('sendMessage', { content: data });
             setListener(!listenNewMessage);
             setMessage('');
 
@@ -86,17 +96,19 @@ const Chat = () => {
         handleImageUrls([], true);
         await getMessages();
       } else if (validator.allValid()) {
+        const [recipient] = chatList.filter(cur => cur.key === selectedChat.key);
         const data = {
-          chatId: activatedSidebarKey.key,
+          chatId: selectedChat.key,
           senderId: user,
           content: message,
           isImage: isImage,
+          isPayment: false,
+          recipientId: recipient?.id,
         };
 
         if (socket === null) return;
 
-        const [recipient] = sidebarData.filter(cur => cur.key === activatedSidebarKey.key);
-        socket.emit('sendMessage', { content: data, recipient });
+        socket.emit('sendMessage', { content: data });
         setListener(!listenNewMessage);
         setMessage('');
 
@@ -113,8 +125,13 @@ const Chat = () => {
 
   const getMessages = async () => {
     try {
+      let tempKey;
+      if (!selectedChat?.key) {
+        tempKey = chatList.find(cur => cur.key === location.pathname.split('/chats/')[1]);
+        await dispatch(handleChatChange(tempKey));
+      }
       const data = {
-        chatId: activatedSidebarKey.key,
+        chatId: selectedChat?.key ? selectedChat.key : tempKey.key,
       };
 
       const res = await api().getAllMessages(data);
@@ -146,6 +163,9 @@ const Chat = () => {
       socket.on('getOnlineUsers', res => {
         updateOnlineStatus(res);
       });
+      socket.on('paymentSuccessful', res => {
+        socket.emit('paymentSuccessful', res);
+      });
 
       return () => {
         socket.off('getOnlineUsers');
@@ -158,9 +178,7 @@ const Chat = () => {
     if (socket === null) return;
 
     const handleMessageReceived = res => {
-      if (activatedSidebarKey.key !== res.recipient.key) return;
-
-      console.log(res);
+      if (selectedChat.key !== res.content.chatId) return;
       setAllMessages(prev => [...prev, res.content]);
     };
 
@@ -169,13 +187,13 @@ const Chat = () => {
     return () => {
       socket.off('getMessage', handleMessageReceived);
     };
-  }, [socket, activatedSidebarKey.key, listenNewMessage]);
+  }, [socket, selectedChat.key, listenNewMessage]);
 
   useEffect(() => {
     (async () => {
       await getMessages();
     })();
-  }, [user, activatedSidebarKey.key]);
+  }, [user, selectedChat.key]);
 
   useEffect(() => {
     // Scroll to the bottom of the messages container
@@ -184,8 +202,9 @@ const Chat = () => {
   }, [allMessages]);
 
   return (
-    <Layout>
-      <Content style={{ padding: '24px' }}>
+    <Layout style={{ flex: 1, overflow: 'hidden' }}>
+      <GlobalHeader title={`Chat / ${selectedChat?.label}`} />
+      <Content style={{ padding: '24px', overflow: 'auto' }}>
         <div
           className="chat-container"
           style={{
@@ -196,7 +215,11 @@ const Chat = () => {
           <List
             dataSource={allMessages}
             renderItem={item => (
-              <List.Item className={item.senderId === user ? 'textRight' : ''}>
+              <List.Item
+                className={
+                  item.isPayment ? 'paymentText' : item.senderId === user ? 'textRight' : ''
+                }
+              >
                 {item.isImage ? (
                   <img
                     src={item.content}
@@ -223,7 +246,10 @@ const Chat = () => {
             style={{ marginRight: '10px' }}
           />
           {validator.message('message', message, 'required')}
-          <PaperClipOutlined className="attach-icon" onClick={() => handleModal(true)} />
+          <Tooltip placement="top" title={<span>send image</span>}>
+            <PaperClipOutlined className="attach-icon" onClick={() => handleModal(true)} />
+          </Tooltip>
+          <Payment />
           <Button type="primary" onClick={handleSubmit}>
             Send
           </Button>

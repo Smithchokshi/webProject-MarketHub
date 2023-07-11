@@ -6,6 +6,7 @@ const messageSchema = new mongoose.Schema(
     senderId: String,
     content: String,
     isImage: Boolean,
+    isPayment: Boolean,
   },
   {
     timestamps: true,
