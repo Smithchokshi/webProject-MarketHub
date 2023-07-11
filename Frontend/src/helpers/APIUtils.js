@@ -8,7 +8,7 @@ const TOKEN_NAME = process.env.REACT_APP_TOKEN_NAME;
 class ApiUtils {
   constructor(message = false, request = true, appendAuth = true, response = true) {
     this.axios = axios.create({
-      baseURL: 'http://localhost:5005/api',
+      baseURL: `${process.env.REACT_APP_API_URL}/api`,
     });
 
     if (request) {
@@ -125,6 +125,13 @@ class ApiUtils {
     this.axios({
       method: 'POST',
       url: '/contact-us',
+      data,
+    });
+
+  paymentCheckout = data =>
+    this.axios({
+      method: 'POST',
+      url: '/stripe/create-checkout-session',
       data,
     });
 }

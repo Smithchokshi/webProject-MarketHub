@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Form, Input, Layout, theme } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +16,7 @@ const Login = () => {
     token: { colorBgContainer },
   } = theme.useToken();
 
+  const [loading, setLoading] = useState(false);
   const [fields, setFields] = useState({
     email: null,
     password: null,
@@ -31,10 +32,13 @@ const Login = () => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     if (validator.allValid()) {
       await dispatch(login(fields));
-      navigate('/');
+      setLoading(false);
+      navigate('/products');
     } else {
+      setLoading(false);
       validator.getErrorMessages();
       setValidator(true);
     }
@@ -72,7 +76,9 @@ const Login = () => {
                 onChange={e => handleChange(e, 'email')}
                 autoComplete="new-password"
               />
-              {validator.message('Email', fields.email, 'required|email')}
+              <div className={validator.errorMessages.email ? 'error-message' : ''}>
+                {validator.message('Email', fields.email, 'required|email')}
+              </div>
             </Form.Item>
 
             <Form.Item label="Password" name="password">
@@ -82,7 +88,9 @@ const Login = () => {
                 onChange={e => handleChange(e, 'password')}
                 autoComplete="new-password"
               />
-              {validator.message('Password', fields.password, 'required')}
+              <div className={validator.errorMessages.password ? 'error-message' : ''}>
+                {validator.message('Password', fields.password, 'required')}
+              </div>
             </Form.Item>
 
             <Form.Item
@@ -91,12 +99,11 @@ const Login = () => {
                 span: 16,
               }}
             >
-              <Button type="primary" htmlType="submit" onClick={handleSubmit}>
-                Submit
+              <Button type="primary" htmlType="submit" onClick={handleSubmit} loading={loading}>
+                Log in
               </Button>
             </Form.Item>
           </Form>
-          <p onClick={() => navigate('/register')}>Sign Up</p>
         </div>
       </Content>
     </Layout>

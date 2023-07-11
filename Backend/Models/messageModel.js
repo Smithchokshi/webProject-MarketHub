@@ -5,6 +5,8 @@ const messageSchema = new mongoose.Schema(
     chatId: String,
     senderId: String,
     content: String,
+    isImage: Boolean,
+    isPayment: Boolean,
   },
   {
     timestamps: true,
