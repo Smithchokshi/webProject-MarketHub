@@ -63,23 +63,32 @@ const getUserChats = async (req, res) => {
     const userObjectId = new ObjectId(userId);
 
     const allChats = await chatModel.aggregate([
-      // Stage 1: Match the chats based on a condition (if needed)
       {
         $match: {
           members: { $in: [userId] },
         },
       },
-      // Stage 2: Unwind the members array to create separate documents for each member
+      {
+        $addFields: {
+          productIdObjId: { $toObjectId: '$productId' },
+        },
+      },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'productIdObjId',
+          foreignField: '_id',
+          as: 'productDetails',
+        },
+      },
       {
         $unwind: '$members',
       },
-      // Stage 3: Convert member IDs to ObjectId
       {
         $addFields: {
           memberId: { $toObjectId: '$members' },
         },
       },
-      // Stage 4: Lookup the user details from the users collection based on member IDs
       {
         $lookup: {
           from: 'users',
@@ -88,23 +97,25 @@ const getUserChats = async (req, res) => {
           as: 'userDetails',
         },
       },
-      // Stage 5: Group the results by chat ID and reconstruct the members array
       {
         $group: {
           _id: '$_id',
+          createdAt: { $first: '$createdAt' },
           members: { $push: '$members' },
           userDetails: { $push: { $arrayElemAt: ['$userDetails', 0] } },
           productId: { $first: '$productId' },
           productName: { $first: '$productName' },
+          productDetails: { $first: { $arrayElemAt: ['$productDetails', 0] } },
         },
       },
-      // Stage 6: Project only the details of the second user
       {
         $project: {
           _id: 0,
           chatId: '$_id',
           productId: 1,
           productName: 1,
+          createdAt: 1,
+          productDetails: 1,
           userDetails: {
             $filter: {
               input: '$userDetails',
@@ -115,13 +126,17 @@ const getUserChats = async (req, res) => {
           members: '$members',
         },
       },
-      // Stage 7: Remove the password and token fields
       {
         $project: {
           userDetails: {
             password: 0,
             token: 0,
           },
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
         },
       },
     ]);

@@ -63,3 +63,32 @@
         max-height: 150px;
     }
 }
+
+.chat-list {
+    border-bottom: 1px solid #e8e8e8 !important;
+}
+
+.image-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.message-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.message-time {
+    font-size: 10px;
+    color: gray;
+    margin-top: 4px;
+}
+
+.message-time-right {
+    font-size: 10px;
+    color: gray;
+    margin-top: 4px;
+    display: flex;
+    justify-content: flex-end !important;
+}
+
