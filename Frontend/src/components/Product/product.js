@@ -7,6 +7,7 @@ import APIUtils from '../../helpers/APIUtils';
 import './product.css';
 import { handleSidebarChange } from '../../redux/actions/sidebarAction';
 import GlobalHeader from '../../shared/header';
+import { handleChatChange } from '../../redux/actions/chatActions';
 
 const { Meta } = Card;
 const { Content } = Layout;
@@ -35,7 +36,7 @@ const Product = () => {
         productId: productData._id,
       };
 
-      await api(true).createChat(data);
+      const res = await api(true).createChat(data);
 
       await dispatch(
         handleSidebarChange({
@@ -43,7 +44,9 @@ const Product = () => {
         })
       );
 
-      navigate('/chats');
+      await dispatch(handleChatChange({}));
+
+      if (res) navigate(`/chats/${res.data.chat._id}`);
     } catch (e) {
       console.log(e);
     }
