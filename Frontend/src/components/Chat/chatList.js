@@ -1,14 +1,15 @@
 import { Avatar, Layout, List, Badge } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import {
   handleChatList,
   handleChatChange,
   handleOnlineUser,
 } from '../../redux/actions/chatActions';
-import { useNavigate } from 'react-router-dom';
 import GlobalHeader from '../../shared/header';
-import { io } from 'socket.io-client';
+import './chat.css';
 
 const { Content } = Layout;
 const ChatList = () => {
@@ -106,18 +107,15 @@ const ChatList = () => {
           dataSource={allChats}
           renderItem={(item, index) => (
             <span role="presentation" onClick={() => handleChatRedirect(item)}>
-              <List.Item>
+              <List.Item className="chat-list">
                 <List.Item.Meta
-                  avatar={
-                    <Avatar
-                      src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`}
-                    />
-                  }
+                  avatar={<Avatar src={item.productDetails.image} />}
                   title={
                     <span>
                       {item.label} {item.active && <Badge status="success" />}
                     </span>
                   }
+                  description={item.productDetails.productDescription}
                 />
               </List.Item>
             </span>
