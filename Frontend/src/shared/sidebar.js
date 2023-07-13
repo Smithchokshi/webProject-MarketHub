@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Layout, Menu, Avatar, Badge, Space, Divider, Tooltip } from 'antd';
+import React from 'react';
+import { Layout, Menu, Divider, Tooltip } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { handleSidebarChange } from '../redux/actions/sidebarAction';
 import LOGO from '../assets/light-logo.svg';
 import './sidebar.css';
-import { UserOutlined, WechatOutlined } from '@ant-design/icons';
 
 const { Sider } = Layout;
 const { Item } = Menu;
@@ -60,31 +59,6 @@ const Sidebar = () => {
             )}
           </Item>
         ))}
-        {/*{sidebarData.length > 0 &&*/}
-        {/*  sidebarData.map(e => (*/}
-        {/*    <Item key={e.key} onClick={() => changeSidebar(e)} className="menu-item-wrapper">*/}
-        {/*      {isCollapsed ? (*/}
-        {/*        <Tooltip*/}
-        {/*          placement="right"*/}
-        {/*          title={*/}
-        {/*            <span className="menu-item-text">*/}
-        {/*              {e.label}*/}
-        {/*              {e.active && <Badge status="success" />}*/}
-        {/*            </span>*/}
-        {/*          }*/}
-        {/*        >*/}
-        {/*          <span className="menu-item-text">*/}
-        {/*            <UserOutlined />*/}
-        {/*          </span>*/}
-        {/*        </Tooltip>*/}
-        {/*      ) : (*/}
-        {/*        <span className="menu-item-text">*/}
-        {/*          {e.label}*/}
-        {/*          {e.active && <Badge status="success" />}*/}
-        {/*        </span>*/}
-        {/*      )}*/}
-        {/*    </Item>*/}
-        {/*  ))}*/}
       </Menu>
     </Sider>
   );
