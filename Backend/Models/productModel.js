@@ -9,7 +9,8 @@ const productSchema = new mongoose.Schema(
         isChatCreated: Boolean,
         chatId: String,
         image: String,
-        isLikedTotal: Number,
+        isLikedTotal: { type: Number, default: 0 },
+        averageRatings: { type: Number, default: 0 },
         isLiked: { type: Boolean, default: false },
     },
     {

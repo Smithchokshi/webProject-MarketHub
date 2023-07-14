@@ -28,7 +28,6 @@ const setLike = async (req, res) => {
         const totalLikes = await likesModel.countDocuments({ productId, isLiked: true });
         await productModel.findByIdAndUpdate(productId, { isLikedTotal: totalLikes });
 
-
           res.status(200).json({
             status: 200,
             likesData: updatedLike,

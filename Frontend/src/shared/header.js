@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { Layout, Button, theme } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -8,11 +8,13 @@ import { logout } from '../redux/actions/authActions';
 
 const { Header } = Layout;
 
-const GlobalHeader = () => {
+const GlobalHeader = ({ title }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isCollapsed, activatedSidebarKey } = useSelector(state => state.sidebar);
+  const { isCollapsed, activatedSidebarKey, sidebarData } = useSelector(state => state.sidebar);
+  const { selectedChat, chatList } = useSelector(state => state.chat);
   const { isAuthenticated } = useSelector(state => state.auth);
+  const [label, setLabel] = useState(null);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -26,6 +28,28 @@ const GlobalHeader = () => {
     localStorage.removeItem('token');
     navigate('/login');
   };
+
+  const storeLabel = async () => {
+    console.log(activatedSidebarKey.key.split('/').length);
+    const [filterData] = sidebarData.filter(cur => cur.key === activatedSidebarKey?.key);
+    const tempData = {
+      key: activatedSidebarKey?.key,
+      label: filterData?.label,
+    };
+    await dispatch(handleSidebarChange(tempData));
+    setLabel(filterData?.label);
+  };
+
+  useEffect(() => {
+    (async () => {
+      if (!activatedSidebarKey?.label) await storeLabel();
+      else setLabel(activatedSidebarKey?.label);
+    })();
+  }, [activatedSidebarKey?.key]);
+
+  useEffect(() => {
+    setLabel(`${activatedSidebarKey?.label} / ${selectedChat?.label}`);
+  }, [selectedChat?.key]);
 
   return (
     <Header
@@ -55,7 +79,7 @@ const GlobalHeader = () => {
           />
         )}
         <div style={{ marginLeft: '20px', display: 'flex', alignItems: 'center' }}>
-          {activatedSidebarKey.key === 'marketplace' ? (
+          {title === 'Products' ? (
             <>
               <span
                 style={{ marginRight: '20px', cursor: 'pointer' }}
@@ -73,7 +97,7 @@ const GlobalHeader = () => {
               </span>
             </>
           ) : (
-            <span>{activatedSidebarKey.label}</span>
+            <span>{title}</span>
           )}
         </div>
       </div>

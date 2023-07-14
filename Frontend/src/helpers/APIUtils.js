@@ -121,17 +121,54 @@ class ApiUtils {
       url: '/product/',
     });
 
-  setLike = data =>
+    getOneProduct = data =>
+    this.axios({
+      method: 'POST',
+      url: '/product/getone',
+      data
+    });
+    setLike = data =>
     this.axios({
       method: 'POST',
       url: '/likes/like',
       data
     });
-
+    setRating = data =>
+    this.axios({
+      method: 'POST',
+      url: '/ratings/rating',
+      data
+    });
+    getRatings = data =>
+    this.axios({
+      method: 'POST',
+      url: '/ratings/',
+      data
+    });
+    // getRatings
+    getALlComments = data =>
+    this.axios({
+      method: 'POST',
+      url: '/comment/',
+      data
+    });
+    createComment = data =>
+    this.axios({
+      method: 'POST',
+      url: '/comment/create',
+      data,
+    });
   setContactUs = data =>
     this.axios({
       method: 'POST',
       url: '/contact-us',
+      data,
+    });
+
+  paymentCheckout = data =>
+    this.axios({
+      method: 'POST',
+      url: '/stripe/create-checkout-session',
       data,
     });
 }

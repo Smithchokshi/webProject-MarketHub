@@ -1,12 +1,14 @@
 import { combineReducers } from 'redux';
 import AuthReducer from './authReducer';
 import SidebarReducer from './sidebarReducer';
+import ChatReducer from './chatReducer';
 
 const nonRemovalReducers = [];
 
 const reducer = combineReducers({
   auth: AuthReducer,
   sidebar: SidebarReducer,
+  chat: ChatReducer,
 });
 
 const rootReducer = (state, action) => {

@@ -11,13 +11,13 @@ const createChat = async (req, res) => {
 
     const productDetails = await productModel.findById(objectProductId);
 
-    // console.log(productDetails);
+    console.log(productDetails);
 
     const chat = await chatModel.findOne({
       productId,
     });
 
-    // console.log('chat', chat);
+    console.log('chat', chat);
 
     if (chat)
       return res.status(200).json({

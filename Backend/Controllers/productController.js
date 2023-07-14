@@ -59,4 +59,19 @@ const getALlProducts = async (req, res) => {
   }
 };
 
-module.exports = { createProduct, getALlProducts };
+const getOneProduct = async (req, res) => {
+  try {
+    const  {productId}  = req.body;
+    
+    const product = await productModel.find({ _id:productId});
+    res.json(product);
+  } 
+  catch (e) {
+    console.log(e);
+    res.status(500).json({
+      message: e,
+    });
+  }
+};
+
+module.exports = { createProduct, getALlProducts,getOneProduct };

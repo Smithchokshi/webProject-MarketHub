@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const productSchema = new mongoose.Schema(
+const likesSchema = new mongoose.Schema(
     {
         userId: String,
         productId: String,
@@ -11,6 +11,6 @@ const productSchema = new mongoose.Schema(
     }
 );
 
-const productModel = mongoose.model('likes', productSchema);
+const likesModel = mongoose.model('likes', likesSchema);
 
-module.exports = productModel;
+module.exports = likesModel;
