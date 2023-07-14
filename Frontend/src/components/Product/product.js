@@ -5,9 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import APIUtils from '../../helpers/APIUtils';
 import './product.css';
+import { useMediaQuery } from 'react-responsive';
 import { handleSidebarChange } from '../../redux/actions/sidebarAction';
 import GlobalHeader from '../../shared/header';
 import { handleChatChange } from '../../redux/actions/chatActions';
+
 
 const { Meta } = Card;
 const { Content } = Layout;
@@ -100,18 +102,23 @@ const Product = () => {
                 lg={6}
                 xl={4}
               >
+
                 <Card
                   hoverable
                   style={{ width: '100%' }}
-                  cover={<img className="card-image" alt="example" src={e.image} />}
+                  cover={
+                    <div style={{ maxHeight: '300px', overflow: 'hidden' }}>
+                      <a onClick={() => productDetails(e._id)}>
+                        <img className="card-image" alt="example" src={e.image} style={{ width: '100%', objectFit: 'cover', maxHeight: '100%' }} />
+                      </a>
+                    </div>
+                  }
                   actions={[
                     <Tooltip placement="bottom" title={<span>Like</span>}>
                     <LikeOutlined key="like" onClick={() => handleAddLike(e._id)}
                       style={{ color:  e.isLiked ? "blue" : "inherit" }}
                     />
                     <span className="like-count">({e.isLikedTotal})</span>
-                    {/* <span className="like-count">({e.productName})</span>
-                    <span className="like-count">({e._id})</span> */}
                   </Tooltip>,
                     <Tooltip placement="bottom" title={<span>Share</span>}>
                       <ShareAltOutlined key="share" onClick={()=>handleShare(e._id)} />
@@ -121,11 +128,15 @@ const Product = () => {
                     </Tooltip>,
                   ]}
                 >
+                  <a onClick={() => productDetails(e._id)}>
                   <Meta
                 avatar={<Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />}
                 title={<a onClick={()=> productDetails(e._id)}>{e.productName}</a>}
-                description={e.productDescription}
-              />
+                description={e.productDescription.length > 10 ? `${e.productDescription.substring(0, 10)}...` : `${e.productDescription.substring(0, 10)}${Array.from({ length: Math.max(0, 13 - e.productDescription.length) }).fill(' ').join('')}`}
+                                style={{ whiteSpace: 'pre' }}
+
+                />
+                </a>
                 </Card>
               </Col>
             ))}
