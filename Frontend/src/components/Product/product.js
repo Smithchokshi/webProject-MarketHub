@@ -74,6 +74,14 @@ const Product = () => {
       await getData();
     })();
   }, []);
+  const handleShare = (product_Id) => {
+    const url = `${process.env.REACT_APP_API_URL}/products/${product_Id}`;
+    navigator.clipboard.writeText(url).then(() => {
+      alert('Product Link copied to clipboard!');
+    }).catch((error) => {
+      console.log('Error copying to clipboard:', error);
+    });
+  };
 
   return (
     <Layout style={{ flex: 1, overflow: 'hidden' }}>
@@ -106,7 +114,7 @@ const Product = () => {
                     <span className="like-count">({e._id})</span> */}
                   </Tooltip>,
                     <Tooltip placement="bottom" title={<span>Share</span>}>
-                      <ShareAltOutlined key="share" />
+                      <ShareAltOutlined key="share" onClick={()=>handleShare(e._id)} />
                     </Tooltip>,
                     <Tooltip placement="bottom" title={<span>Chat</span>}>
                       <CommentOutlined key="comment" onClick={() => handleCreateChat(e)} />{' '}
