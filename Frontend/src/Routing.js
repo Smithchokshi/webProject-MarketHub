@@ -34,12 +34,10 @@ const Routing = () => {
 
   const PrivateRoutes = [
     {
-      export: true,
       path: '/products',
       component: <Product />,
     },
     {
-      export: true,
       path: '/comment/:productId',
       component: <Comment />,
     },
@@ -65,9 +63,6 @@ const Routing = () => {
     <Suspense className="loader" fallback={<Loader />}>
       <Layout style={{ minHeight: '100vh', display: 'flex' }}>
         {isAuthenticated && <Sidebar style={{ backgroundColor: '#f0f0f0' }} />}
-        {/*<Layout style={{ flex: 1, overflow: 'hidden' }}>*/}
-        {/*  <GlobalHeader />*/}
-        {/*  <Content style={{ padding: '24px', overflow: 'auto' }}>*/}
         <Routes>
           <Route exact={true} key={'/contact-us'} path={'/contact-us'} element={<ContactUs />} />
           <Route exact={true} key={'/faq'} path={'/faq'} element={<Faq />} />
@@ -87,13 +82,7 @@ const Routing = () => {
               element={<PrivateRoute>{route.component}</PrivateRoute>}
             />
           ))}
-          <Route
-                path="/products/:productId"
-                element={<PrivateRoute><ProductDetails /></PrivateRoute>}
-              />
         </Routes>
-        {/*  </Content>*/}
-        {/*</Layout>*/}
       </Layout>
     </Suspense>
   );

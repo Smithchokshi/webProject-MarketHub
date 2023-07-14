@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { LikeOutlined, ShareAltOutlined, CommentOutlined } from '@ant-design/icons';
-import { Avatar, Card, Row, Col, Tooltip, Layout ,Rate, Button} from 'antd';
+import { Avatar, Card, Row, Col, Tooltip, Layout } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import APIUtils from '../../helpers/APIUtils';
 import './product.css';
 import { handleSidebarChange } from '../../redux/actions/sidebarAction';
 import GlobalHeader from '../../shared/header';
+import { handleChatChange } from '../../redux/actions/chatActions';
 
 const { Meta } = Card;
 const { Content } = Layout;
@@ -35,7 +36,7 @@ const Product = () => {
         productId: productData._id,
       };
 
-      await api(true).createChat(data);
+      const res = await api(true).createChat(data);
 
       await dispatch(
         handleSidebarChange({
@@ -43,7 +44,9 @@ const Product = () => {
         })
       );
 
-      navigate('/chats');
+      await dispatch(handleChatChange({}));
+
+      if (res) navigate(`/chats/${res.data.chat._id}`);
     } catch (e) {
       console.log(e);
     }
@@ -63,7 +66,7 @@ const Product = () => {
   };
 
   const productDetails = (product_Id) => {
-    navigate(`/products/${product_Id}`); 
+    navigate(`/products/${product_Id}`);
   };
 
   useEffect(() => {
@@ -126,5 +129,3 @@ const Product = () => {
 };
 
 export default Product;
-
-
