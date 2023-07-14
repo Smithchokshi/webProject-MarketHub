@@ -52,6 +52,23 @@ const Product = () => {
     }
   };
 
+  const handleAddLike = async productId => {
+    try {
+      const data = {
+        productId:productId,
+        isLiked: true,
+      };
+      const res = await api(true).setLike(data);
+      await getData();
+      } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const productDetails = (product_Id) => {
+    navigate(`/products/${product_Id}`);
+  };
+
   useEffect(() => {
     (async () => {
       await getData();
@@ -81,8 +98,13 @@ const Product = () => {
                   cover={<img className="card-image" alt="example" src={e.image} />}
                   actions={[
                     <Tooltip placement="bottom" title={<span>Like</span>}>
-                      <LikeOutlined key="like" />
-                    </Tooltip>,
+                    <LikeOutlined key="like" onClick={() => handleAddLike(e._id)}
+                      style={{ color:  e.isLiked ? "blue" : "inherit" }}
+                    />
+                    <span className="like-count">({e.isLikedTotal})</span>
+                    {/* <span className="like-count">({e.productName})</span>
+                    <span className="like-count">({e._id})</span> */}
+                  </Tooltip>,
                     <Tooltip placement="bottom" title={<span>Share</span>}>
                       <ShareAltOutlined key="share" />
                     </Tooltip>,
@@ -92,10 +114,10 @@ const Product = () => {
                   ]}
                 >
                   <Meta
-                    avatar={<Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />}
-                    title={e.productName}
-                    description={e.productDescription}
-                  />
+                avatar={<Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />}
+                title={<a onClick={()=> productDetails(e._id)}>{e.productName}</a>}
+                description={e.productDescription}
+              />
                 </Card>
               </Col>
             ))}

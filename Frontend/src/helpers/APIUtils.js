@@ -121,6 +121,43 @@ class ApiUtils {
       url: '/product/',
     });
 
+    getOneProduct = data =>
+    this.axios({
+      method: 'POST',
+      url: '/product/getone',
+      data
+    });
+    setLike = data =>
+    this.axios({
+      method: 'POST',
+      url: '/likes/like',
+      data
+    });
+    setRating = data =>
+    this.axios({
+      method: 'POST',
+      url: '/ratings/rating',
+      data
+    });
+    getRatings = data =>
+    this.axios({
+      method: 'POST',
+      url: '/ratings/',
+      data
+    });
+    // getRatings
+    getALlComments = data =>
+    this.axios({
+      method: 'POST',
+      url: '/comment/',
+      data
+    });
+    createComment = data =>
+    this.axios({
+      method: 'POST',
+      url: '/comment/create',
+      data,
+    });
   setContactUs = data =>
     this.axios({
       method: 'POST',

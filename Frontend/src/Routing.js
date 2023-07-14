@@ -10,8 +10,11 @@ const ChatList = lazy(() => import('./components/Chat/chatList'));
 const Sidebar = lazy(() => import('./shared/sidebar'));
 const Login = lazy(() => import('./components/Login/login'));
 const Product = lazy(() => import('./components/Product/product'));
+const ProductDetails = lazy(() => import('./components/Product/productDetails'));
 const ContactUs = lazy(() => import('./components/ContactUs/contactUs'));
 const Faq = lazy(() => import('./components/FAQ/FAQ'));
+const Comment = lazy(() => import('./components/Comment/comment'));
+
 
 const { Content } = Layout;
 
@@ -33,6 +36,14 @@ const Routing = () => {
     {
       path: '/products',
       component: <Product />,
+    },
+    {
+      path: '/products/:id',
+      component: <ProductDetails />,
+    },
+    {
+      path: '/comment/:id',
+      component: <Comment />,
     },
     {
       path: '/chats',
