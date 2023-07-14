@@ -38,7 +38,11 @@ const Routing = () => {
       component: <Product />,
     },
     {
-      path: '/comment/:productId',
+      path: '/products/:id',
+      component: <ProductDetails />,
+    },
+    {
+      path: '/comment/:id',
       component: <Comment />,
     },
     {

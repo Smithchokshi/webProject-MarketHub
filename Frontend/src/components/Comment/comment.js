@@ -42,7 +42,7 @@ const CommentList = ({ comments }) => (
 
 
 
-const Editor = ({ onChange, onSubmit, submitting, value, navigateToproducts }) => (
+const Editor = ({ onChange, onSubmit, submitting, value, navigateToproducts, id }) => (
   <div style={{ borderRadius: '8px', backgroundColor: '#f5f5f5' }}>
     <Form.Item>
       <TextArea rows={4} onChange={onChange} value={value} style={{ backgroundColor: '#f5f5f5', borderRadius: '8px' }} />
@@ -52,7 +52,7 @@ const Editor = ({ onChange, onSubmit, submitting, value, navigateToproducts }) =
         <Button htmlType="submit" loading={submitting} onClick={onSubmit} type="primary">
           Add Comment
         </Button>
-        <Button htmlType="submit" loading={submitting} onClick={navigateToproducts} type="primary">
+        <Button htmlType="submit" loading={submitting} onClick={() => navigateToproducts(id)} type="primary">
           Back
         </Button>
       </Space>
@@ -73,12 +73,12 @@ const App = () => {
   const [firebaseValue, setFirebaseValue] = useState(0);
 
 
-  const { productId } = useParams();
+  const { id } = useParams();
 
   const getData = async () => {
 
     try {
-      const res = await api(false).getALlComments({ productId: productId });
+      const res = await api(false).getALlComments({ productId: id });
 
       // setCommentData(res.data);
       const transformedComments = res.data.map(comment => ({
@@ -131,7 +131,7 @@ const App = () => {
     if (!value) return;
     setSubmitting(true);
     const data = {
-      productId: productId,
+      productId: id,
       comment: value,
     };
 
@@ -146,8 +146,9 @@ const App = () => {
   const handleChange = (e) => {
     setValue(e.target.value);
   };
-  const navigateToproducts = () => {
-    navigate(`/products/${productId}`); 
+  const navigateToproducts = (id) => {
+    console.log(id);
+    navigate(`/products/${id}`); 
   };
 
   return (
@@ -164,6 +165,7 @@ const App = () => {
                 submitting={submitting}
                 value={value}
                 navigateToproducts={navigateToproducts}
+                id={id}
               />
             }
           />
