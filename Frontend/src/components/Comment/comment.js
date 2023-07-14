@@ -1,7 +1,7 @@
 // import { DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined } from '@ant-design/icons';
 import { Comment } from '@ant-design/compatible';
 import { Avatar, Button, Form, Input, List, Divider, Layout, Space } from 'antd';
-import { useParams, useNavigate} from 'react-router-dom';
+import { useParams, useNavigate,useLocation} from 'react-router-dom';
 
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
@@ -64,7 +64,6 @@ const Editor = ({ onChange, onSubmit, submitting, value, navigateToproducts, id 
 let counter = 0;
 
 const App = () => {
-  // const [counter, setCounter] = useState(0);
 
   const [comments, setComments] = useState([]);
   const [submitting, setSubmitting] = useState(false);
@@ -72,8 +71,12 @@ const App = () => {
   const navigate = useNavigate();
   const [firebaseValue, setFirebaseValue] = useState(0);
 
+ 
 
   const { id } = useParams();
+  const queryParams = new URLSearchParams(location.search);
+  const name = queryParams.get('name');
+  // console.log(name+"name");
 
   const getData = async () => {
 
@@ -153,7 +156,7 @@ const App = () => {
 
   return (
     <Layout style={{ flex: 1, overflow: 'hidden' }}>
-      <GlobalHeader title={'Products'} />
+      <GlobalHeader title={name} />
       <Content style={{ padding: '24px', overflow: 'auto' }}>
 
         <div style={{ backgroundColor: '#f5f5f5' }}>

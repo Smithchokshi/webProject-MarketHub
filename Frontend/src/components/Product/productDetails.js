@@ -9,6 +9,10 @@ import APIUtils from '../../helpers/APIUtils';
 import axios from 'axios';
 import { Rate } from 'antd';
 import GlobalHeader from '../../shared/header';
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css';
+
+
 
 
 const {Content}=Layout;
@@ -24,6 +28,9 @@ function ProductDetails(){
   const [rateData, SetRateData] = useState([]);
   const { id } = useParams();
   const navigate=useNavigate();
+  const [lightboxVisible, setLightboxVisible] = useState(false);
+const [lightboxIndex, setLightboxIndex] = useState(0);
+
 
   const getData = async () => {
 
@@ -61,7 +68,7 @@ function ProductDetails(){
   };
 
    const navigateToComment=()=>{
-    navigate(`/comment/${id}`); 
+    navigate(`/comment/${id}?name=${(product?.productName)}`); 
    }
    const navigateToproducts=()=>{
     navigate(`/products`); 
@@ -74,8 +81,16 @@ function ProductDetails(){
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
         <Card style={{backgroundColor: '#f5f5f5'}}>
           <Meta
-            avatar={<Avatar size={128} src={product?.image} />}
-            title={
+            // avatar={<Avatar size={128} src={product?.image} />}
+            avatar={
+              <Avatar
+              size={128}
+              src={product?.image}
+              style={{ cursor: 'pointer' }}
+              onClick={() => setLightboxVisible(true)}
+            />
+            }
+      title={
             <div>   
             <h2 style={{ fontSize: '32px' , float:'left'}}>{product?.productName}</h2>
             <Button type="primary" style={{float:'right'}} onClick={navigateToproducts}>Back</Button>
@@ -83,6 +98,14 @@ function ProductDetails(){
             }
             description={`Product Price: ${product?.price}`}
           />    
+          {lightboxVisible && (
+            <Lightbox
+              mainSrc={product?.image}
+              onCloseRequest={() => setLightboxVisible(false)}
+              imageTitle={product?.productName}
+              imageCaption={`Product Price: ${product?.price}`}
+            />
+          )}
           <Rate allowHalf value={rateData?.userRatings} onChange={handleRatingChange}/><br/>
           Total Ratings: {parseFloat(rateData?.averageRatings).toFixed(2)}
           <Divider/>
