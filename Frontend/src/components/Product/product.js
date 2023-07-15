@@ -10,7 +10,6 @@ import { handleSidebarChange } from '../../redux/actions/sidebarAction';
 import GlobalHeader from '../../shared/header';
 import { handleChatChange } from '../../redux/actions/chatActions';
 
-
 const { Meta } = Card;
 const { Content } = Layout;
 const api = msg => new APIUtils(msg);
@@ -38,7 +37,7 @@ const Product = () => {
         productId: productData._id,
       };
 
-      const res = await api(true).createChat(data);
+      const res = await api(false).createChat(data);
 
       await dispatch(
         handleSidebarChange({
@@ -57,17 +56,17 @@ const Product = () => {
   const handleAddLike = async productId => {
     try {
       const data = {
-        productId:productId,
+        productId: productId,
         isLiked: true,
       };
       const res = await api(true).setLike(data);
       await getData();
-      } catch (e) {
+    } catch (e) {
       console.log(e);
     }
   };
 
-  const productDetails = (product_Id) => {
+  const productDetails = product_Id => {
     navigate(`/products/${product_Id}`);
   };
 
@@ -76,13 +75,16 @@ const Product = () => {
       await getData();
     })();
   }, []);
-  const handleShare = (product_Id) => {
+  const handleShare = product_Id => {
     const url = `${process.env.REACT_APP_API_URL}/products/${product_Id}`;
-    navigator.clipboard.writeText(url).then(() => {
-      alert('Product Link copied to clipboard!');
-    }).catch((error) => {
-      console.log('Error copying to clipboard:', error);
-    });
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        alert('Product Link copied to clipboard!');
+      })
+      .catch(error => {
+        console.log('Error copying to clipboard:', error);
+      });
   };
 
   return (
@@ -102,26 +104,32 @@ const Product = () => {
                 lg={6}
                 xl={4}
               >
-
                 <Card
                   hoverable
                   style={{ width: '100%' }}
                   cover={
                     <div style={{ maxHeight: '300px', overflow: 'hidden' }}>
                       <a onClick={() => productDetails(e._id)}>
-                        <img className="card-image" alt="example" src={e.image} style={{ width: '100%', objectFit: 'cover', maxHeight: '100%' }} />
+                        <img
+                          className="card-image"
+                          alt="example"
+                          src={e.image}
+                          style={{ width: '100%', objectFit: 'cover', maxHeight: '100%' }}
+                        />
                       </a>
                     </div>
                   }
                   actions={[
                     <Tooltip placement="bottom" title={<span>Like</span>}>
-                    <LikeOutlined key="like" onClick={() => handleAddLike(e._id)}
-                      style={{ color:  e.isLiked ? "blue" : "inherit" }}
-                    />
-                    <span className="like-count">({e.isLikedTotal})</span>
-                  </Tooltip>,
+                      <LikeOutlined
+                        key="like"
+                        onClick={() => handleAddLike(e._id)}
+                        style={{ color: e.isLiked ? 'blue' : 'inherit' }}
+                      />
+                      <span className="like-count">({e.isLikedTotal})</span>
+                    </Tooltip>,
                     <Tooltip placement="bottom" title={<span>Share</span>}>
-                      <ShareAltOutlined key="share" onClick={()=>handleShare(e._id)} />
+                      <ShareAltOutlined key="share" onClick={() => handleShare(e._id)} />
                     </Tooltip>,
                     <Tooltip placement="bottom" title={<span>Chat</span>}>
                       <CommentOutlined key="comment" onClick={() => handleCreateChat(e)} />{' '}
@@ -129,14 +137,21 @@ const Product = () => {
                   ]}
                 >
                   <a onClick={() => productDetails(e._id)}>
-                  <Meta
-                avatar={<Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />}
-                title={<a onClick={()=> productDetails(e._id)}>{e.productName}</a>}
-                description={e.productDescription.length > 10 ? `${e.productDescription.substring(0, 10)}...` : `${e.productDescription.substring(0, 10)}${Array.from({ length: Math.max(0, 13 - e.productDescription.length) }).fill(' ').join('')}`}
-                                style={{ whiteSpace: 'pre' }}
-
-                />
-                </a>
+                    <Meta
+                      avatar={<Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />}
+                      title={<a onClick={() => productDetails(e._id)}>{e.productName}</a>}
+                      description={
+                        e.productDescription.length > 10
+                          ? `${e.productDescription.substring(0, 10)}...`
+                          : `${e.productDescription.substring(0, 10)}${Array.from({
+                              length: Math.max(0, 13 - e.productDescription.length),
+                            })
+                              .fill(' ')
+                              .join('')}`
+                      }
+                      style={{ whiteSpace: 'pre' }}
+                    />
+                  </a>
                 </Card>
               </Col>
             ))}

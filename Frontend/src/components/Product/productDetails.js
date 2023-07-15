@@ -1,147 +1,151 @@
-import React, { useEffect, useState, history} from  'react';
-import { useParams } from 'react-router-dom';
-
-import {useLocation} from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
-
-import { Avatar, List, Divider,Card, Radio, Space,Button,Layout} from 'antd';
-import APIUtils from '../../helpers/APIUtils';
-import axios from 'axios';
-import { Rate } from 'antd';
-import GlobalHeader from '../../shared/header';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { Avatar, Divider, Card, Space, Button, Layout, Rate } from 'antd';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
+import APIUtils from '../../helpers/APIUtils';
+import GlobalHeader from '../../shared/header';
+import { handleSidebarChange } from '../../redux/actions/sidebarAction';
+import { handleChatChange } from '../../redux/actions/chatActions';
 
-
-
-
-const {Content}=Layout;
-
-
-
-
+const { Content } = Layout;
 
 const api = msg => new APIUtils(msg);
-function ProductDetails(){
-  const {Meta}=Card;
+function ProductDetails() {
+  const { chatList } = useSelector(state => state.chat);
+  const dispatch = useDispatch();
+
+  const { Meta } = Card;
   const [product, SetProduct] = useState([]);
   const [rateData, SetRateData] = useState([]);
   const { id } = useParams();
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [lightboxVisible, setLightboxVisible] = useState(false);
-const [lightboxIndex, setLightboxIndex] = useState(0);
-
 
   const getData = async () => {
-
     try {
-      console.log(id+"p_id");
       const res = await api(false).getOneProduct({ productId: id });
       SetProduct(res.data[0]);
 
-      const rData = await api(false).getRatings({ productId: id });   
-      const ratings ={
-        averageRatings:rData.data.rate.averageRatings,
-        userRatings:rData.data.rate.userRatings,
-      }
-      console.log("rData"+rData.data.rate.userRatings);  
+      const rData = await api(false).getRatings({ productId: id });
+      const ratings = {
+        averageRatings: rData.data.rate.averageRatings,
+        userRatings: rData.data.rate.userRatings,
+      };
       SetRateData(ratings);
     } catch (e) {
       console.log(e);
     }
   };
   useEffect(() => {
-    getData();
-  },[]);
+    (async () => {
+      await getData();
+    })();
+  }, []);
 
   const handleRatingChange = async rating => {
-    // Here you can handle the logic to record the rating
-    console.log('Selected rating:', rating);
-    const data={
+    const data = {
       productId: id,
       rateNumber: rating,
-    }
+    };
     const res = await api(true).setRating(data);
-    console.log(res+"resss")
-    getData();
-    // You can send an API request to save the rating or perform any other actions
+    await getData();
   };
 
-   const navigateToComment=()=>{
-    navigate(`/comment/${id}?name=${(product?.productName)}`); 
-   }
-   const navigateToproducts=()=>{
-    navigate(`/products`); 
-   }
-    return (
-      <Layout style={{ flex: 1, overflow: 'hidden' }}>
-      <GlobalHeader title={'Products'} />
-       <Content style={{ padding: '24px', overflow: 'auto' }}>
+  const navigateToComment = () => {
+    navigate(`/comment/${id}?name=${product?.productName}`);
+  };
+  const navigateToproducts = () => {
+    navigate(`/products`);
+  };
 
+  const handleCreateChat = async () => {
+    try {
+      const data = {
+        secondId: product.userId,
+        productName: product.productName,
+        productId: product._id,
+      };
+
+      const res = await api(false).createChat(data);
+
+      await dispatch(
+        handleSidebarChange({
+          key: '/chats',
+        })
+      );
+
+      await dispatch(handleChatChange({}));
+
+      if (res) navigate(`/chats/${res.data.chat._id}`);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  return (
+    <Layout style={{ flex: 1, overflow: 'hidden' }}>
+      <GlobalHeader title={'Products'} />
+      <Content style={{ padding: '24px', overflow: 'auto' }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-        <Card style={{backgroundColor: '#f5f5f5'}}>
-          <Meta
-            // avatar={<Avatar size={128} src={product?.image} />}
-            avatar={
-              <Avatar
-              size={128}
-              src={product?.image}
-              style={{ cursor: 'pointer' }}
-              onClick={() => setLightboxVisible(true)}
+          <Card style={{ backgroundColor: '#f5f5f5' }}>
+            <Meta
+              // avatar={<Avatar size={128} src={product?.image} />}
+              avatar={
+                <Avatar
+                  size={128}
+                  src={product?.image}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setLightboxVisible(true)}
+                />
+              }
+              title={
+                <div>
+                  <h2 style={{ fontSize: '32px', float: 'left' }}>{product?.productName}</h2>
+                  <Button type="primary" style={{ float: 'right' }} onClick={navigateToproducts}>
+                    Back
+                  </Button>
+                </div>
+              }
+              description={`Product Price: ${product?.price}`}
             />
-            }
-      title={
-            <div>   
-            <h2 style={{ fontSize: '32px' , float:'left'}}>{product?.productName}</h2>
-            <Button type="primary" style={{float:'right'}} onClick={navigateToproducts}>Back</Button>
+            {lightboxVisible && (
+              <Lightbox
+                mainSrc={product?.image}
+                onCloseRequest={() => setLightboxVisible(false)}
+                imageTitle={product?.productName}
+                imageCaption={`Product Price: ${product?.price}`}
+              />
+            )}
+            <Rate allowHalf value={rateData?.userRatings} onChange={handleRatingChange} />
+            <br />
+            Total Ratings: {parseFloat(rateData?.averageRatings).toFixed(2)}
+            <Divider />
+            <div>
+              <Space size="middle" wrap>
+                <Button type="primary" onClick={navigateToComment}>
+                  Comment
+                </Button>
+                <Button type="primary" onClick={handleCreateChat}>
+                  Chat
+                </Button>
+                <Button type="primary">Payment</Button>
+              </Space>
             </div>
-            }
-            description={`Product Price: ${product?.price}`}
-          />    
-          {lightboxVisible && (
-            <Lightbox
-              mainSrc={product?.image}
-              onCloseRequest={() => setLightboxVisible(false)}
-              imageTitle={product?.productName}
-              imageCaption={`Product Price: ${product?.price}`}
-            />
-          )}
-          <Rate allowHalf value={rateData?.userRatings} onChange={handleRatingChange}/><br/>
-          Total Ratings: {parseFloat(rateData?.averageRatings).toFixed(2)}
-          <Divider/>
-        <div>
-        <Space size="middle" wrap>
-  <Button type="primary" onClick={navigateToComment}>
-    Comment
-  </Button>
-  <Button type="primary" >
-    Chat
-  </Button>
-  <Button type="primary">
-    Payment
-  </Button>
-  </Space>
-          </div>
-          <Divider />
-  
-          <h2>Address</h2>
-          {/* <p>{product.productDescription}</p> */}
-          <p>133-137 Scudamore Rd, Leicester LE3 1UQ, United Kingdom</p>
-          <Divider />  
-          <h2>Product description</h2>
-          <p>{product?.productDescription}</p>
-          <Divider />
-  
-          <h2>Market Place Verified User</h2>
-        </Card>
-      </div>
+            <Divider />
+            <h2>Address</h2>
+            {/* <p>{product.productDescription}</p> */}
+            <p>133-137 Scudamore Rd, Leicester LE3 1UQ, United Kingdom</p>
+            <Divider />
+            <h2>Product description</h2>
+            <p>{product?.productDescription}</p>
+            <Divider />
+            <h2>Market Place Verified User</h2>
+          </Card>
+        </div>
       </Content>
-      </Layout>
-    );
+    </Layout>
+  );
 }
 
 export default ProductDetails;
-
-
-
-
