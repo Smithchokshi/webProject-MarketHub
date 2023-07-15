@@ -10,8 +10,11 @@ const ChatList = lazy(() => import('./components/Chat/chatList'));
 const Sidebar = lazy(() => import('./shared/sidebar'));
 const Login = lazy(() => import('./components/Login/login'));
 const Product = lazy(() => import('./components/Product/product'));
+const ProductDetails = lazy(() => import('./components/Product/productDetails'));
 const ContactUs = lazy(() => import('./components/ContactUs/contactUs'));
 const Faq = lazy(() => import('./components/FAQ/FAQ'));
+const Comment = lazy(() => import('./components/Comment/comment'));
+
 
 const { Content } = Layout;
 
@@ -35,6 +38,14 @@ const Routing = () => {
       component: <Product />,
     },
     {
+      path: '/products/:id',
+      component: <ProductDetails />,
+    },
+    {
+      path: '/comment/:id',
+      component: <Comment />,
+    },
+    {
       path: '/chats',
       component: <ChatList />,
     },
@@ -56,9 +67,6 @@ const Routing = () => {
     <Suspense className="loader" fallback={<Loader />}>
       <Layout style={{ minHeight: '100vh', display: 'flex' }}>
         {isAuthenticated && <Sidebar style={{ backgroundColor: '#f0f0f0' }} />}
-        {/*<Layout style={{ flex: 1, overflow: 'hidden' }}>*/}
-        {/*  <GlobalHeader />*/}
-        {/*  <Content style={{ padding: '24px', overflow: 'auto' }}>*/}
         <Routes>
           <Route exact={true} key={'/contact-us'} path={'/contact-us'} element={<ContactUs />} />
           <Route exact={true} key={'/faq'} path={'/faq'} element={<Faq />} />
@@ -79,8 +87,6 @@ const Routing = () => {
             />
           ))}
         </Routes>
-        {/*  </Content>*/}
-        {/*</Layout>*/}
       </Layout>
     </Suspense>
   );

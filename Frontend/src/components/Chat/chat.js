@@ -4,6 +4,7 @@ import { PaperClipOutlined } from '@ant-design/icons';
 import { io } from 'socket.io-client';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+import Moment from 'react-moment';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
 import APIUtils from '../../helpers/APIUtils';
 import './chat.css';
@@ -203,7 +204,7 @@ const Chat = () => {
 
   return (
     <Layout style={{ flex: 1, overflow: 'hidden' }}>
-      <GlobalHeader title={`Chat / ${selectedChat?.label}`} />
+      <GlobalHeader title={`${selectedChat?.label}`} />
       <Content style={{ padding: '24px', overflow: 'auto' }}>
         <div
           className="chat-container"
@@ -221,17 +222,27 @@ const Chat = () => {
                 }
               >
                 {item.isImage ? (
-                  <img
-                    src={item.content}
-                    alt="Image"
-                    role="presentation"
-                    onClick={() => {
-                      setPreviewedImage(item.content);
-                      handlePreview(true);
-                    }}
-                  />
+                  <div className="image-container">
+                    <img
+                      src={item.content}
+                      alt="Image"
+                      role="presentation"
+                      onClick={() => {
+                        setPreviewedImage(item.content);
+                        handlePreview(true);
+                      }}
+                    />
+                    <div className={item.senderId === user ? 'message-time-right' : 'message-time'}>
+                      <Moment format="YYYY/MM/DD hh:mm A">{item.createdAt}</Moment>
+                    </div>
+                  </div>
                 ) : (
-                  <>{item.content}</>
+                  <div className="message-container">
+                    <div className="message-content">{item.content}</div>
+                    <div className="message-time">
+                      <Moment format="YYYY/MM/DD hh:mm A">{item.createdAt}</Moment>
+                    </div>
+                  </div>
                 )}
               </List.Item>
             )}

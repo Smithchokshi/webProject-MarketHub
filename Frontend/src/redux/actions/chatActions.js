@@ -22,6 +22,7 @@ export const handleChatList = (callAPI, data) => async dispatch => {
           label: `${e.userDetails[0].name} - ${e.productName}`,
           id: e.userDetails[0]._id,
           active: false,
+          productDetails: e.productDetails,
         });
       });
     }
