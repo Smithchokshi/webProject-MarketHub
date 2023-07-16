@@ -12,8 +12,6 @@ export const loadUser = () => async dispatch => {
     const res = await api().loadUser({
       authorization: token,
     });
-
-    console.log(res.data.userData);
     await dispatch(handleChatList(true, []));
     dispatch({ type: 'EXISTING_USER', payload: res.data.userData });
     return true;

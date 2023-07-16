@@ -95,10 +95,11 @@ class ApiUtils {
       data,
     });
 
-  getAllChats = () =>
+  getAllChats = headers =>
     this.axios({
       method: 'GET',
       url: '/chats/getAllChats',
+      headers,
     });
 
   getAllMessages = data =>
@@ -121,38 +122,38 @@ class ApiUtils {
       url: '/product/',
     });
 
-    getOneProduct = data =>
+  getOneProduct = data =>
     this.axios({
       method: 'POST',
       url: '/product/getone',
-      data
+      data,
     });
-    setLike = data =>
+  setLike = data =>
     this.axios({
       method: 'POST',
       url: '/likes/like',
-      data
+      data,
     });
-    setRating = data =>
+  setRating = data =>
     this.axios({
       method: 'POST',
       url: '/ratings/rating',
-      data
+      data,
     });
-    getRatings = data =>
+  getRatings = data =>
     this.axios({
       method: 'POST',
       url: '/ratings/',
-      data
+      data,
     });
-    // getRatings
-    getALlComments = data =>
+  // getRatings
+  getALlComments = data =>
     this.axios({
       method: 'POST',
       url: '/comment/',
-      data
+      data,
     });
-    createComment = data =>
+  createComment = data =>
     this.axios({
       method: 'POST',
       url: '/comment/create',

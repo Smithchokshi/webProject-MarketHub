@@ -14,7 +14,10 @@ export const handleChatList = (callAPI, data) => async dispatch => {
   try {
     const tempData = data;
     if (callAPI) {
-      const res = await api().getAllChats();
+      const token = localStorage.getItem('token');
+      const res = await api().getAllChats({
+        authorization: token,
+      });
 
       res.data.allChats.map((e, index) => {
         tempData.push({
