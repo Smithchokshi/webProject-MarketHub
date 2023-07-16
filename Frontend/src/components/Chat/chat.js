@@ -123,7 +123,7 @@ const Chat = () => {
   const getMessages = async () => {
     try {
       let tempKey;
-      if (!selectedChat?.key) {
+      if (!selectedChat || !selectedChat?.key) {
         tempKey = chatList.find(cur => cur.key === location.pathname.split('/chats/')[1]);
         await dispatch(handleChatChange(tempKey));
       }
