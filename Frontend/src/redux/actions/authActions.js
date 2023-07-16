@@ -1,4 +1,5 @@
 import ApiUtils from '../../helpers/APIUtils';
+import { handleChatList } from './chatActions';
 
 const api = msg => new ApiUtils(msg);
 
@@ -13,6 +14,7 @@ export const loadUser = () => async dispatch => {
     });
 
     console.log(res.data.userData);
+    await dispatch(handleChatList(true, []));
     dispatch({ type: 'EXISTING_USER', payload: res.data.userData });
     return true;
   } catch (err) {
