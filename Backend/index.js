@@ -16,7 +16,6 @@ const ratingsRoute = require('./Routes/ratingsRoute');
 const commentRoute = require('./Routes/commentRoute');
 const { model } = require('mongoose');
 
-
 const app = express();
 const server = http.createServer(app);
 require('dotenv').config();
@@ -39,7 +38,7 @@ app.use('/api/message', authMiddleware, messageRoute);
 app.use('/api/product', authMiddleware, productRoute);
 app.use('/api/likes', authMiddleware, likesRoute);
 app.use('/api/ratings', authMiddleware, ratingsRoute);
-app.use('/api/comment', authMiddleware,commentRoute);
+app.use('/api/comment', authMiddleware, commentRoute);
 app.use('/api/contact-us', contactusRoute);
 app.get('/', (req, res) => {
   res.send('working');
