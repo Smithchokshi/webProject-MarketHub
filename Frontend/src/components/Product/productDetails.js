@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Avatar, Divider, Card, Space, Button, Layout, Rate } from 'antd';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
 import APIUtils from '../../helpers/APIUtils';
 import GlobalHeader from '../../shared/header';
-import { handleSidebarChange } from '../../redux/actions/sidebarAction';
-import { handleChatChange } from '../../redux/actions/chatActions';
+import handleCreateChat from '../../helpers/handleCreateChat';
 
 const { Content } = Layout;
 
 const api = msg => new APIUtils(msg);
 function ProductDetails() {
-  const { chatList } = useSelector(state => state.chat);
   const dispatch = useDispatch();
 
   const { Meta } = Card;
   const [product, SetProduct] = useState([]);
-  const [rateData, SetRateData] = useState([]);
+  const [rateData, SetRateData] = useState({});
   const { id } = useParams();
   const navigate = useNavigate();
   const [lightboxVisible, setLightboxVisible] = useState(false);
@@ -60,29 +58,6 @@ function ProductDetails() {
     navigate(`/products`);
   };
 
-  const handleCreateChat = async () => {
-    try {
-      const data = {
-        secondId: product.userId,
-        productName: product.productName,
-        productId: product._id,
-      };
-
-      const res = await api(false).createChat(data);
-
-      await dispatch(
-        handleSidebarChange({
-          key: '/chats',
-        })
-      );
-
-      await dispatch(handleChatChange({}));
-
-      if (res) navigate(`/chats/${res.data.chat._id}`);
-    } catch (e) {
-      console.log(e);
-    }
-  };
   return (
     <Layout style={{ flex: 1, overflow: 'hidden' }}>
       <GlobalHeader title={'Products'} />
@@ -126,7 +101,10 @@ function ProductDetails() {
                 <Button type="primary" onClick={navigateToComment}>
                   Comment
                 </Button>
-                <Button type="primary" onClick={handleCreateChat}>
+                <Button
+                  type="primary"
+                  onClick={() => handleCreateChat(product, navigate, dispatch)}
+                >
                   Chat
                 </Button>
                 <Button type="primary">Payment</Button>

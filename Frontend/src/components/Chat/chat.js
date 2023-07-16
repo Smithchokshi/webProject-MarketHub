@@ -8,11 +8,7 @@ import Moment from 'react-moment';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
 import APIUtils from '../../helpers/APIUtils';
 import './chat.css';
-import {
-  handleChatChange,
-  handleChatList,
-  handleOnlineUser,
-} from '../../redux/actions/chatActions';
+import { handleChatChange, handleOnlineUser } from '../../redux/actions/chatActions';
 import UploadModal from './uploadModal';
 import ImageModal from './imageModal';
 import Payment from '../../shared/payment';
