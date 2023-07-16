@@ -9,8 +9,7 @@ import { handleChatList } from './redux/actions/chatActions';
 const App = () => {
   useEffect(() => {
     (async () => {
-      await store.dispatch(loadUser());
-      await store.dispatch(handleChatList(true, []));
+      await Promise.all([store.dispatch(loadUser()), store.dispatch(handleChatList(true, []))]);
     })();
   }, []);
 
