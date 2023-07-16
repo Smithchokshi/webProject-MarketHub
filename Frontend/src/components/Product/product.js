@@ -5,10 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import APIUtils from '../../helpers/APIUtils';
 import './product.css';
-import { useMediaQuery } from 'react-responsive';
-import { handleSidebarChange } from '../../redux/actions/sidebarAction';
 import GlobalHeader from '../../shared/header';
-import { handleChatChange } from '../../redux/actions/chatActions';
+import handleCreateChat from '../../helpers/handleCreateChat';
 
 const { Meta } = Card;
 const { Content } = Layout;
@@ -24,30 +22,6 @@ const Product = () => {
       const res = await api(false).getALlProducts();
 
       setCardData(res.data.products);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const handleCreateChat = async productData => {
-    try {
-      const data = {
-        secondId: productData.userId,
-        productName: productData.productName,
-        productId: productData._id,
-      };
-
-      const res = await api(false).createChat(data);
-
-      await dispatch(
-        handleSidebarChange({
-          key: '/chats',
-        })
-      );
-
-      await dispatch(handleChatChange({}));
-
-      if (res) navigate(`/chats/${res.data.chat._id}`);
     } catch (e) {
       console.log(e);
     }
@@ -132,7 +106,10 @@ const Product = () => {
                       <ShareAltOutlined key="share" onClick={() => handleShare(e._id)} />
                     </Tooltip>,
                     <Tooltip placement="bottom" title={<span>Chat</span>}>
-                      <CommentOutlined key="comment" onClick={() => handleCreateChat(e)} />{' '}
+                      <CommentOutlined
+                        key="comment"
+                        onClick={() => handleCreateChat(e, navigate, dispatch)}
+                      />{' '}
                     </Tooltip>,
                   ]}
                 >
