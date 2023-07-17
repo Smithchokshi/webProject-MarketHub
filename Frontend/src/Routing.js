@@ -2,7 +2,6 @@ import React, { Suspense, lazy } from 'react';
 import { Route, useNavigate, Routes } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Layout } from 'antd';
-import GlobalHeader from './shared/header';
 import Loader from './shared/loader';
 
 const Chat = lazy(() => import('./components/Chat/chat'));
@@ -14,7 +13,7 @@ const ProductDetails = lazy(() => import('./components/Product/productDetails'))
 const ContactUs = lazy(() => import('./components/ContactUs/contactUs'));
 const Faq = lazy(() => import('./components/FAQ/FAQ'));
 const Comment = lazy(() => import('./components/Comment/comment'));
-
+const Transactions = lazy(() => import('./components/Transactions/transaction'));
 
 const { Content } = Layout;
 
@@ -52,6 +51,10 @@ const Routing = () => {
     {
       path: '/chats/:id',
       component: <Chat />,
+    },
+    {
+      path: '/transactions',
+      component: <Transactions />,
     },
   ].filter(cur => cur);
 

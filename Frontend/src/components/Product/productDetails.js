@@ -107,7 +107,6 @@ function ProductDetails() {
                 >
                   Chat
                 </Button>
-                <Button type="primary">Payment</Button>
               </Space>
             </div>
             <Divider />
