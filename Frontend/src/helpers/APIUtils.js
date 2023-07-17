@@ -172,6 +172,13 @@ class ApiUtils {
       url: '/stripe/create-checkout-session',
       data,
     });
+
+  getOrders = data =>
+    this.axios({
+      method: 'POST',
+      url: '/orders/',
+      data,
+    });
 }
 
 export default ApiUtils;

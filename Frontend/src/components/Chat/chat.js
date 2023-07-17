@@ -13,6 +13,7 @@ import UploadModal from './uploadModal';
 import ImageModal from './imageModal';
 import Payment from '../../shared/payment';
 import GlobalHeader from '../../shared/header';
+import Loader from '../../shared/loader';
 
 const { Content } = Layout;
 
@@ -29,6 +30,7 @@ const Chat = () => {
   const { selectedChat, chatList } = useSelector(state => state.chat);
   const { user } = useSelector(state => state.auth);
 
+  const [loading, setLoading] = useState(false);
   const [validator, setValidator] = useSimpleReactValidator();
   const [message, setMessage] = useState('');
   const [allMessages, setAllMessages] = useState([]);
@@ -122,6 +124,7 @@ const Chat = () => {
 
   const getMessages = async () => {
     try {
+      setLoading(true);
       let tempKey;
       console.log(!selectedChat?.key);
       if (!selectedChat?.key) {
@@ -135,7 +138,9 @@ const Chat = () => {
       const res = await api().getAllMessages(data);
 
       setAllMessages(res.data.content);
+      setLoading(false);
     } catch (e) {
+      setLoading(false);
       console.log(e);
     }
   };
@@ -203,6 +208,7 @@ const Chat = () => {
     <Layout style={{ flex: 1, overflow: 'hidden' }}>
       <GlobalHeader title={`${selectedChat?.label}`} />
       <Content style={{ padding: '24px', overflow: 'auto' }}>
+        {loading && <Loader />}
         <div
           className="chat-container"
           style={{
