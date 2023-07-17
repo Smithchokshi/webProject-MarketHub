@@ -10,7 +10,6 @@ const App = () => {
   useEffect(() => {
     (async () => {
       await store.dispatch(loadUser());
-      await store.dispatch(handleChatList(true, []));
     })();
   }, []);
 

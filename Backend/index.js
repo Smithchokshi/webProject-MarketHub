@@ -14,8 +14,7 @@ const stripe = require('./Routes/stripeRoute');
 const likesRoute = require('./Routes/likesRoute');
 const ratingsRoute = require('./Routes/ratingsRoute');
 const commentRoute = require('./Routes/commentRoute');
-const { model } = require('mongoose');
-
+const orderRoute = require('./Routes/orderRoute');
 
 const app = express();
 const server = http.createServer(app);
@@ -35,11 +34,12 @@ app.use(cors());
 app.use('/api/users', userRoute);
 app.use('/api/stripe', stripe);
 app.use('/api/chats', authMiddleware, chatRoute);
+app.use('/api/orders', authMiddleware, orderRoute);
 app.use('/api/message', authMiddleware, messageRoute);
 app.use('/api/product', authMiddleware, productRoute);
 app.use('/api/likes', authMiddleware, likesRoute);
 app.use('/api/ratings', authMiddleware, ratingsRoute);
-app.use('/api/comment', authMiddleware,commentRoute);
+app.use('/api/comment', authMiddleware, commentRoute);
 app.use('/api/contact-us', contactusRoute);
 app.get('/', (req, res) => {
   res.send('working');

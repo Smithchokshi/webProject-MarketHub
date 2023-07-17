@@ -12,7 +12,7 @@ const PaymentModal = ({ paymentModal, handleModal, payableAmount, handlePayableA
     handlePayableAmount(null);
     handleModal(false);
   };
-  const { activatedSidebarKey, sidebarData } = useSelector(state => state.sidebar);
+  const { selectedChat, chatList } = useSelector(state => state.chat);
   const [validator, setValidator] = useSimpleReactValidator();
   const [loading, setLoading] = useState(false);
 
@@ -20,12 +20,12 @@ const PaymentModal = ({ paymentModal, handleModal, payableAmount, handlePayableA
     try {
       setLoading(true);
       if (validator.allValid()) {
-        const [recipient] = sidebarData.filter(cur => cur.key === activatedSidebarKey.key);
+        const [recipient] = chatList.filter(cur => cur.key === selectedChat.key);
         const tempData = {
           location: window.location.pathname,
           amount: payableAmount,
-          name: activatedSidebarKey?.label,
-          chatId: activatedSidebarKey?.key,
+          name: selectedChat?.label,
+          chatId: selectedChat?.key,
           recipientId: recipient?.id,
         };
         console.log(tempData);
