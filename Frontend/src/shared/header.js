@@ -5,10 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { handleCollapse, handleSidebarChange } from '../redux/actions/sidebarAction';
 import { logout } from '../redux/actions/authActions';
+import './header.css';
 
 const { Header } = Layout;
 
-const GlobalHeader = ({ title }) => {
+const GlobalHeader = ({userName}, { title }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isCollapsed, activatedSidebarKey, sidebarData } = useSelector(state => state.sidebar);
@@ -102,6 +103,8 @@ const GlobalHeader = ({ title }) => {
         </div>
       </div>
       {isAuthenticated ? (
+        <>
+        <p className='username'>{userName}</p>
         <Button
           type="primary"
           onClick={handleLogout}
@@ -115,6 +118,7 @@ const GlobalHeader = ({ title }) => {
         >
           Logout
         </Button>
+        </>
       ) : (
         <Button
           type="primary"

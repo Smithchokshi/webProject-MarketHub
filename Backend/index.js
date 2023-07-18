@@ -15,6 +15,9 @@ const likesRoute = require('./Routes/likesRoute');
 const ratingsRoute = require('./Routes/ratingsRoute');
 const commentRoute = require('./Routes/commentRoute');
 const orderRoute = require('./Routes/orderRoute');
+const passport = require('passport');
+const cookieSession = require("cookie-session");
+const passportSetup = require('./Controllers/Passport');
 
 const app = express();
 const server = http.createServer(app);
@@ -25,6 +28,13 @@ const io = socketIO(server, {
 global.io = io;
 
 dbConnection();
+
+app.use(
+  cookieSession({ name: "session", keys: ["lama"], maxAge: 24 * 60 * 60 * 100 })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // app.use(express.json());
 app.use(bodyParser.json({ limit: '10mb' }));
