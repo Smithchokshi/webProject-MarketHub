@@ -74,11 +74,13 @@ const Routing = () => {
   ].filter(cur => cur);
 
   const PrivateRoute = ({ children }) => {
-    return isAuthenticated ? children : navigate('/login', { replace: true });
+    if(!isAuthenticated) navigate('/login', {replace: true})
+    return isAuthenticated ? children : <Login />;
   };
 
   const PublicRoute = ({ children }) => {
-    return isAuthenticated ? navigate('/products', { replace: true }) : children;
+    if(isAuthenticated) navigate('/products', {replace: true})
+    return isAuthenticated ? <Product /> : children;
   };
 
   return (
