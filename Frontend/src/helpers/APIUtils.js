@@ -67,14 +67,42 @@ class ApiUtils {
       url: '/users/login',
       data,
     });
-
+  
+  facebookLogin = data =>
+    this.axios({
+      method: 'GET',
+      url: '/users/facebook',
+      data,
+    });
+  
   register = data =>
     this.axios({
       method: 'POST',
       url: '/users/register',
       data,
     });
-
+  
+  forgotPassword = data =>
+    this.axios({
+      method: 'POST',
+      url: '/users/forgot-password',
+      data,
+    });
+  
+  changePasswordGet = (id, token, headers) =>
+    this.axios({
+      method: 'GET',
+      url: `/users/reset-password/${id}/${token}`,
+      headers,
+    });
+  
+  changePasswordPost = (id, token, data) =>
+    this.axios({
+      method: 'POST',
+      url: `/users/reset-password/${id}/${token}`,
+      data,
+    });
+  
   loadUser = headers =>
     this.axios({
       method: 'GET',
