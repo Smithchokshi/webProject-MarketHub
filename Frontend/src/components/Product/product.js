@@ -14,10 +14,19 @@ const api = msg => new APIUtils(msg);
 
 const Product = () => {
   const [cardData, setCardData] = useState([]);
+  const [userName, setUserName] = useState();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const getData = async () => {
+
+    try {
+      const res = await api(false).loadUser();
+      setUserName(res.data.userData.name);
+      console.log(res.data.userData.name);
+    } catch (e) {
+      console.log(e);
+    }
     try {
       const res = await api(false).getALlProducts();
 
@@ -63,7 +72,7 @@ const Product = () => {
 
   return (
     <Layout style={{ flex: 1, overflow: 'hidden' }}>
-      <GlobalHeader title={'Products'} />
+      <GlobalHeader userName = {userName} title={'Products'} />
       <Content style={{ padding: '24px', overflow: 'auto' }}>
         <div className="dummy-container">
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
