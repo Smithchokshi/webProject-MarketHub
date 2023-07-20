@@ -9,7 +9,7 @@ import './header.css';
 
 const { Header } = Layout;
 
-const GlobalHeader = ({userName}, { title }) => {
+const GlobalHeader = ({userName, title }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isCollapsed, activatedSidebarKey, sidebarData } = useSelector(state => state.sidebar);
