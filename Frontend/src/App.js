@@ -9,6 +9,7 @@ import { handleChatList } from './redux/actions/chatActions';
 const App = () => {
   useEffect(() => {
     (async () => {
+      console.log('facebook');
       await store.dispatch(loadUser());
     })();
   }, []);
