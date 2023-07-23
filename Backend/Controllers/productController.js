@@ -35,7 +35,13 @@ const createProduct = async (req, res) => {
 const getALlProducts = async (req, res) => {
   try {
     const userId = res.locals.user._id.toString();
-    let products = await productModel.find({ userId: { $nin: [userId] } });
+    // let products = await productModel.find({ userId: { $nin: [userId] } });
+    let products = await productModel.find({
+      $and: [
+        { userId: { $nin: [userId] } },
+        { isApproved: true }
+      ]
+    });
     const likedProducts = await likesModel.find({ userId, isLiked: true });
 
   likedProducts.forEach(likedProduct => {
