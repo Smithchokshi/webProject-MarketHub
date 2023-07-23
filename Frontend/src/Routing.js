@@ -38,11 +38,11 @@ const Routing = () => {
     },
     {
       path: '/forgot-password',
-      component: <ForgotPassword/>,
+      component: <ForgotPassword />,
     },
     {
       path: '/change-password/:id/:token',
-      component: <ChangePassword/>,
+      component: <ChangePassword />,
     },
   ].filter(cur => cur);
 
@@ -74,12 +74,12 @@ const Routing = () => {
   ].filter(cur => cur);
 
   const PrivateRoute = ({ children }) => {
-    if(!isAuthenticated) navigate('/login', {replace: true})
+    if (!isAuthenticated) navigate('/login', { replace: true });
     return isAuthenticated ? children : <Login />;
   };
 
   const PublicRoute = ({ children }) => {
-    if(isAuthenticated) navigate('/products', {replace: true})
+    if (isAuthenticated) navigate('/products', { replace: true });
     return isAuthenticated ? <Product /> : children;
   };
 
