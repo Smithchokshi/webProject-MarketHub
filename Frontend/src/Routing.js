@@ -2,7 +2,6 @@ import React, { Suspense, lazy } from 'react';
 import { Route, useNavigate, Routes } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Layout } from 'antd';
-import GlobalHeader from './shared/header';
 import Loader from './shared/loader';
 
 const Chat = lazy(() => import('./components/Chat/chat'));
@@ -14,7 +13,10 @@ const ProductDetails = lazy(() => import('./components/Product/productDetails'))
 const ContactUs = lazy(() => import('./components/ContactUs/contactUs'));
 const Faq = lazy(() => import('./components/FAQ/FAQ'));
 const Comment = lazy(() => import('./components/Comment/comment'));
-
+const Transactions = lazy(() => import('./components/Transactions/transaction'));
+const Register = lazy(() => import('./components/Register/register'));
+const ForgotPassword = lazy(() => import('./components/ForgotPassword/forgotPassword'));
+const ChangePassword = lazy(() => import('./components/changePassword/changePassword'));
 
 const { Content } = Layout;
 
@@ -29,6 +31,18 @@ const Routing = () => {
     {
       path: '/login',
       component: <Login />,
+    },
+    {
+      path: '/register',
+      component: <Register />,
+    },
+    {
+      path: '/forgot-password',
+      component: <ForgotPassword/>,
+    },
+    {
+      path: '/change-password/:id/:token',
+      component: <ChangePassword/>,
     },
   ].filter(cur => cur);
 
@@ -53,14 +67,20 @@ const Routing = () => {
       path: '/chats/:id',
       component: <Chat />,
     },
+    {
+      path: '/transactions',
+      component: <Transactions />,
+    },
   ].filter(cur => cur);
 
   const PrivateRoute = ({ children }) => {
-    return isAuthenticated ? children : navigate('/login', { replace: true });
+    if(!isAuthenticated) navigate('/login', {replace: true})
+    return isAuthenticated ? children : <Login />;
   };
 
   const PublicRoute = ({ children }) => {
-    return isAuthenticated ? navigate('/products', { replace: true }) : children;
+    if(isAuthenticated) navigate('/products', {replace: true})
+    return isAuthenticated ? <Product /> : children;
   };
 
   return (

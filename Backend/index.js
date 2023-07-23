@@ -14,8 +14,10 @@ const stripe = require('./Routes/stripeRoute');
 const likesRoute = require('./Routes/likesRoute');
 const ratingsRoute = require('./Routes/ratingsRoute');
 const commentRoute = require('./Routes/commentRoute');
-const { model } = require('mongoose');
-
+const orderRoute = require('./Routes/orderRoute');
+const passport = require('passport');
+const cookieSession = require("cookie-session");
+const passportSetup = require('./Controllers/Passport');
 
 const app = express();
 const server = http.createServer(app);
@@ -27,6 +29,13 @@ global.io = io;
 
 dbConnection();
 
+app.use(
+  cookieSession({ name: "session", keys: ["lama"], maxAge: 24 * 60 * 60 * 100 })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 // app.use(express.json());
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
@@ -35,11 +44,12 @@ app.use(cors());
 app.use('/api/users', userRoute);
 app.use('/api/stripe', stripe);
 app.use('/api/chats', authMiddleware, chatRoute);
+app.use('/api/orders', authMiddleware, orderRoute);
 app.use('/api/message', authMiddleware, messageRoute);
 app.use('/api/product', authMiddleware, productRoute);
 app.use('/api/likes', authMiddleware, likesRoute);
 app.use('/api/ratings', authMiddleware, ratingsRoute);
-app.use('/api/comment', authMiddleware,commentRoute);
+app.use('/api/comment', authMiddleware, commentRoute);
 app.use('/api/contact-us', contactusRoute);
 app.get('/', (req, res) => {
   res.send('working');

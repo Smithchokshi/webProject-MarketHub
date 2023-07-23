@@ -1,4 +1,4 @@
-import { WechatOutlined } from '@ant-design/icons';
+import { DollarOutlined, WechatOutlined } from '@ant-design/icons';
 
 const initialState = {
   isCollapsed: false,
@@ -11,6 +11,12 @@ const initialState = {
       label: 'Chats',
       icon: <WechatOutlined />,
       url: '/chats',
+    },
+    {
+      key: '/transactions',
+      label: 'Transactions',
+      icon: <DollarOutlined />,
+      url: '/transactions',
     },
   ],
 };

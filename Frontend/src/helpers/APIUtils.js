@@ -67,14 +67,42 @@ class ApiUtils {
       url: '/users/login',
       data,
     });
-
+  
+  facebookLogin = data =>
+    this.axios({
+      method: 'GET',
+      url: '/users/facebook',
+      data,
+    });
+  
   register = data =>
     this.axios({
       method: 'POST',
       url: '/users/register',
       data,
     });
-
+  
+  forgotPassword = data =>
+    this.axios({
+      method: 'POST',
+      url: '/users/forgot-password',
+      data,
+    });
+  
+  changePasswordGet = (id, token, headers) =>
+    this.axios({
+      method: 'GET',
+      url: `/users/reset-password/${id}/${token}`,
+      headers,
+    });
+  
+  changePasswordPost = (id, token, data) =>
+    this.axios({
+      method: 'POST',
+      url: `/users/reset-password/${id}/${token}`,
+      data,
+    });
+  
   loadUser = headers =>
     this.axios({
       method: 'GET',
@@ -95,10 +123,11 @@ class ApiUtils {
       data,
     });
 
-  getAllChats = () =>
+  getAllChats = headers =>
     this.axios({
       method: 'GET',
       url: '/chats/getAllChats',
+      headers,
     });
 
   getAllMessages = data =>
@@ -121,38 +150,38 @@ class ApiUtils {
       url: '/product/',
     });
 
-    getOneProduct = data =>
+  getOneProduct = data =>
     this.axios({
       method: 'POST',
       url: '/product/getone',
-      data
+      data,
     });
-    setLike = data =>
+  setLike = data =>
     this.axios({
       method: 'POST',
       url: '/likes/like',
-      data
+      data,
     });
-    setRating = data =>
+  setRating = data =>
     this.axios({
       method: 'POST',
       url: '/ratings/rating',
-      data
+      data,
     });
-    getRatings = data =>
+  getRatings = data =>
     this.axios({
       method: 'POST',
       url: '/ratings/',
-      data
+      data,
     });
-    // getRatings
-    getALlComments = data =>
+  // getRatings
+  getALlComments = data =>
     this.axios({
       method: 'POST',
       url: '/comment/',
-      data
+      data,
     });
-    createComment = data =>
+  createComment = data =>
     this.axios({
       method: 'POST',
       url: '/comment/create',
@@ -169,6 +198,13 @@ class ApiUtils {
     this.axios({
       method: 'POST',
       url: '/stripe/create-checkout-session',
+      data,
+    });
+
+  getOrders = data =>
+    this.axios({
+      method: 'POST',
+      url: '/orders/',
       data,
     });
 }
