@@ -3,6 +3,7 @@ import { LikeOutlined, ShareAltOutlined, CommentOutlined } from '@ant-design/ico
 import { Avatar, Card, Row, Col, Tooltip, Layout } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { notification } from 'antd';
 import APIUtils from '../../helpers/APIUtils';
 import './product.css';
 import GlobalHeader from '../../shared/header';
@@ -58,17 +59,33 @@ const Product = () => {
       await getData();
     })();
   }, []);
-  const handleShare = product_Id => {
-    const url = `${process.env.REACT_APP_API_URL}/products/${product_Id}`;
+  // const handleShare = product_Id => {
+  //   const url = `${process.env.REACT_APP_API_URL}/products/${product_Id}`;
+  //   navigator.clipboard
+  //     .writeText(url)
+  //     .then(() => {
+  //       alert('Product Link copied to clipboard!');
+  //     })
+  //     .catch(error => {
+  //       console.log('Error copying to clipboard:', error);
+  //     });
+  // };
+  const handleShare = (product_Id) => {
+    const base_url = window.location.origin;
+    const url = `${base_url}/products/${product_Id}`;
     navigator.clipboard
       .writeText(url)
       .then(() => {
-        alert('Product Link copied to clipboard!');
+        notification.success({
+          message: 'Success',
+          description: "Product Link copied to clipboard!"
+        });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('Error copying to clipboard:', error);
       });
   };
+  
 
   return (
     <Layout style={{ flex: 1, overflow: 'hidden' }}>
@@ -91,18 +108,42 @@ const Product = () => {
                   hoverable
                   style={{ width: '100%' }}
                   cover={
-                    <div style={{ maxHeight: '300px', overflow: 'hidden' }}>
-                      <a onClick={() => productDetails(e._id)}>
-                        <img
-                          className="card-image"
-                          alt="example"
-                          src={e.image}
-                          style={{ width: '100%', objectFit: 'cover', maxHeight: '100%' }}
-                        />
-                      </a>
-                    </div>
+                    // <div style={{ maxHeight: '300px', overflow: 'hidden' }}>
+                    //   <a onClick={() => productDetails(e._id)}>
+                    //     <img
+                    //       className="card-image"
+                    //       alt="example"
+                    //       src={e.image}
+                    //       style={{ width: '100%', objectFit: 'cover', maxHeight: '100%' }}
+                    //     />
+                    //   </a>
+                    // </div>
+                    <div
+      style={{
+        width: '100%',
+        height: '200px', // Set the desired height for the cover container
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        overflow: 'hidden',
+      }}
+    >
+      <a onClick={() => productDetails(e._id)}>
+        <img
+          className="card-image"
+          alt="example"
+          src={e.image}
+          style={{
+            width: '100%',
+            objectFit: 'cover', // This property will maintain the image's aspect ratio
+            maxHeight: '100%', // This will ensure the image fits within the cover container
+          }}
+        />
+      </a>
+    </div>
                   }
                   actions={[
+                    <div onClick={() => handleAddLike(e._id)} style={{ cursor: 'pointer' }}>
                     <Tooltip placement="bottom" title={<span>Like</span>}>
                       <LikeOutlined
                         key="like"
@@ -110,7 +151,9 @@ const Product = () => {
                         style={{ color: e.isLiked ? 'blue' : 'inherit' }}
                       />
                       <span className="like-count">({e.isLikedTotal})</span>
-                    </Tooltip>,
+                    </Tooltip>
+                    </div>
+                    ,
                     <Tooltip placement="bottom" title={<span>Share</span>}>
                       <ShareAltOutlined key="share" onClick={() => handleShare(e._id)} />
                     </Tooltip>,
