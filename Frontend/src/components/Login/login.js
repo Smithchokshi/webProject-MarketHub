@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Form, Input, Layout, theme, Checkbox } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from 'react-google-login';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
 import { login } from '../../redux/actions/authActions';
 import './login.css';
@@ -42,6 +43,10 @@ const Login = () => {
       validator.getErrorMessages();
       setValidator(true);
     }
+  };
+
+  const handleCallBackResponse = res => {
+    console.log(res);
   };
 
   return (
@@ -159,6 +164,15 @@ const Login = () => {
               >
                 <p>Or Log In with</p>
               </div>
+
+              <GoogleLogin
+                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                buttonText="Login"
+                onSuccess={handleCallBackResponse}
+                onFailure={res => console.log('err', res)}
+                cookiePolicy={'single_host_origin'}
+                isSignedIn={true}
+              />
             </Form>
           </div>
         </div>
