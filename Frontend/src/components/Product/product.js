@@ -203,7 +203,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { LikeOutlined, ShareAltOutlined, CommentOutlined } from '@ant-design/icons';
-import { Avatar, Card, Row, Col, Tooltip, Layout } from 'antd';
+import { Avatar, Card, Row, Col, Tooltip, Layout,Select } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { notification } from 'antd';
@@ -214,11 +214,15 @@ import handleCreateChat from '../../helpers/handleCreateChat';
 
 const { Meta } = Card;
 const { Content } = Layout;
+const { Option } = Select;
 const api = msg => new APIUtils(msg);
 
 const Product = () => {
   const [cardData, setCardData] = useState([]);
   const [userName, setUserName] = useState();
+  const [sortingOption, setSortingOption] = useState(undefined);
+  const [selectedOption, setSelectedOption] = useState('Sort by');
+  const [originalData, setOriginalData] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -253,6 +257,33 @@ const Product = () => {
     }
   };
 
+  const handleSearchResults = (results) => {
+    setCardData(results);
+    setOriginalData(results);
+  };
+  const extractPriceValue = (priceString) => {
+    const priceWithoutCurrency = priceString ? priceString.replace(/\D+/g, '') : '0';
+    return parseInt(priceWithoutCurrency, 10);
+  };
+  const handleSortingChange = value => {
+    if (value === undefined) {
+      setSortingOption(undefined);
+      setSelectedOption('Sort by');
+      setCardData(originalData);
+    } else {
+      let sortedData;
+      if (value === 'priceLowToHigh') {
+        sortedData = [...cardData].sort((a, b) => extractPriceValue(a.price) - extractPriceValue(b.price));
+      } else if (value === 'priceHighToLow') {
+        sortedData = [...cardData].sort((a, b) => extractPriceValue(b.price) - extractPriceValue(a.price));
+      } else if (value === 'rating') {
+        sortedData = [...cardData].sort((a, b) => b.averageRatings - a.averageRatings);
+      }
+      setCardData(sortedData);
+      setSortingOption(value);
+      setSelectedOption(value);
+    }
+  };
   const productDetails = product_Id => {
     navigate(`/products/${product_Id}`);
   };
@@ -292,13 +323,27 @@ const Product = () => {
 
   return (
     <Layout style={{ flex: 1, overflow: 'hidden' }}>
-      <GlobalHeader userName = {userName} title={'Products'} />
+      <GlobalHeader userName = {userName} title={'Products'} handleSearchResults={handleSearchResults}/>
+      <div style={{ position: 'absolute', top: 70, right: 24, zIndex: 1 ,margin: '10px'}}>
+        <Select
+          value={sortingOption}
+          style={{ width: 200 }}
+          onChange={handleSortingChange}
+          allowClear
+          placeholder="Sort by"
+        >
+          <Option value="priceLowToHigh">Price: Low to High</Option>
+          <Option value="priceHighToLow">Price: High to Low</Option>
+          <Option value="rating">Rating: Highly Rated</Option>
+        </Select>
+      </div>
+      <br/>
       <Content style={{ padding: '24px', overflow: 'auto' }}>
-        <div className="dummy-container">
+        <div className="user-dummy-container">
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
             {cardData.map((e, index) => (
               <Col
-                className="gutter-row dummy-card"
+                className="gutter-row user-dummy-card"
                 style={{ marginBottom: '20px' }}
                 key={index}
                 xs={24}
@@ -324,7 +369,7 @@ const Product = () => {
                     <div
       style={{
         width: '100%',
-        height: '200px', // Set the desired height for the cover container
+        height: '250px', // Set the desired height for the cover container
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -395,3 +440,5 @@ const Product = () => {
 };
 
 export default Product;
+
+
