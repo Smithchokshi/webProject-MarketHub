@@ -1,4 +1,4 @@
-import { DollarOutlined, WechatOutlined } from '@ant-design/icons';
+import { DollarOutlined, WechatOutlined, ProfileOutlined, UserOutlined, ContactsOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 
 const initialState = {
   isCollapsed: false,
@@ -6,6 +6,18 @@ const initialState = {
     key: window.location.pathname,
   },
   sidebarData: [
+    {
+      key: '/my-profile',
+      label: ' My Profile',
+      icon: <UserOutlined />,
+      url: '/my-profile',
+    },
+    {
+      key: '/my-products',
+      label: 'My Products',
+      icon: <ProfileOutlined />,
+      url: '/my-products',
+    },
     {
       key: '/chats',
       label: 'Chats',
@@ -17,6 +29,18 @@ const initialState = {
       label: 'Transactions',
       icon: <DollarOutlined />,
       url: '/transactions',
+    },
+    {
+      key: '/contact-us',
+      label: 'Contact Us',
+      icon: <ContactsOutlined />,
+      url: '/contact-us',
+    },
+    {
+      key: '/faq',
+      label: 'FAQ',
+      icon: <QuestionCircleOutlined />,
+      url: '/faq',
     },
   ],
 };

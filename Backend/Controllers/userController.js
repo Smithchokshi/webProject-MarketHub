@@ -73,6 +73,13 @@ const loginUser = async (req, res) => {
         message: 'Invalid email or password.',
       });
 
+    if (user.deletedAt !== null) {
+      return res.status(400).json({
+        status: '400',
+        message: 'This account has been deleted.',
+      });
+    }
+
     const isValidPassword = await bcrypt.compare(password, user.password);
 
     if (!isValidPassword)
@@ -241,7 +248,187 @@ const changePasswordPost = async (req, res) => {
 }
 };
 
+const updateProfileImage = async (req, res) => {
+  const { image, email } = req.body;
+
+  try{
+  const oldUser = await userModel.findOne({ email });
+  if (!oldUser) {
+    return res.json({ status: "User Not Exists!!" });
+  }
+
+  if(!image){
+    return res.status(400).json({ msg: "Please enter an icon url" });
+  }
+
+  const setImage = await userModel.findByIdAndUpdate({_id:oldUser._id},{img:image});
+
+  setImage.save();
+  res.status(201).json({status:201,img: image});
+} 
+catch (error) {
+  res.status(401).json({status:401,error});
+}
+};
+
+const updateProfileDetails = async (req, res) => {
+  const { email, name, city, postalCode, mobile } = req.body;
+
+  try{
+  const oldUser = await userModel.findOne({ email });
+  if (!oldUser) {
+    return res.json({ status: "User Not Exists!!" });
+  }
+
+  if (!name || !email || !postalCode || !city || !mobile){
+  return res.status(400).json({
+    status: '400',
+    message: 'All fields are required.',
+  });}
+
+  const setDetails = await userModel.findByIdAndUpdate(
+    oldUser._id,
+    {
+      name: name,
+      postalCode: postalCode,
+      city: city,
+      mobile: mobile,
+    },
+    { new: true }
+  );
+  
+
+  setDetails.save();
+  res.status(200).json({
+    message: 'Profile Updated successfully',
+    userData: setDetails,
+  });
+} 
+catch (error) {
+  res.status(401).json({status:401,error});
+}
+};
+
+/*const deleteUser = async (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  try{
+
+    
+    const chat = await chatModel.findOne({
+      productId,
+      members: { $elemMatch: { $eq: firstId } },
+    });
+
+  if (!oldUser) {
+    return res.json({ status: "User Not Exists!!" });
+  }
+  console.log(oldUser);
+
+
+  await oldUser.updateOne( {_id: id },
+    {
+      $set: {
+        deletedAt: new Date(),
+      },
+    });
+  console.log(oldUser.deletedAt);
+  res.status(200).json({
+    message: 'User Deleted successfully',
+  });
+} 
+catch (error) {
+  res.status(401).json({status:401,error});
+}
+//};*/
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+
+    // Find the user by ID
+    const oldUser = await userModel.findById(id);
+
+    console.log(oldUser);
+    // Check if the user exists
+    if (!oldUser) {
+      return res.status(404).json({
+        status: '404',
+        message: 'User not found.',
+      });
+    }
+
+    // Update the deletedAt field with the current date
+    oldUser.deletedAt = new Date();
+
+    console.log(oldUser);
+    await oldUser.save();
+
+    return res.status(200).json({
+      status: '200',
+      message: 'User successfully deleted.',
+    });
+  } catch (e) {
+    res.status(500).json({
+      status: '500',
+      message: e.message || 'An error occurred while deleting the user.',
+    });
+  }
+};
+
+
+const changePassword = async (req, res) => {
+  const { oldPassword, newPassword, confirmPassword } = req.body;
+  const {id} = req.params;
+  console.log(req.body);
+  console.log(id);
+  try{
+    const oldUser = await userModel.findById(id);
+  if (!oldUser) {
+    return res.json({ status: "User Not Exists!!" });
+  }
+  console.log(oldUser);
+  const isOldPasswordCorrect = await bcrypt.compare(
+    oldPassword,
+    oldUser.password
+  );
+
+  console.log(isOldPasswordCorrect);
+  if (!isOldPasswordCorrect) {
+    console.log("in oldcorrect");
+    return res.status(400).json({
+      status: '400',
+      message: 'Old Password Does Not Match',
+    });
+  }
+
+  const isNewPasswordSame = await bcrypt.compare(
+    newPassword,
+    oldUser.password
+  );
+  console.log(isNewPasswordSame);
+  if (isNewPasswordSame) {
+    return res.status(400).json({
+      status: '400',
+      message: 'Your Current Password and New Password is Same',
+    });
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  oldUser.password = await bcrypt.hash(newPassword, salt);
+
+  await oldUser.save();
+  res.status(200).json({
+    status: '200',
+    message: 'Password Changed Sucessfully', 
+  });
+} 
+catch (error) {
+  res.status(401).json({status:401, error});
+}
+};
 
 
 
-module.exports = { registerUser, loginUser, getUserDetails, getAllUsers, forgotPassword, changePasswordGet, changePasswordPost };
+
+module.exports = { registerUser, loginUser, getUserDetails, getAllUsers, forgotPassword, changePasswordGet, changePasswordPost, updateProfileImage, updateProfileDetails, deleteUser, changePassword };
