@@ -17,7 +17,12 @@ const Transactions = lazy(() => import('./components/Transactions/transaction'))
 const Register = lazy(() => import('./components/Register/register'));
 const ForgotPassword = lazy(() => import('./components/ForgotPassword/forgotPassword'));
 const ChangePassword = lazy(() => import('./components/changePassword/changePassword'));
-
+const MyProducts = lazy(() => import('./components/MyProducts/myProducts'));
+const MyProductDetails = lazy(() => import('./components/MyProducts/myProductDetails'));
+const AddProduct = lazy(() => import('./components/MyProducts/addProduct'));
+const MyProfile = lazy(() => import('./components/MyProfile/myProfile'));
+const EditProfile = lazy(() => import('./components/MyProfile/editProfile'));
+const ChangeUserPassword = lazy(() => import('./components/changePassword/changeUserPassword'));
 const { Content } = Layout;
 
 const Routing = () => {
@@ -71,6 +76,31 @@ const Routing = () => {
       path: '/transactions',
       component: <Transactions />,
     },
+    {
+      path: '/my-products',
+      component: <MyProducts />,
+    },
+    {
+      path: '/my-products/:id',
+      component: <MyProductDetails />,
+    },
+    {
+      path: '/my-products/add-product',
+      component: <AddProduct />,
+    },
+    {
+      path: '/my-profile',
+      component: <MyProfile />,
+    },
+    {
+      path: '/my-profile/edit-profile',
+      component: <EditProfile />,
+    },
+    {
+      path: '/my-profile/edit-profile/change-password/:id',
+      component: <ChangeUserPassword />,
+    },
+
   ].filter(cur => cur);
 
   const PrivateRoute = ({ children }) => {
