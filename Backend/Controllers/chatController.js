@@ -5,7 +5,6 @@ const { ObjectId } = require('mongodb');
 const createChat = async (req, res) => {
   try {
     const firstId = res.locals.user._id.toString();
-    console.log('firstId', firstId);
     const { secondId, productId } = req.body;
 
     const objectProductId = new ObjectId(productId);
@@ -16,7 +15,6 @@ const createChat = async (req, res) => {
 
     const chat = await chatModel.findOne({
       productId,
-      members: { $elemMatch: { $eq: firstId } },
     });
 
     console.log('chat', chat);
@@ -62,7 +60,6 @@ const createChat = async (req, res) => {
 const getUserChats = async (req, res) => {
   try {
     const userId = res.locals.user._id.toString();
-    console.log(userId);
     const userObjectId = new ObjectId(userId);
 
     const allChats = await chatModel.aggregate([

@@ -4,7 +4,6 @@ const api = msg => new ApiUtils(msg);
 
 export const handleChatChange = key => async dispatch => {
   try {
-    console.log('key', key);
     dispatch({ type: 'CHANGE_SELECTED_CHAT', payload: key });
   } catch (err) {
     return false;
