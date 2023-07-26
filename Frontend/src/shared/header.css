@@ -4,3 +4,7 @@
     font-weight: bold;
     display: inline-block;
   }
+
+.logout:hover {
+  color: rgb(159,0,0);
+}

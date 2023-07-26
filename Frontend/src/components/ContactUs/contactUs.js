@@ -60,7 +60,7 @@ const Contact = () => {
 
   return (
     <Layout style={{ flex: 1, overflow: 'hidden' }}>
-      <GlobalHeader title={'Products'} />
+      <GlobalHeader title={'Contact Us'} />
       <Content style={{ padding: '24px', overflow: 'auto' }}>
         <div className="bg-dark">
           <div className="contact-us">

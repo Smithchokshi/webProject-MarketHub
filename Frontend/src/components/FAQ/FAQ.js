@@ -10,7 +10,7 @@ const { Content } = Layout;
 
 const FAQ = () => (
   <Layout style={{ flex: 1, overflow: 'hidden' }}>
-    <GlobalHeader title={'Products'} />
+    <GlobalHeader title={'FAQ'} />
     <Content style={{ padding: '24px', overflow: 'auto' }}>
       <div className="faq-container">
         <Space direction="vertical">
