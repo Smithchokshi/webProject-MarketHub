@@ -65,7 +65,7 @@ h1 {
     font-size: 42px;
     font-weight: bold;
     line-height: 1;
-    margin-bottom: 0;
+    margin-bottom: 10;
   }
   .login-form .ant-form-item-label > label.ant-form-item-required::before {
     display: none;
@@ -87,10 +87,12 @@ h1 {
   }
   .login-form-button {
     width: 100%;
+    font-family: 'Josefin Sans', sans-serif;
   }
   .facebook-form-button {
     width: 100%;
     background-color: #3b5998;
+    font-family: 'Josefin Sans', sans-serif;
   }
   .illustration-wrapper {
     display: flex;
@@ -127,6 +129,7 @@ h1 {
   }
   .label {
     font-weight: bold;
+    font-family: 'Josefin Sans', sans-serif;
   }
 
 

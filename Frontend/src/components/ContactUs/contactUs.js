@@ -60,7 +60,7 @@ const Contact = () => {
 
   return (
     <Layout style={{ flex: 1, overflow: 'hidden' }}>
-      <GlobalHeader title={'Products'} />
+      <GlobalHeader title={'Contact Us'} />
       <Content style={{ padding: '24px', overflow: 'auto' }}>
         <div className="bg-dark">
           <div className="contact-us">
@@ -126,11 +126,11 @@ const Contact = () => {
                   <TextArea
                     rows={4}
                     placeholder="Contact Reason"
-                    value={fields.textArea}
+                    value={fields?.textArea}
                     onChange={e => handleChange(e, 'textArea')}
                     className="textarea-border"
                   />
-                  {validator.message('Contact Reason', fields.textArea, 'required')}
+                  {validator.message('Contact Reason', fields?.textArea, 'required')}
                 </Form.Item>
                 <Form.Item>
                   <Button

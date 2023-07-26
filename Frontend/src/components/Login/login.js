@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Form, Input, Layout, theme, Checkbox } from 'antd';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
 import { login } from '../../redux/actions/authActions';
@@ -55,7 +55,13 @@ const Login = () => {
       <Content>
         <div className="login-page">
           <div className="login-box">
-            <div className="illustration-wrapper">
+            <div className="illustration-wrapper" style={{background:"#fff"}}>
+            <div className="links" style={{ background: "#fff", marginBottom: "120px", float:"left" }}>
+                <Link to="/contact-us" className="linkStyle" style={{background:"#fff"}}>Contact Us</Link>
+                <Link to="/faq" className="linkStyle" style={{background:"#fff"}}>FAQ</Link>
+              </div>
+
+           
               <img
                 src="https://cdn.sites.tapfiliate.com/tapfiliate.com/2023/04/5-winning-marketing-strategies-for-e-commerce-this-year-1.jpg"
                 alt="Login"
@@ -67,6 +73,7 @@ const Login = () => {
               initialValues={{ remember: true }}
               layout="vertical"
             >
+
               <p className="form-title">Login</p>
               <div
                 style={{
@@ -78,7 +85,7 @@ const Login = () => {
                 }}
               >
                 <p>
-                  Doesn't have an account yet? <a href="/register">Sign Up</a>
+                  
                 </p>
               </div>
               <Form.Item
@@ -127,19 +134,28 @@ const Login = () => {
               </Form.Item>
               <Form.Item>
                 <div
-                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                  style={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}
                 >
-                  <div>
-                    <Form.Item name="remember" valuePropName="checked" noStyle>
-                      <Checkbox>Remember me</Checkbox>
-                    </Form.Item>
-                  </div>
+
                   <div>
                     <Form.Item>
                       <a href="/forgot-password">Forgot Password?</a>
                     </Form.Item>
                   </div>
                 </div>
+                <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  fontSize: '15px',
+                  fontFamily: 'sans-serif',
+                  fontWeight: 'bold',
+                }}
+              >
+                <p>
+                  Doesn't have an account yet? <a href="/register">Sign Up</a>
+                </p>
+              </div>
               </Form.Item>
               <Form.Item>
                 <Button
@@ -166,12 +182,15 @@ const Login = () => {
               </div>
 
               <GoogleLogin
+                className="facebook-form-button"
                 clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-                buttonText="Login"
+                buttonText="Continue with Google"
                 onSuccess={handleCallBackResponse}
                 onFailure={res => console.log('err', res)}
                 cookiePolicy={'single_host_origin'}
                 isSignedIn={true}
+                theme="dark"
+                longtitle="true"
               />
             </Form>
           </div>

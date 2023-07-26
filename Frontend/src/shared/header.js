@@ -12,7 +12,7 @@ import { Input, AutoComplete, Spin } from 'antd';
 const { Header } = Layout;
 const api = new APIUtils();
 
-const GlobalHeader = ({userName, title, handleSearchResults }) => {
+const GlobalHeader = ( {title, handleSearchResults }) => {
   const [searchResults, setSearchResults] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -127,20 +127,7 @@ const GlobalHeader = ({userName, title, handleSearchResults }) => {
         <div style={{ marginLeft: '20px', display: 'flex', alignItems: 'center' }}>
           {title === 'Products' ? (
             <>
-              <span
-                style={{ marginRight: '20px', cursor: 'pointer' }}
-                role="presentation"
-                onClick={() => navigate('/contact-us')}
-              >
-                Contact Us
-              </span>
-              <span
-                style={{ marginRight: '20px', cursor: 'pointer' }}
-                role="presentation"
-                onClick={() => navigate('/faq')}
-              >
-                FAQ
-              </span>
+
             </>
           ) : (
             <span>{title}</span>
@@ -167,19 +154,23 @@ const GlobalHeader = ({userName, title, handleSearchResults }) => {
       {isAuthenticated ? (
         <>
 
+        <span className="logout">
         <Button
           type="primary"
           onClick={handleLogout}
           style={{
             height: '32px',
             display: 'flex',
+            fontSize: '16px',
             justifyContent: 'center',
             alignItems: 'center',
             marginRight: '10px',
+            backgroundColor: '#ed0000',
           }}
         >
           Logout
         </Button>
+        </span>
         </>
       ) : (
         <Button
