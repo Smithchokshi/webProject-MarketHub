@@ -125,11 +125,11 @@ const Chat = () => {
   const getMessages = async () => {
     try {
       setLoading(true);
-      let tempKey;
-      console.log(!selectedChat?.key);
+      let tempKey = {};
       if (!selectedChat?.key) {
         tempKey = chatList.find(cur => cur.key === location.pathname.split('/chats/')[1]);
-        await dispatch(handleChatChange(tempKey));
+        console.log('tempKey', tempKey);
+        await dispatch(handleChatChange(tempKey ? tempKey : {}));
       }
       const data = {
         chatId: !selectedChat?.key ? tempKey.key : selectedChat.key,
