@@ -35,13 +35,15 @@ const createProduct = async (req, res) => {
 const getALlProducts = async (req, res) => {
   try {
     const userId = res.locals.user._id.toString();
-    // let products = await productModel.find({ userId: { $nin: [userId] } });
-    let products = await productModel.find({
-      $and: [
-        { userId: { $nin: [userId] } },
-        { isApproved: true }
-      ]
-    });
+    let products = await productModel.find({ userId: { $nin: [userId] } });
+    const searchTerm = req.body.searchTerm;
+    if (searchTerm) {
+      const regex = new RegExp(searchTerm, 'i');
+      products = products.filter(
+        (product) =>
+          product.productName.match(regex) || product.productDescription.match(regex)
+      );
+    }
     const likedProducts = await likesModel.find({ userId, isLiked: true });
 
   likedProducts.forEach(likedProduct => {
@@ -50,7 +52,6 @@ const getALlProducts = async (req, res) => {
       product.isLiked = true;
     }
   });
-  
 
     res.status(200).json({
       status: 200,
@@ -80,4 +81,48 @@ const getOneProduct = async (req, res) => {
   }
 };
 
-module.exports = { createProduct, getALlProducts,getOneProduct };
+const suggestion = async (req, res) => {
+  try {
+    const { searchTerm } = req.body;
+    const escapedSearchTerm = searchTerm.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const products = await productModel.find({
+      $or: [
+        { productName: { $regex: escapedSearchTerm, $options: 'i' } },
+        { productDescription: { $regex: escapedSearchTerm, $options: 'i' } },
+      ],
+    }).limit(5);
+    const suggestionData = products.map((product) => ({
+      name: product.productName,
+      id: product._id,
+    }));
+
+    res.json(suggestionData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+const sorting = async (req, res) => {
+  try {
+    const { sortingOption } = req.body;
+    const escapedSearchTerm = searchTerm.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const products = await productModel.find({
+      $or: [
+        { productName: { $regex: escapedSearchTerm, $options: 'i' } },
+        { productDescription: { $regex: escapedSearchTerm, $options: 'i' } },
+      ],
+    }).limit(5);
+    const suggestionData = products.map((product) => ({
+      name: product.productName,
+      id: product._id,
+    }));
+
+    res.json(suggestionData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+module.exports = { createProduct, getALlProducts,getOneProduct, suggestion, sorting };
