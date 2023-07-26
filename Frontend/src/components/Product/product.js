@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { LikeOutlined, ShareAltOutlined, CommentOutlined } from '@ant-design/icons';
-import { Avatar, Card, Row, Col, Tooltip, Layout } from 'antd';
+import { Avatar, Card, Row, Col, Tooltip, Layout, Select } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { notification } from 'antd';
 import APIUtils from '../../helpers/APIUtils';
 import './product.css';
 import GlobalHeader from '../../shared/header';
@@ -11,11 +10,15 @@ import handleCreateChat from '../../helpers/handleCreateChat';
 
 const { Meta } = Card;
 const { Content } = Layout;
+const { Option } = Select;
 const api = msg => new APIUtils(msg);
 
 const Product = () => {
   const [cardData, setCardData] = useState([]);
   const [userName, setUserName] = useState();
+  const [sortingOption, setSortingOption] = useState(undefined);
+  const [selectedOption, setSelectedOption] = useState('Sort by');
+  const [originalData, setOriginalData] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -30,8 +33,9 @@ const Product = () => {
     }
     try {
       const res = await api(false).getALlProducts();
-
+      console.log(res.data.products)
       setCardData(res.data.products);
+      setOriginalData(res.data.products);
     } catch (e) {
       console.log(e);
     }
@@ -50,8 +54,37 @@ const Product = () => {
     }
   };
 
+  const handleSearchResults = (results) => {
+    setCardData(results);
+    setOriginalData(results);
+  };
+
   const productDetails = product_Id => {
     navigate(`/products/${product_Id}`);
+  };
+  const extractPriceValue = (priceString) => {
+    const priceWithoutCurrency = priceString ? priceString.replace(/\D+/g, '') : '0';
+    return parseInt(priceWithoutCurrency, 10);
+  };
+
+  const handleSortingChange = value => {
+    if (value === undefined) {
+      setSortingOption(undefined);
+      setSelectedOption('Sort by');
+      setCardData(originalData);
+    } else {
+      let sortedData;
+      if (value === 'priceLowToHigh') {
+        sortedData = [...cardData].sort((a, b) => extractPriceValue(a.price) - extractPriceValue(b.price));
+      } else if (value === 'priceHighToLow') {
+        sortedData = [...cardData].sort((a, b) => extractPriceValue(b.price) - extractPriceValue(a.price));
+      } else if (value === 'rating') {
+        sortedData = [...cardData].sort((a, b) => b.averageRatings - a.averageRatings);
+      }
+      setCardData(sortedData);
+      setSortingOption(value);
+      setSelectedOption(value);
+    }
   };
 
   useEffect(() => {
@@ -59,44 +92,41 @@ const Product = () => {
       await getData();
     })();
   }, []);
-  // const handleShare = product_Id => {
-  //   const url = `${process.env.REACT_APP_API_URL}/products/${product_Id}`;
-  //   navigator.clipboard
-  //     .writeText(url)
-  //     .then(() => {
-  //       alert('Product Link copied to clipboard!');
-  //     })
-  //     .catch(error => {
-  //       console.log('Error copying to clipboard:', error);
-  //     });
-  // };
-  const handleShare = (product_Id) => {
-    const base_url = window.location.origin;
-    const url = `${base_url}/products/${product_Id}`;
+  const handleShare = product_Id => {
+    const url = `${process.env.REACT_APP_API_URL}/products/${product_Id}`;
     navigator.clipboard
       .writeText(url)
       .then(() => {
-        notification.success({
-          message: 'Success',
-          description: "Product Link copied to clipboard!"
-        });
+        alert('Product Link copied to clipboard!');
       })
-      .catch((error) => {
+      .catch(error => {
         console.log('Error copying to clipboard:', error);
       });
   };
-  
 
   return (
     <Layout style={{ flex: 1, overflow: 'hidden' }}>
-      <GlobalHeader userName = {userName} title={'Products'} />
+      <GlobalHeader userName = {userName} title={'Products'} handleSearchResults={handleSearchResults} />
+        <div style={{ position: 'absolute', top: 70, right: 24, zIndex: 1 }}>
+        <Select
+          value={sortingOption}
+          style={{ width: 200 }}
+          onChange={handleSortingChange}
+          allowClear
+          placeholder="Sort by"
+        >
+          <Option value="priceLowToHigh">Price: Low to High</Option>
+          <Option value="priceHighToLow">Price: High to Low</Option>
+          <Option value="rating">Rating: Highly Rated</Option>
+        </Select>
+      </div>
       <Content style={{ padding: '24px', overflow: 'auto' }}>
         <div className="dummy-container">
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
             {cardData.map((e, index) => (
               <Col
                 className="gutter-row dummy-card"
-                style={{ marginBottom: '20px' }}
+                style={{ marginBottom: '20px'}}
                 key={index}
                 xs={24}
                 sm={12}
@@ -108,42 +138,18 @@ const Product = () => {
                   hoverable
                   style={{ width: '100%' }}
                   cover={
-                    // <div style={{ maxHeight: '300px', overflow: 'hidden' }}>
-                    //   <a onClick={() => productDetails(e._id)}>
-                    //     <img
-                    //       className="card-image"
-                    //       alt="example"
-                    //       src={e.image}
-                    //       style={{ width: '100%', objectFit: 'cover', maxHeight: '100%' }}
-                    //     />
-                    //   </a>
-                    // </div>
-                    <div
-      style={{
-        width: '100%',
-        height: '200px', // Set the desired height for the cover container
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        overflow: 'hidden',
-      }}
-    >
-      <a onClick={() => productDetails(e._id)}>
-        <img
-          className="card-image"
-          alt="example"
-          src={e.image}
-          style={{
-            width: '100%',
-            objectFit: 'cover', // This property will maintain the image's aspect ratio
-            maxHeight: '100%', // This will ensure the image fits within the cover container
-          }}
-        />
-      </a>
-    </div>
+                    <div style={{ maxHeight: '300px', overflow: 'hidden' }}>
+                      <a onClick={() => productDetails(e._id)}>
+                        <img
+                          className="card-image"
+                          alt="example"
+                          src={e.image}
+                          style={{ width: '100%', objectFit: 'cover', maxHeight: '100%' }}
+                        />
+                      </a>
+                    </div>
                   }
                   actions={[
-                    <div onClick={() => handleAddLike(e._id)} style={{ cursor: 'pointer' }}>
                     <Tooltip placement="bottom" title={<span>Like</span>}>
                       <LikeOutlined
                         key="like"
@@ -151,9 +157,7 @@ const Product = () => {
                         style={{ color: e.isLiked ? 'blue' : 'inherit' }}
                       />
                       <span className="like-count">({e.isLikedTotal})</span>
-                    </Tooltip>
-                    </div>
-                    ,
+                    </Tooltip>,
                     <Tooltip placement="bottom" title={<span>Share</span>}>
                       <ShareAltOutlined key="share" onClick={() => handleShare(e._id)} />
                     </Tooltip>,
