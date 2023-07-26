@@ -144,10 +144,11 @@ class ApiUtils {
       data,
     });
 
-  getALlProducts = () =>
+  getALlProducts = data =>
     this.axios({
       method: 'POST',
       url: '/product/',
+      data,
     });
 
   getOneProduct = data =>
@@ -156,6 +157,20 @@ class ApiUtils {
       url: '/product/getone',
       data,
     });
+  suggestion = data =>
+    this.axios({
+      method: 'POST',
+      url: '/product/suggestion',
+      data,
+    });
+
+  sorting = data =>
+    this.axios({
+      method: 'POST',
+      url: '/product/sorting',
+      data,
+    });
+
   setLike = data =>
     this.axios({
       method: 'POST',
