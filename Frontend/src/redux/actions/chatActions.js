@@ -20,7 +20,9 @@ export const handleChatList = (callAPI, data) => async dispatch => {
         authorization: token,
       });
 
+      console.log('res', res.data.allChats);
       res.data.allChats.map((e, index) => {
+        console.log('e', e);
         tempData.push({
           key: e.chatId,
           label: `${e.userDetails[0].name} - ${e.productName}`,
@@ -30,6 +32,7 @@ export const handleChatList = (callAPI, data) => async dispatch => {
         });
       });
     }
+    console.log(tempData);
     await dispatch({ type: 'STORE_DATA', payload: tempData });
 
     return true;
