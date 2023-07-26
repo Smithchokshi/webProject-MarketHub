@@ -15,6 +15,7 @@ const createProduct = async (req, res) => {
       userId,
       isChatCreated: false,
       chatId: null,
+      isApproved: false,
     });
 
     const response = await newProduct.save();
@@ -125,4 +126,52 @@ const sorting = async (req, res) => {
   }
 };
 
-module.exports = { createProduct, getALlProducts,getOneProduct, suggestion, sorting };
+
+const getUserProducts = async (req, res) => {
+  try {
+    const userId = res.locals.user._id.toString();
+    const { type } = req.body;
+
+    if (type === 'approved'){
+      try{
+      let products = await productModel.find({ userId: userId, isApproved: 'true' });
+
+      res.status(200).json({
+        status: 200,
+        products,
+        message: 'Success',
+      });
+    }
+    catch(e){
+      console.log(e);
+      res.status(500).json({
+      message: e,
+    });
+    }
+    }
+    else{
+      try{
+      let products = await productModel.find({ userId: userId, isApproved: 'false' });
+      res.status(200).json({
+        status: 200,
+        products,
+        message: 'Success',
+    });
+    }
+    catch(e){
+      console.log(e);
+      res.status(500).json({
+      message: e,
+    });
+    }
+  }
+    
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      message: e,
+    });
+  }
+};
+
+module.exports = { createProduct, getALlProducts,getOneProduct, getUserProducts, sorting, suggestion };

@@ -18,9 +18,11 @@ passport.use(
       },
         async (accessToken, refreshToken, profile, done) => {
             try {
+              console.log("in facebook", profile)
               let user = await userModel.findOne({ facebookId: profile.id });
       
               if (user) {
+                console.log("done with facebook", user);
                 done(null, user); // Login if User already exists
               } else {
                 user = new userModel({

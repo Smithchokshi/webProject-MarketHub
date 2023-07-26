@@ -38,6 +38,7 @@ class ApiUtils {
           return myConfig;
         },
         error => {
+          console.debug(error.response.data.status);
           if (error.response.data.status === 401 || error.response.data.status === 403) {
             const { auth } = store.getState();
             notification.error({
@@ -50,6 +51,7 @@ class ApiUtils {
               setTimeout(() => window.location.assign('/login'), 1000);
             }
           } else {
+            console.debug(error.response.data.status);
             notification.error({
               message: 'Error',
               description: error.response.data.message,
@@ -114,7 +116,7 @@ class ApiUtils {
     this.axios({
       method: 'GET',
       url: '/users',
-    });
+    }, {withCredentials:true});
 
   createChat = data =>
     this.axios({
@@ -150,6 +152,14 @@ class ApiUtils {
       url: '/product/',
       data,
     });
+  
+  getUserProducts = data =>
+    this.axios({
+      method: 'POST',
+      url: '/product/my-products',
+      data,
+    });  
+
 
   getOneProduct = data =>
     this.axios({
@@ -220,6 +230,33 @@ class ApiUtils {
     this.axios({
       method: 'POST',
       url: '/orders/',
+      data,
+    });
+  
+  uploadImage = data =>
+    this.axios({
+      method: 'PATCH',
+      url: '/users/my-profile/edit-profile/upload-Image',
+      data,
+    });
+
+  updateDetails = data =>
+    this.axios({
+      method: 'PATCH',
+      url: '/users/my-profile/edit-profile/update-Details',
+      data,
+    });
+  
+  deleteUser = (id) =>
+    this.axios({
+      method: 'DELETE',
+      url: `/users/my-profile/edit-profile/${id}`,
+    });
+
+  updatePassword = (id, data) =>
+    this.axios({
+      method: 'PATCH',
+      url: `/users/my-profile/edit-profile/change-password/${id}`,
       data,
     });
 }
