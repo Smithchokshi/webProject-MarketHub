@@ -126,11 +126,11 @@ const Contact = () => {
                   <TextArea
                     rows={4}
                     placeholder="Contact Reason"
-                    value={fields.textArea}
+                    value={fields?.textArea}
                     onChange={e => handleChange(e, 'textArea')}
                     className="textarea-border"
                   />
-                  {validator.message('Contact Reason', fields.textArea, 'required')}
+                  {validator.message('Contact Reason', fields?.textArea, 'required')}
                 </Form.Item>
                 <Form.Item>
                   <Button
