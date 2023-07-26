@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Form, Input, Layout, theme } from 'antd';
 import { FacebookOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
@@ -48,9 +48,27 @@ const Register = () => {
     }
   };
 
-  const facebook = async () => {
-    await window.open("http://localhost:5006/api/users/facebook", "_self");
+  const getData = async () => {
+
+    try {
+      const res = await api(false).loadUser();
+      //setUserName(res.data.userData.name);
+      console.log(res);
+    } catch (e) {
+      console.log(e);
+    }
   };
+
+
+  const facebook = async () => {
+    await window.open("http://localhost:5006/api/users/facebook/callback", "_self");
+  };
+
+  useEffect(() => {
+    (async () => {
+      await getData();
+    })();
+  }, []);
 
   return (
     <Layout>
@@ -95,7 +113,7 @@ const Register = () => {
                     Email
                   </span>
                 }
-                name="name"
+                name="email"
               >
               <Input
                 type="text"
@@ -155,7 +173,7 @@ const Register = () => {
             <Form.Item label={
                   <span className="label">
                     <span className="required-asterisk">*</span>
-                    ConfirmPassword
+                    Confirm Password
                   </span>
                 }
                 name="password"
@@ -184,10 +202,10 @@ const Register = () => {
 
           <Form.Item>
             <Button className="login-form-button" type="primary" htmlType="submit" onClick={handleSubmit} loading={loading}>
-                Log In
+                Sign Up
               </Button>
           </Form.Item>
-            <p style={{ display: 'flex', justifyContent: 'center', fontSize:'16px', fontFamily:'sans-serif', fontWeight:'bold'}}>Or Sign Up with</p>
+            <p style={{ display: 'flex', justifyContent: 'center', fontSize:'16px', fontfamily: 'Josefin Sans, sans-serif', fontWeight:'bold'}}>Or Sign Up with</p>
 
           <Form.Item>
             <Button className="facebook-form-button" type="primary" onClick={facebook} loading={loading}>
