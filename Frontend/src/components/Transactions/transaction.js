@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Tabs, Space, Table, Tag } from 'antd';
+import { Layout, Tabs, Table } from 'antd';
 import Moment from 'react-moment';
 import ApiUtils from '../../helpers/APIUtils';
 import GlobalHeader from '../../shared/header';
