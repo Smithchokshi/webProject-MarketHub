@@ -67,12 +67,33 @@ function ProductDetails() {
             <Meta
               // avatar={<Avatar size={128} src={product?.image} />}
               avatar={
+                // <Avatar
+                //   size={128}
+                //   src={product?.image}
+                //   style={{ cursor: 'pointer' }}
+                //   onClick={() => setLightboxVisible(true)}
+                // />
+                <div
+                style={{
+                  width: '128px', // Set the desired width and height for the Avatar container
+                  height: '128px',
+                  overflow: 'hidden', // Hide any overflowing content
+                  borderRadius: '50%', // Ensure the container is a circle for Avatar
+                }}
+              >
                 <Avatar
                   size={128}
-                  src={product?.image}
-                  style={{ cursor: 'pointer' }}
+                  icon={<img alt="example" src={product?.image} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />}
+                  style={{
+                    cursor: 'pointer',
+                    width: '100%', // Set the Avatar's width and height to 100% to fit the container
+                    height: '100%',
+                  }}
                   onClick={() => setLightboxVisible(true)}
                 />
+              </div>
+              
+
               }
               title={
                 <div>
