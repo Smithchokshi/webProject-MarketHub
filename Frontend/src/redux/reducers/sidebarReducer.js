@@ -1,4 +1,4 @@
-import { DollarOutlined, WechatOutlined, ProfileOutlined, UserOutlined, ContactsOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { DollarOutlined, WechatOutlined, ProfileOutlined, UserOutlined, ContactsOutlined, QuestionCircleOutlined, LogoutOutlined } from '@ant-design/icons';
 
 const initialState = {
   isCollapsed: false,
@@ -41,6 +41,12 @@ const initialState = {
       label: 'FAQ',
       icon: <QuestionCircleOutlined />,
       url: '/faq',
+    },
+    {
+       key: '/logout',
+       label: 'Logout',
+       icon: <LogoutOutlined />,
+       url: '/login',
     },
   ],
 };
