@@ -46,7 +46,32 @@ const ConfirmationDialog = ({ visible, message, onConfirm, onCancel }) => {
 
 const EditProfile = () => {
 
-  const [validator, setValidator] = useSimpleReactValidator();
+  const [validator, setValidator] = useSimpleReactValidator(
+    {},
+    {
+      matchPassword: {
+        message: 'Password doesn`t match',
+        rule: (val, params, validator) => {
+          return val === fields?.password;
+        },
+      },
+      postalCode: {
+        message: 'Please enter postal code in B3J2K9 format',
+        rule: (val, params) => {
+          return (
+            validator.helpers.testRegex(val, /^[A-Z]\d[A-Z]\d[A-Z]\d$/) &&
+            params.indexOf(val) === -1
+          );
+        },
+      },
+      passwwordLength: {
+        message: 'Password should be atleast of 6 digits',
+        rule: (val, params) => {
+            return val && val.length >= 6;
+        },
+      },
+    }
+  );
   const [loading, setLoading] = useState(true);
   const [image, setImage] = useState("");
   const [fields, setFields] = useState({
