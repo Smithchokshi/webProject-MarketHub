@@ -144,8 +144,15 @@ const postApprovalRoute = require('./Routes/postApprovalRoute');
 const app = express();
 const server = http.createServer(app);
 require('dotenv').config();
+const corsOptions = {
+  origin: ['https://admin-control-panel.netlify.app', process.env.FRONTEND_URL],
+};
 const io = socketIO(server, {
-  cors: process.env.FRONTEND_URL,
+  cors: {
+    origin: corsOptions,
+    methods: ['GET', 'POST'],
+    credentials: false, // You can set this to true if your frontend requires credentials (e.g., cookies, headers) for Socket.IO connection.
+  },
 });
 global.io = io;
 
@@ -159,9 +166,6 @@ app.use(passport.session());
 // app.use(express.json());
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
-const corsOptions = {
-  origin: ['https://admin-control-panel.netlify.app', process.env.FRONTEND_URL],
-};
 
 app.use(cors());
 
