@@ -26,7 +26,18 @@ const ChangePassword = () => {
     confirmPassword: null,
   });
 
-  const [validator, setValidator] = useSimpleReactValidator();
+  const [validator, setValidator] = useSimpleReactValidator(
+    {},
+    {
+      matchPassword: {
+        message: 'Password doesn`t match',
+        rule: (val, params, validator) => {
+          return val === fields?.password;
+        },
+      },
+    }
+  );
+    
 
   const handleChange = (e, field) => {
     setFields(prev => ({
@@ -66,7 +77,7 @@ useEffect(() => {
 
   return (
     <Layout>
-  <GlobalHeader title={'Products'} />
+  {/*<GlobalHeader title={'Products'} />*/}
   <Content>
     <div className="login-page">
       <div className="login-box">
@@ -120,7 +131,11 @@ useEffect(() => {
 
               />
               <div className={validator.errorMessages.confirmPassword ? 'error-message' : ''}>
-                {validator.message('Confirm Password', fields.confirmPassword, 'required')}
+                {validator.message(
+                    'Confirm Password',
+                    fields.confirmPassword,
+                    'required|matchPassword'
+                  )}
               </div>
             </Form.Item>
          

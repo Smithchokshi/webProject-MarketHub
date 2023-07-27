@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Button, Form, Input, Layout, theme } from 'antd';
-import { FacebookOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { GoogleLogin } from 'react-google-login';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
-import { register } from '../../redux/actions/authActions';
+import { login, register } from '../../redux/actions/authActions';
 import './register.css';
 import GlobalHeader from '../../shared/header';
+import notification from '../../constants/notification';
 
 const { Content } = Layout;
 
@@ -45,6 +46,12 @@ const Register = () => {
           );
         },
       },
+      passwwordLength: {
+        message: 'Password should be atleast of 6 digits',
+        rule: (val, params) => {
+          return val && val.length >= 6;
+        },
+      },
     }
   );
 
@@ -69,7 +76,6 @@ const Register = () => {
   };
 
   const getData = async () => {
-
     try {
       const res = await api(false).loadUser();
       //setUserName(res.data.userData.name);
@@ -79,9 +85,17 @@ const Register = () => {
     }
   };
 
+  const handleCallBackResponse = async res => {
+    setLoading(true);
+    const data = {
+      email: null,
+      password: null,
+      profileObj: res.profileObj,
+      isGoogle: true,
+    };
 
-  const facebook = async () => {
-    await window.open("http://localhost:5006/api/users/facebook/callback", "_self");
+    await dispatch(login(data));
+    navigate('/products');
   };
 
   useEffect(() => {
@@ -92,11 +106,22 @@ const Register = () => {
 
   return (
     <Layout>
-      <GlobalHeader title={'Products'} />
+      {/*<GlobalHeader title={'Products'} />*/}
       <Content>
         <div className="login-page">
           <div className="login-box">
-            <div className="illustration-wrapper">
+            <div className="illustration-wrapper" style={{ background: '#fff' }}>
+              <div
+                className="links"
+                style={{ background: '#fff', marginBottom: '470px', float: 'left' }}
+              >
+                <Link to="/contact-us" className="linkStyle" style={{ background: '#fff' }}>
+                  Contact Us
+                </Link>
+                <Link to="/faq" className="linkStyle" style={{ background: '#fff' }}>
+                  FAQ
+                </Link>
+              </div>
               <img
                 src="https://i0.wp.com/getborderless.com/wp-content/uploads/2021/12/blog-main-pic1.png?fit=560%2C315&ssl=1"
                 alt="Login"
@@ -151,7 +176,6 @@ const Register = () => {
                   {validator.message('Email', fields.email, 'required|email')}
                 </div>
               </Form.Item>
-
               <Form.Item
                 className=""
                 label={
@@ -190,7 +214,7 @@ const Register = () => {
                   className="custom-input"
                 />
                 <div className={validator.errorMessages.password ? 'error-message' : ''}>
-                  {validator.message('Password', fields.password, 'required')}
+                  {validator.message('Password', fields.password, 'required|passwwordLength')}
                 </div>
               </Form.Item>
 
@@ -213,29 +237,61 @@ const Register = () => {
                   {validator.message(
                     'Confirm Password',
                     fields.confirmPassword,
-                    'required|matchPassword'
+                    'required|matchPassword|passwwordLength'
                   )}
                 </div>
               </Form.Item>
-
-          <Form.Item>
-            <Button className="login-form-button" type="primary" htmlType="submit" onClick={handleSubmit} loading={loading}>
-                Sign Up
-              </Button>
-          </Form.Item>
-            <p style={{ display: 'flex', justifyContent: 'center', fontSize:'16px', fontfamily: 'Josefin Sans, sans-serif', fontWeight:'bold'}}>Or Sign Up with</p>
-
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  fontSize: '15px',
+                  fontFamily: 'sans-serif',
+                  fontWeight: 'bold',
+                }}
+              >
+                <p>
+                  Already have an account? <a href="/login">Log In</a>
+                </p>
+              </div>
               <Form.Item>
                 <Button
-                  className="facebook-form-button"
+                  className="login-form-button"
                   type="primary"
-                  onClick={facebook}
+                  htmlType="submit"
+                  onClick={handleSubmit}
                   loading={loading}
                 >
-                  <FacebookOutlined style={{ fontSize: '20px' }} />
-                  Continue with Facebook
+                  Sign Up
                 </Button>
               </Form.Item>
+              <p
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  fontSize: '16px',
+                  fontfamily: 'Josefin Sans, sans-serif',
+                  fontWeight: 'bold',
+                }}
+              >
+                Or Sign Up with
+              </p>
+              <GoogleLogin
+                className="facebook-form-button"
+                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                buttonText="Continue with Google"
+                onSuccess={handleCallBackResponse}
+                onFailure={res => {
+                  notification.error({
+                    message: 'Error',
+                    description: 'Unable to login please try using email & password',
+                  });
+                }}
+                cookiePolicy={'single_host_origin'}
+                isSignedIn={false}
+                theme="dark"
+                longtitle="true"
+              />
             </Form>
           </div>
         </div>
