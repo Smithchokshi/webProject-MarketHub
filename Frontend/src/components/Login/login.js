@@ -6,6 +6,7 @@ import { GoogleLogin } from 'react-google-login';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
 import { login } from '../../redux/actions/authActions';
 import './login.css';
+import notification from '../../constants/notification';
 
 const { Content } = Layout;
 
@@ -21,6 +22,8 @@ const Login = () => {
   const [fields, setFields] = useState({
     email: null,
     password: null,
+    profileObj: {},
+    isGoogle: false,
   });
 
   const [validator, setValidator] = useSimpleReactValidator();
@@ -45,8 +48,17 @@ const Login = () => {
     }
   };
 
-  const handleCallBackResponse = res => {
-    console.log(res);
+  const handleCallBackResponse = async res => {
+    setLoading(true);
+    const data = {
+      email: null,
+      password: null,
+      profileObj: res.profileObj,
+      isGoogle: true,
+    };
+
+    await dispatch(login(data));
+    navigate('/products');
   };
 
   return (
@@ -55,13 +67,19 @@ const Login = () => {
       <Content>
         <div className="login-page">
           <div className="login-box">
-            <div className="illustration-wrapper" style={{background:"#fff"}}>
-            <div className="links" style={{ background: "#fff", marginBottom: "120px", float:"left" }}>
-                <Link to="/contact-us" className="linkStyle" style={{background:"#fff"}}>Contact Us</Link>
-                <Link to="/faq" className="linkStyle" style={{background:"#fff"}}>FAQ</Link>
+            <div className="illustration-wrapper" style={{ background: '#fff' }}>
+              <div
+                className="links"
+                style={{ background: '#fff', marginBottom: '120px', float: 'left' }}
+              >
+                <Link to="/contact-us" className="linkStyle" style={{ background: '#fff' }}>
+                  Contact Us
+                </Link>
+                <Link to="/faq" className="linkStyle" style={{ background: '#fff' }}>
+                  FAQ
+                </Link>
               </div>
 
-           
               <img
                 src="https://cdn.sites.tapfiliate.com/tapfiliate.com/2023/04/5-winning-marketing-strategies-for-e-commerce-this-year-1.jpg"
                 alt="Login"
@@ -73,7 +91,6 @@ const Login = () => {
               initialValues={{ remember: true }}
               layout="vertical"
             >
-
               <p className="form-title">Login</p>
               <div
                 style={{
@@ -84,9 +101,7 @@ const Login = () => {
                   fontWeight: 'bold',
                 }}
               >
-                <p>
-                  
-                </p>
+                <p></p>
               </div>
               <Form.Item
                 className=""
@@ -133,10 +148,7 @@ const Login = () => {
                 </div>
               </Form.Item>
               <Form.Item>
-                <div
-                  style={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}
-                >
-
+                <div style={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
                   <div>
                     <Form.Item>
                       <a href="/forgot-password">Forgot Password?</a>
@@ -144,18 +156,18 @@ const Login = () => {
                   </div>
                 </div>
                 <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  fontSize: '15px',
-                  fontFamily: 'sans-serif',
-                  fontWeight: 'bold',
-                }}
-              >
-                <p>
-                  Doesn't have an account yet? <a href="/register">Sign Up</a>
-                </p>
-              </div>
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    fontSize: '15px',
+                    fontFamily: 'sans-serif',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  <p>
+                    Doesn't have an account yet? <a href="/register">Sign Up</a>
+                  </p>
+                </div>
               </Form.Item>
               <Form.Item>
                 <Button
@@ -186,9 +198,14 @@ const Login = () => {
                 clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                 buttonText="Continue with Google"
                 onSuccess={handleCallBackResponse}
-                onFailure={res => console.log('err', res)}
+                onFailure={res => {
+                  notification.error({
+                    message: 'Error',
+                    description: 'Unable to login please try using email & password',
+                  });
+                }}
                 cookiePolicy={'single_host_origin'}
-                isSignedIn={true}
+                isSignedIn={false}
                 theme="dark"
                 longtitle="true"
               />
