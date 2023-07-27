@@ -23,7 +23,32 @@ const Login = () => {
     password: null,
   });
 
-  const [validator, setValidator] = useSimpleReactValidator();
+  const [validator, setValidator] = useSimpleReactValidator(
+    {},
+    {
+      matchPassword: {
+        message: 'Password doesn`t match',
+        rule: (val, params, validator) => {
+          return val === fields?.password;
+        },
+      },
+      postalCode: {
+        message: 'Please enter postal code in B3J2K9 format',
+        rule: (val, params) => {
+          return (
+            validator.helpers.testRegex(val, /^[A-Z]\d[A-Z]\d[A-Z]\d$/) &&
+            params.indexOf(val) === -1
+          );
+        },
+      },
+      passwwordLength: {
+        message: 'Password should be atleast of 6 digits',
+        rule: (val, params) => {
+            return val && val.length >= 6;
+        },
+      },
+    }
+  );
 
   const handleChange = (e, field) => {
     setFields(prev => ({
@@ -56,7 +81,7 @@ const Login = () => {
         <div className="login-page">
           <div className="login-box">
             <div className="illustration-wrapper" style={{background:"#fff"}}>
-            <div className="links" style={{ background: "#fff", marginBottom: "120px", float:"left" }}>
+            <div className="links" style={{ background: "#fff", marginBottom: "170px", float:"left" }}>
                 <Link to="/contact-us" className="linkStyle" style={{background:"#fff"}}>Contact Us</Link>
                 <Link to="/faq" className="linkStyle" style={{background:"#fff"}}>FAQ</Link>
               </div>
@@ -129,7 +154,7 @@ const Login = () => {
                 />{' '}
                 <div className={validator.errorMessages.password ? 'error-message' : ''}>
                   {' '}
-                  {validator.message('Password', fields.password, 'required')}{' '}
+                  {validator.message('Password', fields.password, 'required|passwwordLength')}{' '}
                 </div>
               </Form.Item>
               <Form.Item>
@@ -153,7 +178,7 @@ const Login = () => {
                 }}
               >
                 <p>
-                  Doesn't have an account yet? <a href="/register">Sign Up</a>
+                Don't have an account yet? <a href="/register">Sign Up</a>
                 </p>
               </div>
               </Form.Item>
@@ -176,9 +201,10 @@ const Login = () => {
                   fontSize: '16px',
                   fontFamily: 'sans-serif',
                   fontWeight: 'bold',
+                  marginTop:"10px",
                 }}
               >
-                <p>Or Log In with</p>
+                <p>Or Sign Up using</p>
               </div>
 
               <GoogleLogin
