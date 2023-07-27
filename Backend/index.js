@@ -159,6 +159,10 @@ app.use(passport.session());
 // app.use(express.json());
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
+const corsOptions = {
+  origin: ['https://admin-control-panel.netlify.app', process.env.FRONTEND_URL],
+};
+
 app.use(cors());
 
 app.use('/api/users', userRoute);
