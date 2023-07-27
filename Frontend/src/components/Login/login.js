@@ -234,6 +234,14 @@ const Login = () => {
                 theme="dark"
                 longtitle="true"
               />
+              <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  fontSize: '16px',
+                  fontFamily: 'sans-serif',
+                  marginTop:"10px",}}>
+              <p>Admin User? <Link to="https://admin-control-panel.netlify.app/" style={{marginTop:"10px"}}>Click Here</Link></p>
+              </div>
             </Form>
           </div>
         </div>

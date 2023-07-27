@@ -1,5 +1,3 @@
-// MyProfile.js
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Input, Card, Col, Row, Form, Button, Layout, Upload, Modal } from 'antd';
@@ -142,7 +140,7 @@ const EditProfile = () => {
         formData.append("cloud_name", "dsxncrb68");
         console.log(formData);
         const dataRes = await axios.post(
-          "https://api.cloudinary.com/v1_1/dsxncrb68/image/upload",
+          process.env.CLOUDNIARY_URL,
           formData
         );
         imageUrl = dataRes.data.url;
