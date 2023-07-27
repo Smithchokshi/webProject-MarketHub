@@ -146,14 +146,14 @@ h1 {
     }
   
     .linkStyle {
-      margin-right: 0; /* Remove margin-right to stack the links vertically */
-      margin-bottom: 10px; /* Add margin-bottom to create space between the links */
+      margin-right: 0; 
+      margin-bottom: 10px; 
       margin-left: 20px;
       margin-top: 20px
     }
   
     .links a {
-      margin-right: 0; /* Remove margin-right for stacked links */
+      margin-right: 0; 
     }
   }
 
@@ -162,7 +162,7 @@ h1 {
     margin-right: 4px;
   }
   .custom-input {
-    height: 48px; /* Set the desired height */
+    height: 48px; 
     border-radius: 0;
   }
   .label {
