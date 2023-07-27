@@ -37,6 +37,7 @@ const Product = () => {
       const res = await api(false).getALlProducts();
 
       setCardData(res.data.products);
+      setOriginalData(res.data.products);
     } catch (e) {
       console.log(e);
     }
