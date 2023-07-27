@@ -10,6 +10,7 @@ import {
 } from '../../redux/actions/chatActions';
 import GlobalHeader from '../../shared/header';
 import './chat.css';
+import Loader from '../../shared/loader';
 
 const { Content } = Layout;
 const ChatList = () => {
@@ -19,12 +20,17 @@ const ChatList = () => {
   const { onlineUsers, chatList } = useSelector(state => state.chat);
   const { user } = useSelector(state => state.auth);
 
+  const [loading, setLoading] = useState(false);
   const [socket, setSocket] = useState(null);
   const [allChats, setAllChats] = useState(chatList);
   const getAllUsers = async () => {
     try {
-      await dispatch(handleChatList(true, []));
-    } catch (e) {}
+      setLoading(true);
+      const res = await dispatch(handleChatList(true, []));
+      if (res) setLoading(false);
+    } catch (e) {
+      setLoading(false);
+    }
   };
 
   const storeOnlineUsers = async () => {
@@ -101,6 +107,7 @@ const ChatList = () => {
     <Layout style={{ flex: 1, overflow: 'hidden' }}>
       <GlobalHeader title={'Chats'} />
       <Content style={{ padding: '24px', overflow: 'auto' }}>
+        {loading && <Loader />}
         <List
           style={{ cursor: 'pointer' }}
           itemLayout="horizontal"
