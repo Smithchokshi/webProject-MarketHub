@@ -2,7 +2,7 @@ const userModel = require('../Models/userModel');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -65,40 +65,83 @@ const loginUser = async (req, res) => {
   try {
     const { email, password, profileObj, isGoogle } = req.body;
 
-    let user = await userModel.findOne({ email });
+    if (!isGoogle) {
+      let user = await userModel.findOne({ email });
 
-    if (!user)
-      return res.status(400).json({
-        status: '400',
-        message: 'Invalid email or password.',
-      });
+      if (!user)
+        return res.status(400).json({
+          status: '400',
+          message: 'Invalid email or password.',
+        });
 
-    if (user.deletedAt !== null) {
-      return res.status(400).json({
-        status: '400',
-        message: 'This account has been deleted.',
+      if (user.deletedAt !== null) {
+        return res.status(400).json({
+          status: '400',
+          message: 'This account has been deleted.',
+        });
+      }
+
+      const isValidPassword = await bcrypt.compare(password, user.password);
+
+      if (!isValidPassword)
+        return res.status(400).json({
+          status: '400',
+          message: 'Invalid email or password.',
+        });
+
+      const token = generateToken(user._id);
+
+      user = await userModel.findOneAndUpdate({ _id: user._id }, { token: token }, { new: true });
+
+      res.status(200).json({
+        message: 'Login successfully',
+        userData: {
+          _id: user._id,
+          token,
+        },
       });
+    } else {
+      let user = await userModel.findOne({ email: profileObj.email });
+
+      if (!user) {
+        user = new userModel({
+          name: profileObj.name,
+          email: profileObj.email,
+          googleId: profileObj.googleId,
+          img: profileObj.imageUrl,
+        });
+
+        await user.save();
+
+        const token = generateToken(user._id);
+
+        user = await userModel.findOneAndUpdate({ _id: user._id }, { token: token }, { new: true });
+
+        return res.status(200).json({
+          message: 'Login successfully',
+          userData: {
+            _id: user._id,
+            token,
+          },
+        });
+      } else {
+        const token = generateToken(user._id);
+
+        user = await userModel.findOneAndUpdate(
+          { _id: user._id },
+          { token: token, deletedAt: null },
+          { new: true }
+        );
+
+        return res.status(200).json({
+          message: 'Login successfully',
+          userData: {
+            _id: user._id,
+            token,
+          },
+        });
+      }
     }
-
-    const isValidPassword = await bcrypt.compare(password, user.password);
-
-    if (!isValidPassword)
-      return res.status(400).json({
-        status: '400',
-        message: 'Invalid email or password.',
-      });
-
-    const token = generateToken(user._id);
-
-    user = await userModel.findOneAndUpdate({ _id: user._id }, { token: token }, { new: true });
-
-    res.status(200).json({
-      message: 'Login successfully',
-      userData: {
-        _id: user._id,
-        token,
-      },
-    });
   } catch (e) {
     res.status(500).json({
       message: e,
@@ -141,31 +184,34 @@ const forgotPassword = async (req, res) => {
   try {
     const oldUser = await userModel.findOne({ email });
     if (!oldUser) {
-      return res.json({ status: "User Not Exists!!" });
+      return res.json({ status: 'User Not Exists!!' });
     }
     const secret = process.env.JWT_SECRET + oldUser.password;
     const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, {
-      expiresIn: "1d",
+      expiresIn: '1d',
     });
-    const setusertoken = await userModel.findByIdAndUpdate({_id:oldUser._id},{verifyToken:token},{new:true});
+    const setusertoken = await userModel.findByIdAndUpdate(
+      { _id: oldUser._id },
+      { verifyToken: token },
+      { new: true }
+    );
 
     const link = `http://localhost:3000/change-password/${oldUser._id}/${token}`;
 
-    if(setusertoken){
+    if (setusertoken) {
+      var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+          user: myemail,
+          pass: mypassword,
+        },
+      });
 
-    var transporter = nodemailer.createTransport({
-      service: "Gmail",
-      auth: {
-        user: myemail,
-        pass: mypassword,
-      },
-    });
-
-    var mailOptions = {
-      from: myemail,
-      to: email,
-      subject: "Password Reset",
-      html: `<!DOCTYPE html>
+      var mailOptions = {
+        from: myemail,
+        to: email,
+        subject: 'Password Reset',
+        html: `<!DOCTYPE html>
       <html>
         <head>
           <title>Reset link to change your password.</title>
@@ -181,7 +227,7 @@ const forgotPassword = async (req, res) => {
           <br>
             <p>Team MARKETHUB!</p>
           </body>
-        </html>`
+        </html>`,
       };
 
       transporter.sendMail(mailOptions, function (error, info) {
@@ -202,25 +248,26 @@ const forgotPassword = async (req, res) => {
           token,
         },
       });
-    } }
-    catch (error) { 
-      res.status(500).json({
-        message: error,
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: error,
     });
-}};
+  }
+};
 
 const changePasswordGet = async (req, res) => {
   const { id, token } = req.params;
   const oldUser = await userModel.findOne({ _id: id, verifyToken: token });
   if (!oldUser) {
-    return res.status(400).json({ status: "User Not Exists!!" });
+    return res.status(400).json({ status: 'User Not Exists!!' });
   }
   const secret = process.env.JWT_SECRET + oldUser.password;
   try {
     const verify = jwt.verify(token, secret);
-    res.status(200).json({ email: verify.email, status: "Not Verified" });
+    res.status(200).json({ email: verify.email, status: 'Not Verified' });
   } catch (error) {
-    res.status(500).json({status: "Something went wrong" });
+    res.status(500).json({ status: 'Something went wrong' });
   }
 };
 
@@ -228,85 +275,86 @@ const changePasswordPost = async (req, res) => {
   const { id, token } = req.params;
   const { password } = req.body;
 
-  const oldUser = await userModel.findOne({_id:id,verifyToken:token});
+  const oldUser = await userModel.findOne({ _id: id, verifyToken: token });
   if (!oldUser) {
-    return res.json({ status: "User Not Exists!!" });
+    return res.json({ status: 'User Not Exists!!' });
   }
 
   const secret = process.env.JWT_SECRET + oldUser.password;
   const verify = jwt.verify(token, secret);
   try {
-      const salt = await bcrypt.genSalt(10);
-      const newpassword = await bcrypt.hash(password, salt);
+    const salt = await bcrypt.genSalt(10);
+    const newpassword = await bcrypt.hash(password, salt);
 
-      const setnewuserpass = await userModel.findByIdAndUpdate({_id:id},{password:newpassword});
+    const setnewuserpass = await userModel.findByIdAndUpdate(
+      { _id: id },
+      { password: newpassword }
+    );
 
-      setnewuserpass.save();
-      res.status(201).json({status:201,email: verify.email});
-} catch (error) {
-  res.status(401).json({status:401,error});
-}
+    setnewuserpass.save();
+    res.status(201).json({ status: 201, email: verify.email });
+  } catch (error) {
+    res.status(401).json({ status: 401, error });
+  }
 };
 
 const updateProfileImage = async (req, res) => {
   const { image, email } = req.body;
 
-  try{
-  const oldUser = await userModel.findOne({ email });
-  if (!oldUser) {
-    return res.json({ status: "User Not Exists!!" });
+  try {
+    const oldUser = await userModel.findOne({ email });
+    if (!oldUser) {
+      return res.json({ status: 'User Not Exists!!' });
+    }
+
+    if (!image) {
+      return res.status(400).json({ msg: 'Please enter an icon url' });
+    }
+
+    const setImage = await userModel.findByIdAndUpdate({ _id: oldUser._id }, { img: image });
+
+    setImage.save();
+    res.status(201).json({ status: 201, img: image });
+  } catch (error) {
+    res.status(401).json({ status: 401, error });
   }
-
-  if(!image){
-    return res.status(400).json({ msg: "Please enter an icon url" });
-  }
-
-  const setImage = await userModel.findByIdAndUpdate({_id:oldUser._id},{img:image});
-
-  setImage.save();
-  res.status(201).json({status:201,img: image});
-} 
-catch (error) {
-  res.status(401).json({status:401,error});
-}
 };
 
 const updateProfileDetails = async (req, res) => {
   const { email, name, city, postalCode, mobile } = req.body;
 
-  try{
-  const oldUser = await userModel.findOne({ email });
-  if (!oldUser) {
-    return res.json({ status: "User Not Exists!!" });
+  try {
+    const oldUser = await userModel.findOne({ email });
+    if (!oldUser) {
+      return res.json({ status: 'User Not Exists!!' });
+    }
+
+    if (!name || !email || !postalCode || !city || !mobile) {
+      return res.status(400).json({
+        status: '400',
+        message: 'All fields are required.',
+      });
+    }
+
+    const setDetails = await userModel.findByIdAndUpdate(
+      oldUser._id,
+      {
+        name: name,
+        postalCode: postalCode,
+        city: city,
+        mobile: mobile,
+      },
+      { new: true }
+    );
+
+    setDetails.save();
+    res.status(200).json({
+      message: 'Profile Updated successfully',
+      userData: setDetails,
+    });
+  } catch (error) {
+    res.status(401).json({ status: 401, error });
   }
-
-  if (!name || !email || !postalCode || !city || !mobile){
-  return res.status(400).json({
-    status: '400',
-    message: 'All fields are required.',
-  });}
-
-  const setDetails = await userModel.findByIdAndUpdate(
-    oldUser._id,
-    {
-      name: name,
-      postalCode: postalCode,
-      city: city,
-      mobile: mobile,
-    },
-    { new: true }
-  );
-  
-
-  setDetails.save();
-  res.status(200).json({
-    message: 'Profile Updated successfully',
-    userData: setDetails,
-  });
-} 
-catch (error) {
-  res.status(401).json({status:401,error});
-}
 };
 
 /*const deleteUser = async (req, res) => {
@@ -345,7 +393,6 @@ const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
 
-
     // Find the user by ID
     const oldUser = await userModel.findById(id);
 
@@ -376,59 +423,60 @@ const deleteUser = async (req, res) => {
   }
 };
 
-
 const changePassword = async (req, res) => {
   const { oldPassword, newPassword, confirmPassword } = req.body;
-  const {id} = req.params;
+  const { id } = req.params;
   console.log(req.body);
   console.log(id);
-  try{
+  try {
     const oldUser = await userModel.findById(id);
-  if (!oldUser) {
-    return res.json({ status: "User Not Exists!!" });
-  }
-  console.log(oldUser);
-  const isOldPasswordCorrect = await bcrypt.compare(
-    oldPassword,
-    oldUser.password
-  );
+    if (!oldUser) {
+      return res.json({ status: 'User Not Exists!!' });
+    }
+    console.log(oldUser);
+    const isOldPasswordCorrect = await bcrypt.compare(oldPassword, oldUser.password);
 
-  console.log(isOldPasswordCorrect);
-  if (!isOldPasswordCorrect) {
-    console.log("in oldcorrect");
-    return res.status(400).json({
-      status: '400',
-      message: 'Old Password Does Not Match',
+    console.log(isOldPasswordCorrect);
+    if (!isOldPasswordCorrect) {
+      console.log('in oldcorrect');
+      return res.status(400).json({
+        status: '400',
+        message: 'Old Password Does Not Match',
+      });
+    }
+
+    const isNewPasswordSame = await bcrypt.compare(newPassword, oldUser.password);
+    console.log(isNewPasswordSame);
+    if (isNewPasswordSame) {
+      return res.status(400).json({
+        status: '400',
+        message: 'Your Current Password and New Password is Same',
+      });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    oldUser.password = await bcrypt.hash(newPassword, salt);
+
+    await oldUser.save();
+    res.status(200).json({
+      status: '200',
+      message: 'Password Changed Sucessfully',
     });
+  } catch (error) {
+    res.status(401).json({ status: 401, error });
   }
-
-  const isNewPasswordSame = await bcrypt.compare(
-    newPassword,
-    oldUser.password
-  );
-  console.log(isNewPasswordSame);
-  if (isNewPasswordSame) {
-    return res.status(400).json({
-      status: '400',
-      message: 'Your Current Password and New Password is Same',
-    });
-  }
-
-  const salt = await bcrypt.genSalt(10);
-  oldUser.password = await bcrypt.hash(newPassword, salt);
-
-  await oldUser.save();
-  res.status(200).json({
-    status: '200',
-    message: 'Password Changed Sucessfully', 
-  });
-} 
-catch (error) {
-  res.status(401).json({status:401, error});
-}
 };
 
-
-
-
-module.exports = { registerUser, loginUser, getUserDetails, getAllUsers, forgotPassword, changePasswordGet, changePasswordPost, updateProfileImage, updateProfileDetails, deleteUser, changePassword };
+module.exports = {
+  registerUser,
+  loginUser,
+  getUserDetails,
+  getAllUsers,
+  forgotPassword,
+  changePasswordGet,
+  changePasswordPost,
+  updateProfileImage,
+  updateProfileDetails,
+  deleteUser,
+  changePassword,
+};

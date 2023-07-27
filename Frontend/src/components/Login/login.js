@@ -47,7 +47,7 @@ const Login = () => {
       passwwordLength: {
         message: 'Password should be atleast of 6 digits',
         rule: (val, params) => {
-            return val && val.length >= 6;
+          return val && val.length >= 6;
         },
       },
     }
@@ -88,17 +88,22 @@ const Login = () => {
 
   return (
     <Layout>
-      {/*<GlobalHeader title={'Products'} />*/}
       <Content>
         <div className="login-page">
           <div className="login-box">
-            <div className="illustration-wrapper" style={{background:"#fff"}}>
-            <div className="links" style={{ background: "#fff", marginBottom: "170px", float:"left" }}>
-                <Link to="/contact-us" className="linkStyle" style={{background:"#fff"}}>Contact Us</Link>
-                <Link to="/faq" className="linkStyle" style={{background:"#fff"}}>FAQ</Link>
+            <div className="illustration-wrapper" style={{ background: '#fff' }}>
+              <div
+                className="links"
+                style={{ background: '#fff', marginBottom: '170px', float: 'left' }}
+              >
+                <Link to="/contact-us" className="linkStyle" style={{ background: '#fff' }}>
+                  Contact Us
+                </Link>
+                <Link to="/faq" className="linkStyle" style={{ background: '#fff' }}>
+                  FAQ
+                </Link>
               </div>
 
-           
               <img
                 src="https://cdn.sites.tapfiliate.com/tapfiliate.com/2023/04/5-winning-marketing-strategies-for-e-commerce-this-year-1.jpg"
                 alt="Login"
@@ -110,7 +115,6 @@ const Login = () => {
               initialValues={{ remember: true }}
               layout="vertical"
             >
-
               <p className="form-title">Login</p>
               <div
                 style={{
@@ -176,18 +180,18 @@ const Login = () => {
                   </div>
                 </div>
                 <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  fontSize: '15px',
-                  fontFamily: 'sans-serif',
-                  fontWeight: 'bold',
-                }}
-              >
-                <p>
-                Don't have an account yet? <a href="/register">Sign Up</a>
-                </p>
-              </div>
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    fontSize: '15px',
+                    fontFamily: 'sans-serif',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  <p>
+                    Don't have an account yet? <a href="/register">Sign Up</a>
+                  </p>
+                </div>
               </Form.Item>
               <Form.Item>
                 <Button
@@ -208,7 +212,7 @@ const Login = () => {
                   fontSize: '16px',
                   fontFamily: 'sans-serif',
                   fontWeight: 'bold',
-                  marginTop:"10px",
+                  marginTop: '10px',
                 }}
               >
                 <p>Or Sign Up using</p>
