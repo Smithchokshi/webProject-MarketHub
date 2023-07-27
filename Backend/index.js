@@ -18,6 +18,9 @@ const orderRoute = require('./Routes/orderRoute');
 const passport = require('passport');
 const cookieSession = require("cookie-session");
 const passportSetup = require('./Controllers/Passport');
+const adminRoute = require('./Routes/adminRoute');
+const adminloginRoute = require('./Routes/adminloginRoute');
+const postApprovalRoute = require('./Routes/postApprovalRoute');
 
 const app = express();
 const server = http.createServer(app);
@@ -51,6 +54,10 @@ app.use('/api/likes', authMiddleware, likesRoute);
 app.use('/api/ratings', authMiddleware, ratingsRoute);
 app.use('/api/comment', authMiddleware, commentRoute);
 app.use('/api/contact-us', contactusRoute);
+app.use('/api/user',adminRoute);
+app.use('/api/admin',adminloginRoute);
+app.use('/api/products',postApprovalRoute);
+
 app.get('/', (req, res) => {
   res.send('working');
 });
@@ -112,7 +119,7 @@ io.on('connection', socket => {
   });
 });
 
-const PORT = process.env.PORT || 5006;
+const PORT = process.env.PORT || 5005;
 
 server.listen(PORT, () => {
   console.log('Server is running', PORT);
