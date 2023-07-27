@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { LikeOutlined, ShareAltOutlined, CommentOutlined } from '@ant-design/icons';
 import { Avatar, Card, Row, Col, Tooltip, Layout,Select } from 'antd';
@@ -175,7 +174,7 @@ const Product = () => {
                     <Tooltip placement="bottom" title={<span>Like</span>}>
                       <LikeOutlined
                         key="like"
-                        onClick={() => handleAddLike(e._id)}
+                        // onClick={() => handleAddLike(e._id)}
                         style={{ color: e.isLiked ? 'blue' : 'inherit' }}
                       />
                       <span className="like-count">({e.isLikedTotal})</span>
