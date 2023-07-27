@@ -1,17 +1,12 @@
-   /*.dummy-container {
-  padding: 20px;
-  margin-bottom: 20px;
-  display: flex;
-  flex-wrap: wrap;
-} */
-.user-dummy-container {
+
+.user-dummy-container_p {
     padding: 20px;
     margin-bottom: 20px;
     display: flex;
     flex-wrap: wrap;
   }
   
-  .user-dummy-card {
+  .user-dummy-card_p {
     flex: 1 0 100%;
     display: flex;
     justify-content: center;
