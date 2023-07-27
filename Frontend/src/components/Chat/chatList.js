@@ -103,6 +103,10 @@ const ChatList = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    setAllChats(chatList);
+  }, [chatList]);
+
   return (
     <Layout style={{ flex: 1, overflow: 'hidden' }}>
       <GlobalHeader title={'Chats'} />

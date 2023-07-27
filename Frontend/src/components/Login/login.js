@@ -7,6 +7,7 @@ import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
 import { login } from '../../redux/actions/authActions';
 import './login.css';
 import notification from '../../constants/notification';
+import { handleSidebarChange } from '../../redux/actions/sidebarAction';
 
 const { Content } = Layout;
 
@@ -64,6 +65,7 @@ const Login = () => {
     setLoading(true);
     if (validator.allValid()) {
       await dispatch(login(fields));
+      await dispatch(handleSidebarChange('/products'));
       setLoading(false);
       navigate('/products');
     } else {
@@ -83,6 +85,7 @@ const Login = () => {
     };
 
     await dispatch(login(data));
+    await dispatch(handleSidebarChange('/products'));
     navigate('/products');
   };
 
@@ -234,13 +237,21 @@ const Login = () => {
                 theme="dark"
                 longtitle="true"
               />
-              <div style={{
+              <div
+                style={{
                   display: 'flex',
                   justifyContent: 'center',
                   fontSize: '16px',
                   fontFamily: 'sans-serif',
-                  marginTop:"10px",}}>
-              <p>Admin User? <Link to="https://admin-control-panel.netlify.app/" style={{marginTop:"10px"}}>Click Here</Link></p>
+                  marginTop: '10px',
+                }}
+              >
+                <p>
+                  Admin User?{' '}
+                  <Link to="https://admin-control-panel.netlify.app/" style={{ marginTop: '10px' }}>
+                    Click Here
+                  </Link>
+                </p>
               </div>
             </Form>
           </div>
