@@ -63,7 +63,7 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, profileObj, isGoogle } = req.body;
 
     let user = await userModel.findOne({ email });
 
