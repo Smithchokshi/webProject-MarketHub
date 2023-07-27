@@ -28,7 +28,32 @@ const ChangePassword = () => {
     confirmPassword: null,
   });
 
-  const [validator, setValidator] = useSimpleReactValidator();
+  const [validator, setValidator] = useSimpleReactValidator(
+    {},
+    {
+      matchPassword: {
+        message: 'Password doesn`t match',
+        rule: (val, params, validator) => {
+          return val === fields?.password;
+        },
+      },
+      postalCode: {
+        message: 'Please enter postal code in B3J2K9 format',
+        rule: (val, params) => {
+          return (
+            validator.helpers.testRegex(val, /^[A-Z]\d[A-Z]\d[A-Z]\d$/) &&
+            params.indexOf(val) === -1
+          );
+        },
+      },
+      passwwordLength: {
+        message: 'Password should be atleast of 6 digits',
+        rule: (val, params) => {
+            return val && val.length >= 6;
+        },
+      },
+    }
+  );
 
   const handleChange = (e, field) => {
     setFields(prev => ({
@@ -143,7 +168,7 @@ useEffect(() => {
 
               />
               <div className={validator.errorMessages.newPassword ? 'error-message' : ''}>
-                {validator.message('New Password', fields.newPassword, 'required')}
+                {validator.message('New Password', fields.newPassword, 'required|passwwordLength')}
               </div>
             </Form.Item>
             
@@ -173,7 +198,11 @@ useEffect(() => {
 
               />
               <div className={validator.errorMessages.confirmPassword ? 'error-message' : ''}>
-                {validator.message('Confirm Password', fields.confirmPassword, 'required')}
+                {validator.message(
+                    'Confirm Password',
+                    fields.confirmPassword,
+                    'required|matchPassword'
+                  )}
               </div>
             </Form.Item>
          
