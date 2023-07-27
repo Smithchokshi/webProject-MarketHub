@@ -28,16 +28,6 @@ const GlobalHeader = ( {title, handleSearchResults }) => {
   } = theme.useToken();
   const { Search } = Input;
 
-  const handleLogout = async () => {
-    const data = {
-      key: 'marketplace',
-    };
-    await dispatch(logout());
-    await dispatch(handleSidebarChange(data));
-    localStorage.removeItem('token');
-    navigate('/login');
-  };
-
     // Function to handle the search logic
     const handleSearch = async (value) => {
       try {
@@ -107,6 +97,7 @@ const GlobalHeader = ( {title, handleSearchResults }) => {
         flexDirection: 'row',
         justifyContent: 'space-between',
       }}
+      className="header-container"
     >
       <div style={{ display: 'flex', alignItems: 'center' }}>
         {isAuthenticated && (
@@ -122,6 +113,7 @@ const GlobalHeader = ( {title, handleSearchResults }) => {
               alignItems: 'center',
               justifyContent: 'center',
             }}
+            className="menu-button"
           />
         )}
         <div style={{ marginLeft: '20px', display: 'flex', alignItems: 'center' }}>
@@ -138,11 +130,12 @@ const GlobalHeader = ( {title, handleSearchResults }) => {
         {isAuthenticated && (
           <div style={{ display: 'flex', alignItems: 'center', marginRight: '120px', marginLeft: '30px' }}>
             <AutoComplete
+              className="search-input"
               value={searchTerm}
               onChange={handleSearchSuggestions}
               onSelect={handleSearchProduct}
               placeholder="Search products..."
-              style={{ width: 600 }}
+              style={{ width: 900 }}
               options={suggestions.map((item) => ({ value: item.name, id: item.id}))}
             >
             <Search enterButton loading={loading} onSearch={handleSearch} />
@@ -151,42 +144,6 @@ const GlobalHeader = ( {title, handleSearchResults }) => {
           </div>
         )}
       </div>
-      {isAuthenticated ? (
-        <>
-
-        <span className="logout">
-        <Button
-          type="primary"
-          onClick={handleLogout}
-          style={{
-            height: '32px',
-            display: 'flex',
-            fontSize: '16px',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginRight: '10px',
-            backgroundColor: '#ed0000',
-          }}
-        >
-          Logout
-        </Button>
-        </span>
-        </>
-      ) : (
-        <Button
-          type="primary"
-          onClick={() => navigate('/login')}
-          style={{
-            height: '32px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginRight: '10px',
-          }}
-        >
-          Login
-        </Button>
-      )}
     </Header>
   );
 };
