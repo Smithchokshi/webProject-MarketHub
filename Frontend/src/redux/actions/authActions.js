@@ -1,4 +1,5 @@
 import ApiUtils from '../../helpers/APIUtils';
+import { handleChatList } from './chatActions';
 
 const api = msg => new ApiUtils(msg);
 
@@ -11,8 +12,7 @@ export const loadUser = () => async dispatch => {
     const res = await api().loadUser({
       authorization: token,
     });
-
-    console.log(res.data.userData);
+    await dispatch(handleChatList(true, []));
     dispatch({ type: 'EXISTING_USER', payload: res.data.userData });
     return true;
   } catch (err) {
@@ -49,7 +49,7 @@ export const login = data => async dispatch => {
 
 export const logout = () => async dispatch => {
   try {
-    dispatch({ type: 'User LoggedOut' });
+    dispatch({ type: 'AUTH_FAILED' });
     localStorage.removeItem('token');
     return true;
   } catch (err) {

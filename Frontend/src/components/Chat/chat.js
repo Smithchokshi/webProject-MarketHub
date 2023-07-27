@@ -1,14 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Layout, Button, theme, List, Input } from 'antd';
+import { Layout, Button, theme, List, Input, Tooltip } from 'antd';
 import { PaperClipOutlined } from '@ant-design/icons';
 import { io } from 'socket.io-client';
 import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import Moment from 'react-moment';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
 import APIUtils from '../../helpers/APIUtils';
 import './chat.css';
-import { handleOnlineUser } from '../../redux/actions/sidebarAction';
+import { handleChatChange, handleOnlineUser } from '../../redux/actions/chatActions';
 import UploadModal from './uploadModal';
 import ImageModal from './imageModal';
+import Payment from '../../shared/payment';
+import GlobalHeader from '../../shared/header';
+import Loader from '../../shared/loader';
 
 const { Content } = Layout;
 
@@ -16,14 +21,16 @@ const api = msg => new APIUtils(msg);
 
 const Chat = () => {
   const {
-    token: { colorBgContainer },    
+    token: { colorBgContainer },
   } = theme.useToken();
 
   const dispatch = useDispatch();
+  const location = useLocation();
   const messagesContainerRef = useRef(null);
-  const { activatedSidebarKey, sidebarData } = useSelector(state => state.sidebar);
+  const { selectedChat, chatList } = useSelector(state => state.chat);
   const { user } = useSelector(state => state.auth);
 
+  const [loading, setLoading] = useState(false);
   const [validator, setValidator] = useSimpleReactValidator();
   const [message, setMessage] = useState('');
   const [allMessages, setAllMessages] = useState([]);
@@ -60,21 +67,23 @@ const Chat = () => {
   const handleSubmit = async () => {
     try {
       if (fileList.length > 0) {
+        const [recipient] = chatList.filter(cur => cur.key === selectedChat.key);
         await Promise.all(
           fileList.map(async (e, index) => {
             const data = {
-              chatId: activatedSidebarKey.key,
+              chatId: selectedChat.key,
               senderId: user,
               content: imageUrls[index],
               mimeType: e.type,
               fileName: e.name,
               isImage: isImage,
+              isPayment: false,
+              recipientId: recipient?.id,
             };
 
             if (socket === null) return;
 
-            const [recipient] = sidebarData.filter(cur => cur.key === activatedSidebarKey.key);
-            socket.emit('sendMessage', { content: data, recipient });
+            socket.emit('sendMessage', { content: data });
             setListener(!listenNewMessage);
             setMessage('');
 
@@ -86,17 +95,19 @@ const Chat = () => {
         handleImageUrls([], true);
         await getMessages();
       } else if (validator.allValid()) {
+        const [recipient] = chatList.filter(cur => cur.key === selectedChat.key);
         const data = {
-          chatId: activatedSidebarKey.key,
+          chatId: selectedChat.key,
           senderId: user,
           content: message,
           isImage: isImage,
+          isPayment: false,
+          recipientId: recipient?.id,
         };
 
         if (socket === null) return;
 
-        const [recipient] = sidebarData.filter(cur => cur.key === activatedSidebarKey.key);
-        socket.emit('sendMessage', { content: data, recipient });
+        socket.emit('sendMessage', { content: data });
         setListener(!listenNewMessage);
         setMessage('');
 
@@ -113,14 +124,22 @@ const Chat = () => {
 
   const getMessages = async () => {
     try {
+      setLoading(true);
+      let tempKey;
+      if (!selectedChat?.key) {
+        tempKey = chatList.find(cur => cur.key === location.pathname.split('/chats/')[1]);
+        await dispatch(handleChatChange(tempKey));
+      }
       const data = {
-        chatId: activatedSidebarKey.key,
+        chatId: !selectedChat?.key ? tempKey.key : selectedChat.key,
       };
 
       const res = await api().getAllMessages(data);
 
       setAllMessages(res.data.content);
+      setLoading(false);
     } catch (e) {
+      setLoading(false);
       console.log(e);
     }
   };
@@ -146,6 +165,9 @@ const Chat = () => {
       socket.on('getOnlineUsers', res => {
         updateOnlineStatus(res);
       });
+      socket.on('paymentSuccessful', res => {
+        socket.emit('paymentSuccessful', res);
+      });
 
       return () => {
         socket.off('getOnlineUsers');
@@ -158,9 +180,7 @@ const Chat = () => {
     if (socket === null) return;
 
     const handleMessageReceived = res => {
-      if (activatedSidebarKey.key !== res.recipient.key) return;
-
-      console.log(res);
+      if (selectedChat.key !== res.content.chatId) return;
       setAllMessages(prev => [...prev, res.content]);
     };
 
@@ -169,13 +189,13 @@ const Chat = () => {
     return () => {
       socket.off('getMessage', handleMessageReceived);
     };
-  }, [socket, activatedSidebarKey.key, listenNewMessage]);
+  }, [socket, selectedChat.key, listenNewMessage]);
 
   useEffect(() => {
     (async () => {
       await getMessages();
     })();
-  }, [user, activatedSidebarKey.key]);
+  }, [user, selectedChat.key]);
 
   useEffect(() => {
     // Scroll to the bottom of the messages container
@@ -184,8 +204,10 @@ const Chat = () => {
   }, [allMessages]);
 
   return (
-    <Layout>
-      <Content style={{ padding: '24px' }}>
+    <Layout style={{ flex: 1, overflow: 'hidden' }}>
+      <GlobalHeader title={`${selectedChat?.label}`} />
+      <Content style={{ padding: '24px', overflow: 'auto' }}>
+        {loading && <Loader />}
         <div
           className="chat-container"
           style={{
@@ -196,19 +218,33 @@ const Chat = () => {
           <List
             dataSource={allMessages}
             renderItem={item => (
-              <List.Item className={item.senderId === user ? 'textRight' : ''}>
+              <List.Item
+                className={
+                  item.isPayment ? 'paymentText' : item.senderId === user ? 'textRight' : ''
+                }
+              >
                 {item.isImage ? (
-                  <img
-                    src={item.content}
-                    alt="Image"
-                    role="presentation"
-                    onClick={() => {
-                      setPreviewedImage(item.content);
-                      handlePreview(true);
-                    }}
-                  />
+                  <div className="image-container">
+                    <img
+                      src={item.content}
+                      alt="Image"
+                      role="presentation"
+                      onClick={() => {
+                        setPreviewedImage(item.content);
+                        handlePreview(true);
+                      }}
+                    />
+                    <div className={item.senderId === user ? 'message-time-right' : 'message-time'}>
+                      <Moment format="YYYY/MM/DD hh:mm A">{item.createdAt}</Moment>
+                    </div>
+                  </div>
                 ) : (
-                  <>{item.content}</>
+                  <div className="message-container">
+                    <div className="message-content">{item.content}</div>
+                    <div className="message-time">
+                      <Moment format="YYYY/MM/DD hh:mm A">{item.createdAt}</Moment>
+                    </div>
+                  </div>
                 )}
               </List.Item>
             )}
@@ -223,7 +259,10 @@ const Chat = () => {
             style={{ marginRight: '10px' }}
           />
           {validator.message('message', message, 'required')}
-          <PaperClipOutlined className="attach-icon" onClick={() => handleModal(true)} />
+          <Tooltip placement="top" title={<span>send image</span>}>
+            <PaperClipOutlined className="attach-icon" onClick={() => handleModal(true)} />
+          </Tooltip>
+          <Payment />
           <Button type="primary" onClick={handleSubmit}>
             Send
           </Button>
