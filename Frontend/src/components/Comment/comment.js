@@ -1,7 +1,7 @@
 // import { DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined } from '@ant-design/icons';
 import { Comment } from '@ant-design/compatible';
 import { Avatar, Button, Form, Input, List, Divider, Layout, Space } from 'antd';
-import { useParams, useNavigate,useLocation} from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
@@ -11,21 +11,18 @@ import { app } from '../../firebase';
 import GlobalHeader from '../../shared/header';
 import './comment.css';
 
-
 const { Content } = Layout;
 const { TextArea } = Input;
 const api = msg => new APIUtils(msg);
 const db = getDatabase(app);
 
-
-
 const CommentList = ({ comments }) => (
   <List
     dataSource={comments}
     header={
-      <div >
+      <div>
         <span style={{ fontWeight: 'bold' }}>{comments.length} </span>
-        <span style={{ fontWeight: 'bold' }}>{comments.length > 1 ? ' Replies' : ' Reply'}</span>
+        <span style={{ fontWeight: 'bold' }}>{comments.length > 1 ? ' Comments' : ' Comment'}</span>
       </div>
     }
     itemLayout="horizontal"
@@ -39,20 +36,27 @@ const CommentList = ({ comments }) => (
   />
 );
 
-
-
-
 const Editor = ({ onChange, onSubmit, submitting, value, navigateToproducts, id }) => (
   <div style={{ borderRadius: '8px', backgroundColor: '#f5f5f5' }}>
     <Form.Item>
-      <TextArea rows={4} onChange={onChange} value={value} style={{ backgroundColor: '#f5f5f5', borderRadius: '8px' }} />
+      <TextArea
+        rows={4}
+        onChange={onChange}
+        value={value}
+        style={{ backgroundColor: '#f5f5f5', borderRadius: '8px' }}
+      />
     </Form.Item>
     <Form.Item>
       <Space size="middle" wrap>
         <Button htmlType="submit" loading={submitting} onClick={onSubmit} type="primary">
           Add Comment
         </Button>
-        <Button htmlType="submit" loading={submitting} onClick={() => navigateToproducts(id)} type="primary">
+        <Button
+          htmlType="submit"
+          loading={submitting}
+          onClick={() => navigateToproducts(id)}
+          type="primary"
+        >
           Back
         </Button>
       </Space>
@@ -60,18 +64,14 @@ const Editor = ({ onChange, onSubmit, submitting, value, navigateToproducts, id 
   </div>
 );
 
-
 let counter = 0;
 
 const App = () => {
-
   const [comments, setComments] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
   const navigate = useNavigate();
   const [firebaseValue, setFirebaseValue] = useState(0);
-
- 
 
   const { id } = useParams();
   const queryParams = new URLSearchParams(location.search);
@@ -79,7 +79,6 @@ const App = () => {
   // console.log(name+"name");
 
   const getData = async () => {
-
     try {
       const res = await api(false).getALlComments({ productId: id });
 
@@ -90,21 +89,14 @@ const App = () => {
         datetime: moment(comment.createdAt).fromNow(),
       }));
       setComments(transformedComments);
-
     } catch (e) {
       console.log(e);
     }
   };
 
-
-
-
-
-
-
   useEffect(() => {
     const dataRef = ref(db, 'user');
-    const unsubscribe = onValue(dataRef, (snapshot) => {
+    const unsubscribe = onValue(dataRef, snapshot => {
       const value = snapshot.val();
       setFirebaseValue(value);
     });
@@ -114,19 +106,14 @@ const App = () => {
     };
   }, []);
 
-
-
-
-
   const putData = () => {
-    set(ref(db, "user"), firebaseValue + 1)
+    set(ref(db, 'user'), firebaseValue + 1);
   };
 
   useEffect(() => {
     (async () => {
       await getData();
     })();
-
   }, [firebaseValue]);
 
   const handleSubmit = async () => {
@@ -146,19 +133,18 @@ const App = () => {
     })();
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setValue(e.target.value);
   };
-  const navigateToproducts = (id) => {
+  const navigateToproducts = id => {
     console.log(id);
-    navigate(`/products/${id}`); 
+    navigate(`/products/${id}`);
   };
 
   return (
     <Layout style={{ flex: 1, overflow: 'hidden' }}>
       <GlobalHeader title={name} />
       <Content style={{ padding: '24px', overflow: 'auto' }}>
-
         <div style={{ backgroundColor: '#f5f5f5' }}>
           <Comment
             content={
