@@ -16,6 +16,7 @@ const createProduct = async (req, res) => {
       isChatCreated: false,
       chatId: null,
       isApproved: false,
+      deletedAt: false,
     });
 
     const response = await newProduct.save();
@@ -23,7 +24,7 @@ const createProduct = async (req, res) => {
     res.status(200).json({
       status: 200,
       productData: response,
-      message: 'Success',
+      message: 'Product Added Sucessfully',
     });
   } catch (e) {
     console.log(e);
@@ -72,7 +73,7 @@ const getOneProduct = async (req, res) => {
     const  {productId}  = req.body;
     
     const product = await productModel.find({ _id:productId});
-    res.json(product);
+    res.status(200).json(product);
   } 
   catch (e) {
     console.log(e);
@@ -134,13 +135,15 @@ const getUserProducts = async (req, res) => {
 
     if (type === 'approved'){
       try{
-      let products = await productModel.find({ userId: userId, isApproved: 'true' });
+      let products = await productModel.find({ userId: userId, isApproved: true, isDeleted: false});
 
-      res.status(200).json({
-        status: 200,
-        products,
-        message: 'Success',
-      });
+      console.log(products);
+
+        res.status(200).json({
+          status: 200,
+          products,
+          message: 'Success',
+        });
     }
     catch(e){
       console.log(e);
@@ -151,7 +154,7 @@ const getUserProducts = async (req, res) => {
     }
     else{
       try{
-      let products = await productModel.find({ userId: userId, isApproved: 'false' });
+      let products = await productModel.find({ userId: userId, isApproved: false, isDeleted: false });
       res.status(200).json({
         status: 200,
         products,
@@ -174,4 +177,75 @@ const getUserProducts = async (req, res) => {
   }
 };
 
-module.exports = { createProduct, getALlProducts,getOneProduct, getUserProducts, sorting, suggestion };
+const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const product = await productModel.findOne({ _id: id });
+
+    if (!product) {
+      return res.status(404).json({
+        status: 404,
+        message: 'Product not found',
+      });
+    }
+
+    product.isDeleted = true;
+    await product.save();
+
+    res.status(200).json({
+      status: 200,
+      message: 'Product Deleted Successfully',
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      message: e.message,
+    });
+  }
+};
+
+const updateProduct = async (req, res) => {
+  const { productId, image, productName, productDescription, price } = req.body; 
+  try {
+
+    const product = await productModel.findOne({ _id: productId });
+
+    if(product){
+      const updatedProduct = await productModel.findByIdAndUpdate(
+        product._id,
+        {
+          image,
+          productName,
+          productDescription,
+          price,
+        },
+        { new: true }
+      );
+  
+      if (!updatedProduct) {
+        return res.status(404).json({
+          status: 404,
+          message: 'Product not found',
+        });
+      }
+  
+      res.status(200).json({
+        status: 200,
+        message: 'Product updated successfully',
+        updatedProduct,
+      });
+    }
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: 500,
+      message: 'Internal server error',
+    });
+  }
+};
+
+
+
+module.exports = { createProduct, getALlProducts,getOneProduct, getUserProducts, sorting, suggestion, deleteProduct, updateProduct };

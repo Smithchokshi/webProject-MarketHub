@@ -11,7 +11,12 @@
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
-    min-width: 220px; /* Set the minimum width for the card */
+    min-width: 220px;
+  }
+
+  .delete-icon:hover {
+    background-color: white; 
+    color: red; 
   }
   
   @media (min-width: 576px) {

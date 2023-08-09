@@ -13,6 +13,7 @@ const productSchema = new mongoose.Schema(
         averageRatings: { type: Number, default: 0 },
         isLiked: { type: Boolean, default: false },
         isApproved: {type: Boolean, default: false },
+        isDeleted: { type: Boolean, default: false },
     },
     {
         timestamps: true,
