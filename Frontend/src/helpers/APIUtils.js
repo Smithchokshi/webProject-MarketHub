@@ -259,6 +259,27 @@ class ApiUtils {
       url: `/users/my-profile/edit-profile/change-password/${id}`,
       data,
     });
+
+  addProduct = data =>
+    this.axios({
+      method: 'POST',
+      url: '/product/addProduct',
+      data,
+    });
+
+  deleteProduct = (id, headers) =>
+    this.axios({
+      method: 'DELETE',
+      url: `/product/deleteProduct/${id}`,
+      headers,
+    });
+  
+  updateProductDetails = data =>
+    this.axios({
+      method: 'PATCH',
+      url: '/product/update-product',
+      data,
+    });
 }
 
 export default ApiUtils;

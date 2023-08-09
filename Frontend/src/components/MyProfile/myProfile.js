@@ -50,7 +50,7 @@ const MyProfile = () => {
   };
 
   const navigateBack = async () => {
-    navigate('/my-profile');
+    navigate('/products');
   };
 
 

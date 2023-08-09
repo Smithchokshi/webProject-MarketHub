@@ -77,7 +77,14 @@ const loginUser = async (req, res) => {
       if (user.deletedAt !== null) {
         return res.status(400).json({
           status: '400',
-          message: 'This account has been deleted.',
+          message: 'Invalid email or password.',
+        });
+      }
+
+      if (user.status === true) {
+        return res.status(400).json({
+          status: '400',
+          message: 'Invalid email or password.',
         });
       }
 
@@ -117,6 +124,13 @@ const loginUser = async (req, res) => {
 
         user = await userModel.findOneAndUpdate({ _id: user._id }, { token: token }, { new: true });
 
+        if (user.status === true) {
+          return res.status(400).json({
+            status: '400',
+            message: 'Invalid email or password.',
+          });
+        }
+
         return res.status(200).json({
           message: 'Login successfully',
           userData: {
@@ -132,6 +146,13 @@ const loginUser = async (req, res) => {
           { token: token, deletedAt: null },
           { new: true }
         );
+
+        if (user.status === true) {
+          return res.status(400).json({
+            status: '400',
+            message: 'Invalid email or password.',
+          });
+        }
 
         return res.status(200).json({
           message: 'Login successfully',

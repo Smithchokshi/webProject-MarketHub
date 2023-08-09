@@ -23,6 +23,7 @@ const AddProduct = lazy(() => import('./components/MyProducts/addProduct'));
 const MyProfile = lazy(() => import('./components/MyProfile/myProfile'));
 const EditProfile = lazy(() => import('./components/MyProfile/editProfile'));
 const ChangeUserPassword = lazy(() => import('./components/changePassword/changeUserPassword'));
+const EditProduct = lazy(() => import('./components/MyProducts/editProduct'));
 const { Content } = Layout;
 
 const Routing = () => {
@@ -99,6 +100,10 @@ const Routing = () => {
     {
       path: '/my-profile/edit-profile/change-password/:id',
       component: <ChangeUserPassword />,
+    },
+    {
+      path: '/edit-product/:id',
+      component: <EditProduct />,
     },
 
   ].filter(cur => cur);

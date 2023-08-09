@@ -3,16 +3,10 @@ import axios from 'axios';
 import { Input, Card, Col, Row, Form, Button, Layout, Upload, Modal } from 'antd';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
 import {
-  EnvironmentFilled,
-  GithubOutlined,
-  GlobalOutlined,
-  InstagramOutlined,
   UploadOutlined,
   UserOutlined,
   MailOutlined,
-  PhoneOutlined,
   MobileOutlined,
-  EditOutlined, 
   DeleteOutlined,
   EnvironmentOutlined
 } from '@ant-design/icons';
@@ -219,15 +213,17 @@ const EditProfile = () => {
                   </div>
                   <p className="text-muted mb-1"></p>
                   <Form onFinish={handleUpload}>
-                  <div >
-                  <Upload name="logo" accept="image/*" beforeUpload={(file) => {
-                    setImage(file);
-                    return false;
-                  }}>
-                    <Button icon={<UploadOutlined />}>Add Image</Button>
-                  </Upload>
-                  <Button style={{marginTop:"20px"}} className="login-form-button" type="primary" htmlType="submit" onClick={handleUpload}>Submit</Button>
-                  </div>
+                    <div style={{ display: 'flex', justifyContent: 'center'}}>
+                      <Upload name="logo" accept="image/*" beforeUpload={(file) => {
+                        setImage(file);
+                        return false;
+                      }}>
+                        <Button icon={<UploadOutlined />}>Add Image</Button>
+                      </Upload>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Button style={{ marginTop: "20px" }} className="login-form-button" type="primary" htmlType="submit" onClick={handleUpload}>Submit</Button>
+                    </div>
                   </Form>
                 </Card>
               </Col>
@@ -319,9 +315,11 @@ const EditProfile = () => {
               <div className="change-password" style={{ marginBottom: "20px", display: "flex", justifyContent: "flex-end", fontSize:"14px" }}>
                 <Link to={`/my-profile/edit-profile/change-password/${fields._id}`}>Change Password?</Link>
               </div>
-                  <Button className="login-form-button" type="primary" htmlType="submit" onClick={handleEdit}>
-                    Update Profile
-                  </Button>
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
+                <Button className="login-form-button" type="primary" htmlType="submit" onClick={handleEdit}>
+                  Update Profile
+                </Button>
+              </div>
                   </Form>
                 </Card>
               </Col>

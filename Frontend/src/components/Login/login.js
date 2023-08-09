@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Form, Input, Layout, theme, Checkbox } from 'antd';
+import { Button, Form, Input, Layout, theme } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
