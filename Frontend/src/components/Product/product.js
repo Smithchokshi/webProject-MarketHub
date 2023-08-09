@@ -175,19 +175,17 @@ const Product = () => {
                     </div>
                   }
                   actions={[
-                    <div
-                      role="presentation"
-                      onClick={() => handleAddLike(e._id)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <Tooltip placement="bottom" title={<span>Like</span>}>
-                        <LikeOutlined
-                          key="like"
-                          style={{ color: e.isLiked ? 'blue' : 'inherit' }}
-                        />
-                        <span className="like-count">({e.isLikedTotal})</span>
-                      </Tooltip>
-                    </div>,
+                    <div onClick={() => handleAddLike(e._id)} style={{ cursor: 'pointer' }}>
+                    <Tooltip placement="bottom" title={<span>Like</span>}>
+                      <LikeOutlined
+                        key="like"
+                        // onClick={() => handleAddLike(e._id)}
+                        style={{ color: e.isLiked ? 'blue' : 'inherit' }}
+                      />
+                      <span className="like-count">({e.isLikedTotal})</span>
+                    </Tooltip>
+                    </div>
+                    ,
                     <Tooltip placement="bottom" title={<span>Share</span>}>
                       <ShareAltOutlined key="share" onClick={() => handleShare(e._id)} />
                     </Tooltip>,
