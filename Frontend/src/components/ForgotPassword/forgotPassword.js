@@ -50,7 +50,7 @@ const ForgotPassword = () => {
 
   return (
     <Layout>
-  <GlobalHeader title={'Products'} />
+  {/*<GlobalHeader title={'Products'} />*/}
   <Content>
     <div className="login-page">
       <div className="login-box">

@@ -16,8 +16,7 @@ const ratingsRoute = require('./Routes/ratingsRoute');
 const commentRoute = require('./Routes/commentRoute');
 const orderRoute = require('./Routes/orderRoute');
 const passport = require('passport');
-const cookieSession = require("cookie-session");
-const passportSetup = require('./Controllers/Passport');
+const cookieSession = require('cookie-session');
 const adminRoute = require('./Routes/adminRoute');
 const adminloginRoute = require('./Routes/adminloginRoute');
 const postApprovalRoute = require('./Routes/postApprovalRoute');
@@ -32,9 +31,7 @@ global.io = io;
 
 dbConnection();
 
-app.use(
-  cookieSession({ name: "session", keys: ["lama"], maxAge: 24 * 60 * 60 * 100 })
-);
+app.use(cookieSession({ name: 'session', keys: ['lama'], maxAge: 24 * 60 * 60 * 100 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -54,10 +51,9 @@ app.use('/api/likes', authMiddleware, likesRoute);
 app.use('/api/ratings', authMiddleware, ratingsRoute);
 app.use('/api/comment', authMiddleware, commentRoute);
 app.use('/api/contact-us', contactusRoute);
-app.use('/api/user',adminRoute);
-app.use('/api/admin',adminloginRoute);
-app.use('/api/products',postApprovalRoute);
-
+app.use('/api/user', adminRoute);
+app.use('/api/admin', adminloginRoute);
+app.use('/api/products', postApprovalRoute);
 app.get('/', (req, res) => {
   res.send('working');
 });
@@ -119,7 +115,7 @@ io.on('connection', socket => {
   });
 });
 
-const PORT = process.env.PORT || 5005;
+const PORT = process.env.PORT || 5006;
 
 server.listen(PORT, () => {
   console.log('Server is running', PORT);

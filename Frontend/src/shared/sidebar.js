@@ -3,6 +3,7 @@ import { Layout, Menu, Divider, Tooltip } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { handleSidebarChange } from '../redux/actions/sidebarAction';
+import {logout} from '../redux/actions/authActions';
 import LOGO from '../assets/light-logo.svg';
 import './sidebar.css';
 
@@ -16,6 +17,11 @@ const Sidebar = () => {
 
   const changeSidebar = async e => {
     try {
+    console.log(e.key)
+       if(e.key === '/logout') {
+        await dispatch(logout());
+        navigate(`${e.url}`);
+       }
       await dispatch(handleSidebarChange(e));
       if (e.key === '/products') navigate('/');
       else navigate(`${e.url}`);

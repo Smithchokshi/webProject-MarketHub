@@ -1,20 +1,12 @@
-// MyProfile.js
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Input, Card, Col, Row, Form, Button, Layout, Upload, Modal } from 'antd';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
 import {
-  EnvironmentFilled,
-  GithubOutlined,
-  GlobalOutlined,
-  InstagramOutlined,
   UploadOutlined,
   UserOutlined,
   MailOutlined,
-  PhoneOutlined,
   MobileOutlined,
-  EditOutlined, 
   DeleteOutlined,
   EnvironmentOutlined
 } from '@ant-design/icons';
@@ -46,7 +38,32 @@ const ConfirmationDialog = ({ visible, message, onConfirm, onCancel }) => {
 
 const EditProfile = () => {
 
-  const [validator, setValidator] = useSimpleReactValidator();
+  const [validator, setValidator] = useSimpleReactValidator(
+    {},
+    {
+      matchPassword: {
+        message: 'Password doesn`t match',
+        rule: (val, params, validator) => {
+          return val === fields?.password;
+        },
+      },
+      postalCode: {
+        message: 'Please enter postal code in B3J2K9 format',
+        rule: (val, params) => {
+          return (
+            validator.helpers.testRegex(val, /^[A-Z]\d[A-Z]\d[A-Z]\d$/) &&
+            params.indexOf(val) === -1
+          );
+        },
+      },
+      passwwordLength: {
+        message: 'Password should be atleast of 6 digits',
+        rule: (val, params) => {
+            return val && val.length >= 6;
+        },
+      },
+    }
+  );
   const [loading, setLoading] = useState(true);
   const [image, setImage] = useState("");
   const [fields, setFields] = useState({
@@ -117,7 +134,7 @@ const EditProfile = () => {
         formData.append("cloud_name", "dsxncrb68");
         console.log(formData);
         const dataRes = await axios.post(
-          "https://api.cloudinary.com/v1_1/dsxncrb68/image/upload",
+          process.env.CLOUDNIARY_URL,
           formData
         );
         imageUrl = dataRes.data.url;
@@ -196,15 +213,17 @@ const EditProfile = () => {
                   </div>
                   <p className="text-muted mb-1"></p>
                   <Form onFinish={handleUpload}>
-                  <div >
-                  <Upload name="logo" accept="image/*" beforeUpload={(file) => {
-                    setImage(file);
-                    return false;
-                  }}>
-                    <Button icon={<UploadOutlined />}>Add Image</Button>
-                  </Upload>
-                  <Button style={{marginTop:"20px"}} className="login-form-button" type="primary" htmlType="submit" onClick={handleUpload}>Submit</Button>
-                  </div>
+                    <div style={{ display: 'flex', justifyContent: 'center'}}>
+                      <Upload name="logo" accept="image/*" beforeUpload={(file) => {
+                        setImage(file);
+                        return false;
+                      }}>
+                        <Button icon={<UploadOutlined />}>Add Image</Button>
+                      </Upload>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Button style={{ marginTop: "20px" }} className="login-form-button" type="primary" htmlType="submit" onClick={handleUpload}>Submit</Button>
+                    </div>
                   </Form>
                 </Card>
               </Col>
@@ -296,9 +315,11 @@ const EditProfile = () => {
               <div className="change-password" style={{ marginBottom: "20px", display: "flex", justifyContent: "flex-end", fontSize:"14px" }}>
                 <Link to={`/my-profile/edit-profile/change-password/${fields._id}`}>Change Password?</Link>
               </div>
-                  <Button className="login-form-button" type="primary" htmlType="submit" onClick={handleEdit}>
-                    Update Profile
-                  </Button>
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
+                <Button className="login-form-button" type="primary" htmlType="submit" onClick={handleEdit}>
+                  Update Profile
+                </Button>
+              </div>
                   </Form>
                 </Card>
               </Col>
