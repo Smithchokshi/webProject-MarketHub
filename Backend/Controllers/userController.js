@@ -77,7 +77,6 @@ const loginUser = async (req, res) => {
       if (user.deletedAt !== null) {
         return res.status(400).json({
           status: '400',
-<<<<<<< Updated upstream
           message: 'Invalid email or password.',
         });
       }
@@ -86,9 +85,6 @@ const loginUser = async (req, res) => {
         return res.status(400).json({
           status: '400',
           message: 'Invalid email or password.',
-=======
-          message: 'This account has been deleted.',
->>>>>>> Stashed changes
         });
       }
 
@@ -128,7 +124,6 @@ const loginUser = async (req, res) => {
 
         user = await userModel.findOneAndUpdate({ _id: user._id }, { token: token }, { new: true });
 
-<<<<<<< Updated upstream
         if (user.status === true) {
           return res.status(400).json({
             status: '400',
@@ -136,8 +131,6 @@ const loginUser = async (req, res) => {
           });
         }
 
-=======
->>>>>>> Stashed changes
         return res.status(200).json({
           message: 'Login successfully',
           userData: {
@@ -154,7 +147,6 @@ const loginUser = async (req, res) => {
           { new: true }
         );
 
-<<<<<<< Updated upstream
         if (user.status === true) {
           return res.status(400).json({
             status: '400',
@@ -162,8 +154,6 @@ const loginUser = async (req, res) => {
           });
         }
 
-=======
->>>>>>> Stashed changes
         return res.status(200).json({
           message: 'Login successfully',
           userData: {
