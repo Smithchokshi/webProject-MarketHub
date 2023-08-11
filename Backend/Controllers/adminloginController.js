@@ -3,7 +3,10 @@ const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
+const nodemailer = require('nodemailer');
 dotenv.config();
+const myemail = process.env.SENDER_EMAIL;
+const mypassword = process.env.APPLICATION_PASSWORD;
 
 const generateToken = _id => {
   const jwtKey = process.env.JWT_SECRET_KEY;
@@ -85,4 +88,86 @@ const updatePassword = async (req, res) => {
   }
 };
 
-module.exports = { loginAdmin, updatePassword };
+
+const sendPasswordResetEmail = (email, admin) => {
+  const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: myemail, 
+      pass: mypassword, 
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  const link = `https://admin-control-panel.netlify.app/resetPassword/${admin._id}/${admin.token}`;
+
+  const mailOptions = {
+    from: myemail,
+    to: email,
+    subject: 'Reset Your Password',
+    html: `<p>Click <a href="${link}">here</a> to reset your password.</p>`,
+  };
+
+  transporter.sendMail(mailOptions, error => {
+    if (error) {
+      console.error('Error sending reset email:', error);
+    } else {
+      console.log('Reset email sent successfully.');
+    }
+  });
+};
+
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const admin = await adminloginModel.findOne({ email });
+
+    if (!admin) {
+      return res.status(400).json({ message: 'Admin not found.' });
+    }
+
+    sendPasswordResetEmail(email, admin);
+
+    res.status(200).json({ message: 'Password reset email sent successfully.' });
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
+    res.status(500).json({ message: 'An error occurred while sending the password reset email.' });
+  }
+};
+
+
+const resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    const jwtKey = process.env.JWT_SECRET_KEY;
+    const decodedToken = jwt.verify(token, jwtKey);
+    console.log("decode token  "+decodedToken);
+    const userId = '64b34c7fc3aa9d2adc067e35';
+
+    const admin = await adminloginModel.findById(userId);
+
+    if (!admin) {
+      return res.status(404).json({ message: 'Admin user not found.' });
+    }
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    await adminloginModel.findByIdAndUpdate(userId, { password: hashedPassword });
+
+    res.status(200).json({ message: 'Password changed successfully.' });
+  } catch (error) {
+    
+    if (error instanceof jwt.JsonWebTokenError) {
+      console.log("ERror message : " + error);
+      return res.status(400).json({ message: 'Invalid or expired token.' , errorMessage: error});
+    }
+    console.error('Error changing password:', error);
+    res.status(500).json({ message: 'An error occurred while changing the password.' });
+  }
+};
+module.exports = { loginAdmin, updatePassword, forgotPassword,resetPassword};

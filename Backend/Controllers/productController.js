@@ -37,7 +37,7 @@ const createProduct = async (req, res) => {
 const getALlProducts = async (req, res) => {
   try {
     const userId = res.locals.user._id.toString();
-    let products = await productModel.find({ userId: { $nin: [userId] } });
+    let products = await productModel.find({   $and: [     { userId: { $nin: [userId] } },     { isApproved: true }, { isDeleted: false  }   ] });
     const searchTerm = req.body.searchTerm;
     if (searchTerm) {
       const regex = new RegExp(searchTerm, 'i');
